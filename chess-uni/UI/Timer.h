@@ -10,7 +10,7 @@ namespace UI {
 	using namespace System::Threading;
 	using DSize = System::Drawing::Size;
 
-	// 1 => 01 , 12 => 12
+	// 1 => "01" , 12 => "12"
 	String^ TimeFormated(int num) {
 		if (num >= 10)
 			return num.ToString();
@@ -19,7 +19,7 @@ namespace UI {
 			return s;
 		}
 	}
-
+	// 75 => "00:01:15"
 	String^ secondsToTime(int secs) {
 		int
 			sec = secs % 60,
@@ -42,6 +42,10 @@ namespace UI {
 		Label^ timer = gcnew Label();
 		int currentTime = 0;
 
+		void updateTimeText() {
+			this->timer->Text = secondsToTime(currentTime);
+		}
+
 	public:
 		Timer(Form^ mf, int offsetY, int offsetX)
 		{
@@ -53,9 +57,14 @@ namespace UI {
 		}
 		~Timer() {	}
 
+		void setTime(int secs) {
+			currentTime = secs;
+			updateTimeText();
+		}
+
 		void start() {
 			isActive = true;
-			
+
 			this->timerThread = gcnew Thread(gcnew ThreadStart(this, &Timer::loop));
 			this->timerThread->Start();
 		}
@@ -67,24 +76,14 @@ namespace UI {
 		}
 		void loop() {
 			while (true) {
-				if (!isActive)
+				if (!isActive || currentTime == -1)
 					return;
 
-				if (currentTime != -1) {
-					mainForm->Invoke(gcnew Action(this, &Timer::updateTimeText));
-					currentTime--;
-				}
+				mainForm->Invoke(gcnew Action(this, &Timer::updateTimeText));
+				currentTime--;
 
 				Thread::Sleep(1000);
 			}
-		}
-
-		void setTime(int secs) {
-			currentTime = secs;
-			updateTimeText();
-		}
-		void updateTimeText() {
-			this->timer->Text = secondsToTime(currentTime);
 		}
 	};
 };

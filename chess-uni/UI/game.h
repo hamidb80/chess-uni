@@ -11,7 +11,7 @@ namespace UI {
 	using namespace System::Threading;
 	using DSize = System::Drawing::Size;
 
-	public ref class GamePage : public System::Windows::Forms::Form
+	public ref class GamePage : public Form
 	{
 	public:
 		GamePage(void)
@@ -25,7 +25,7 @@ namespace UI {
 		}
 
 	private:
-		System::ComponentModel::IContainer^ components;
+		IContainer^ components;
 
 		array<Button^>^ boardBtns = gcnew array<Button^>(64);
 		Timer^ timer;
@@ -33,9 +33,8 @@ namespace UI {
 		void InitializeComponent(void)
 		{
 			// create window
-			this->AutoScaleDimensions = System::Drawing::SizeF(14, 29);
-			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(800, 600);
+			this->AutoScaleDimensions = SizeF(14, 29);
+			this->ClientSize = DSize(800, 600);
 			this->Text = L"main windows";
 
 			// create chess board
@@ -61,13 +60,13 @@ namespace UI {
 			timer->setTime(5 * 60 * 60);
 
 			// set form events
-			this->Load += gcnew System::EventHandler(this, &GamePage::OnLoad);
+			this->Load += gcnew EventHandler(this, &GamePage::OnLoad);
 			this->FormClosing += gcnew FormClosingEventHandler(this, &GamePage::OnClosed);
 		}
-		void OnLoad(System::Object^ sender, System::EventArgs^ e) {
+		void OnLoad(Object^ sender, EventArgs^ e) {
 			timer->start();
 		}
-		void OnClosed(System::Object^ sender, FormClosingEventArgs^ e) {
+		void OnClosed(Object^ sender, FormClosingEventArgs^ e) {
 			timer->stop();
 		}
 	};
