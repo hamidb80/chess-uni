@@ -126,9 +126,6 @@
     <ClInclude Include="UI\game.h" />
     <ClInclude Include="UI\Timer.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include=".gitignore" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
