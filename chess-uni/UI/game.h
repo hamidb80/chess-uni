@@ -30,7 +30,14 @@ namespace UI {
 		array<Button^>^ boardBtns = gcnew array<Button^>(64);
 		Timer^ timer;
 
-		void initForm() {
+		void InitializeComponent(void)
+		{
+			// create window
+			this->AutoScaleDimensions = System::Drawing::SizeF(14, 29);
+			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->ClientSize = System::Drawing::Size(800, 600);
+			this->Text = L"main windows";
+
 			// create chess board
 			int
 				size = 50,
@@ -52,17 +59,6 @@ namespace UI {
 			// create timer
 			timer = gcnew UI::Timer(this, offsetX / 2, offsetY / 2);
 			timer->setTime(5 * 60 * 60);
-		}
-
-		void InitializeComponent(void)
-		{
-			// create window
-			this->AutoScaleDimensions = System::Drawing::SizeF(14, 29);
-			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(800, 600);
-			this->Text = L"main windows";
-
-			this->initForm();
 
 			// set form events
 			this->Load += gcnew System::EventHandler(this, &GamePage::OnLoad);
