@@ -1,5 +1,4 @@
-#include "MyForm.h"
-
+#include "UI/game.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -7,6 +6,6 @@ using namespace System::Windows::Forms;
 void main() {
 	Application::SetCompatibleTextRenderingDefault(false);
 	Application::EnableVisualStyles();
-	chessuni::MyForm frm;
+	UI::MyForm frm;
 	Application::Run(% frm);
 }
