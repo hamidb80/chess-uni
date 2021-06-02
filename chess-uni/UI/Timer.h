@@ -40,24 +40,27 @@ namespace UI {
 
 		Thread^ timerThread;
 		Label^ timer = gcnew Label();
-		int currentTime = 0;
+		int currentTime = 0; // per seconds
 
 		void updateTimeText() {
 			this->timer->Text = secondsToTime(currentTime);
 		}
 
 	public:
-		Timer(Form^ mf, int offsetY, int offsetX)
+		Timer(Form^ mf, int offsetX, int offsetY)
 		{
 			this->mainForm = mf;
 
+			// add style to label
 			timer->Location = Point(offsetY, offsetX);
 			timer->AutoSize = true;
+
+			// add label to window
 			mf->Controls->Add(timer);
 		}
 		~Timer() {	}
 
-		void setTime(int secs) {
+		void setTime(int secs) { // set currentTime to ginen time (secs: per seconds]
 			currentTime = secs;
 			updateTimeText();
 		}
@@ -65,6 +68,7 @@ namespace UI {
 		void start() {
 			isActive = true;
 
+			// start timer thread [ it decreases time every seconds ]
 			this->timerThread = gcnew Thread(gcnew ThreadStart(this, &Timer::loop));
 			this->timerThread->Start();
 		}
@@ -76,13 +80,20 @@ namespace UI {
 		}
 		void loop() {
 			while (true) {
-				if (!isActive || currentTime == -1)
-					return;
+				if (!isActive) return;
 
-				mainForm->Invoke(gcnew Action(this, &Timer::updateTimeText));
-				currentTime--;
+				try // i dont know why that ridicouless error happens
+				{
+					mainForm->Invoke(gcnew Action(this, &Timer::updateTimeText));
 
-				Thread::Sleep(1000);
+					if (currentTime != 0)
+						currentTime--;
+					else
+						return; // end the function [ whick causes thread to die ]
+				}
+				catch (...) { return; }
+
+				Thread::Sleep(1000); // wait for 1 second [ 1000 ms ]
 			}
 		}
 	};

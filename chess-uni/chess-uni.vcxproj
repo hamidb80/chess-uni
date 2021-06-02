@@ -123,8 +123,10 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="UI\game.h" />
+    <ClInclude Include="UI\GamePage.h" />
+    <ClInclude Include="UI\ChessBoard.h" />
     <ClInclude Include="UI\Timer.h" />
+    <ClInclude Include="utils\lambda.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -23,7 +23,13 @@
     <ClInclude Include="UI\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UI\game.h">
+    <ClInclude Include="UI\GamePage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\ChessBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\lambda.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

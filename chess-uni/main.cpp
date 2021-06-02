@@ -1,4 +1,4 @@
-#include "UI/game.h"
+#include "UI/GamePage.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
