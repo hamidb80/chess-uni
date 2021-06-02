@@ -1,4 +1,4 @@
-﻿<div style="text-direction: rtl;">
+﻿<div dir="auto">
 
 سلام
 
