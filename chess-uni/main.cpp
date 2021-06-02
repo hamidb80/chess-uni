@@ -6,6 +6,6 @@ using namespace System::Windows::Forms;
 void main() {
 	Application::SetCompatibleTextRenderingDefault(false);
 	Application::EnableVisualStyles();
-	UI::MyForm frm;
+	UI::GamePage frm;
 	Application::Run(% frm);
 }

@@ -23,7 +23,7 @@ namespace UI {
 	String^ secondsToTime(int secs) {
 		int
 			sec = secs % 60,
-			min = secs / 60,
+			min = (secs % 3600) / 60,
 			hour = secs / 3600;
 
 		return
@@ -35,27 +35,27 @@ namespace UI {
 	public ref class Timer
 	{
 	private:
-		Form^ mainContainer;
+		Form^ mainForm;
 		bool isActive = false;
 
 		Thread^ timerThread;
 		Label^ timer = gcnew Label();
-		int currentTime = 10;
+		int currentTime = 0;
 
 	public:
-		Timer(Form^ mc, int offsetY, int offsetX)
+		Timer(Form^ mf, int offsetY, int offsetX)
 		{
-			this->mainContainer = mc;
+			this->mainForm = mf;
 
-			timer->Text = "00:00:00";
 			timer->Location = Point(offsetY, offsetX);
 			timer->AutoSize = true;
-			mc->Controls->Add(timer);
+			mf->Controls->Add(timer);
 		}
 		~Timer() {	}
 
 		void start() {
 			isActive = true;
+			
 			this->timerThread = gcnew Thread(gcnew ThreadStart(this, &Timer::loop));
 			this->timerThread->Start();
 		}
@@ -67,8 +67,11 @@ namespace UI {
 		}
 		void loop() {
 			while (true) {
-				if (isActive && currentTime != -1) {
-					mainContainer->Invoke(gcnew Action(this, &Timer::updateTimer));
+				if (!isActive)
+					return;
+
+				if (currentTime != -1) {
+					mainForm->Invoke(gcnew Action(this, &Timer::updateTimeText));
 					currentTime--;
 				}
 
@@ -76,7 +79,11 @@ namespace UI {
 			}
 		}
 
-		void updateTimer() {
+		void setTime(int secs) {
+			currentTime = secs;
+			updateTimeText();
+		}
+		void updateTimeText() {
 			this->timer->Text = secondsToTime(currentTime);
 		}
 	};
