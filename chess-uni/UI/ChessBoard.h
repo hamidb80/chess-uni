@@ -41,6 +41,10 @@ namespace UI {
 					
 					// add button to window
 					mf->Controls->Add(btn);
+
+					// dsadk  sdsd 
+					int a = 3;
+
 				}
 		}
 		~ChessBoard() {	}
