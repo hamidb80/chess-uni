@@ -32,5 +32,8 @@
     <ClInclude Include="utils\lambda.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="utils\email.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
