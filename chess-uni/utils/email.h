@@ -5,8 +5,8 @@ using namespace System::Net::Mail;
 using System::Net::NetworkCredential;
 
 auto
-EMAIL_ADDR = "Someone@domain.topleveldomain",
-EMAIL_PASS = "whatever";
+EMAIL_ADDR = gcnew String("Someone@domain.topleveldomain"),
+EMAIL_PASS = gcnew String("whatever");
 auto EMAIL_PORT = 587;
 
 void SendEmail(String^ _subject, String^ _body, MailAddress^ _from, MailAddress^ _to) {
