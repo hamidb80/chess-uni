@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Timer.h"
+#include "MusicPlayer.h"
 #include "ChessBoard.h"
 
 namespace UI {
@@ -64,6 +65,9 @@ namespace UI {
 			lastAction->AutoSize = true;
 			lastAction->Text = L"None";
 			this->Controls->Add(lastAction);
+
+			// init music player
+			auto mp = gcnew UI::MusicPlayer(this, 300, 50);
 
 			// set form events
 			this->Load += gcnew EventHandler(this, &GamePage::OnLoad);

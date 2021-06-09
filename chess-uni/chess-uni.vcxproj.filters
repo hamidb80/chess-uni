@@ -35,5 +35,8 @@
     <ClInclude Include="utils\email.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UI\MusicPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

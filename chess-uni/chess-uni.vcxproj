@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClInclude Include="UI\GamePage.h" />
     <ClInclude Include="UI\ChessBoard.h" />
+    <ClInclude Include="UI\MusicPlayer.h" />
     <ClInclude Include="UI\Timer.h" />
     <ClInclude Include="utils\email.h" />
     <ClInclude Include="utils\lambda.h" />
