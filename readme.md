@@ -13,6 +13,6 @@
 
 **دیاگرامی از پروژه:**
 
-![project digram](../chess-uni/Diagram.jpg)
+![project digram](Diagram.jpg)
 
 </div>
