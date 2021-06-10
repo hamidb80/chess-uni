@@ -78,6 +78,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies />
@@ -120,14 +121,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\base64.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="config.h" />
+    <ClInclude Include="include\base64.h" />
+    <ClInclude Include="include\json.hpp" />
+    <ClInclude Include="modules\email.h" />
+    <ClInclude Include="modules\soc.hpp" />
     <ClInclude Include="UI\GamePage.h" />
     <ClInclude Include="UI\ChessBoard.h" />
     <ClInclude Include="UI\Timer.h" />
-    <ClInclude Include="utils\email.h" />
+    <ClInclude Include="utils\event.hpp" />
+    <ClInclude Include="utils\fileio.h" />
     <ClInclude Include="utils\lambda.h" />
+    <ClInclude Include="utils\other.hpp" />
+    <ClInclude Include="utils\packet.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
