@@ -130,6 +130,7 @@
     <ClInclude Include="include\json.hpp" />
     <ClInclude Include="modules\email.h" />
     <ClInclude Include="modules\soc.hpp" />
+    <ClInclude Include="test\tests.h" />
     <ClInclude Include="UI\GamePage.h" />
     <ClInclude Include="UI\ChessBoard.h" />
     <ClInclude Include="UI\Timer.h" />
