@@ -135,7 +135,6 @@
     <ClInclude Include="test\tests.h" />
     <ClInclude Include="UI\GamePage.h" />
     <ClInclude Include="UI\ChessBoard.h" />
-    <ClInclude Include="UI\MusicPlayer.h" />
     <ClInclude Include="UI\Timer.h" />
     <ClInclude Include="utils\event.hpp" />
     <ClInclude Include="utils\fileio.h" />
