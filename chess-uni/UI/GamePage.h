@@ -2,6 +2,7 @@
 
 #include "Timer.h"
 #include "ChessBoard.h"
+#include "MusicPlayer.h"
 
 namespace UI {
 	using namespace System;
@@ -66,7 +67,7 @@ namespace UI {
 			this->Controls->Add(lastAction);
 
 			// init music player
-			//auto mp = gcnew UI::MusicPlayer(this);
+			auto mp = gcnew chessuni::musicPlayer(this->Controls);
 
 			// set form events
 			this->Load += gcnew EventHandler(this, &GamePage::OnLoad);

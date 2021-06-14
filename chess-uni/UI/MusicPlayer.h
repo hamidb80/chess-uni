@@ -13,28 +13,30 @@ namespace chessuni {
 	/// <summary>
 	/// Summary for musicPlayer
 	/// </summary>
-	public ref class musicPlayer : public System::Windows::Forms::Form
+	public ref class musicPlayer
 	{
 	public:
-		musicPlayer(void)
+		Control::ControlCollection^ Controls;
+		musicPlayer(Control::ControlCollection^ cntrl)
 		{
-			
+			Controls = cntrl;
 			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
 		}
 
+		void pause() {
+			axWindowsMediaPlayer1->Ctlcontrols->pause();
+		}
+		void play() {}
+		void hide() {
+			axWindowsMediaPlayer1->Visible = false;
+		}
+		void show() {}
+
 	protected:
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
 		~musicPlayer()
 		{
 			if (components)
-			{
 				delete components;
-			}
 		}
 	private: AxWMPLib::AxWindowsMediaPlayer^ axWindowsMediaPlayer1;
 	private: System::Windows::Forms::Panel^ panel1;
@@ -46,14 +48,11 @@ namespace chessuni {
 	private: System::Windows::Forms::OpenFileDialog^ openFileDialog1;
 	private: System::Windows::Forms::SaveFileDialog^ saveFileDialog1;
 
-
-	protected:
-
 	private:
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+		System::ComponentModel::Container^ components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -74,7 +73,6 @@ namespace chessuni {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->axWindowsMediaPlayer1))->BeginInit();
 			this->panel1->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
-			this->SuspendLayout();
 			// 
 			// axWindowsMediaPlayer1
 			// 
@@ -144,61 +142,45 @@ namespace chessuni {
 			// 
 			// musicPlayer
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
-			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->BackColor = System::Drawing::Color::Cornsilk;
-			this->ClientSize = System::Drawing::Size(653, 101);
+
 			this->Controls->Add(this->listBoxSongs);
 			this->Controls->Add(this->btnSelectSongs);
 			this->Controls->Add(this->panel1);
 			this->Controls->Add(this->axWindowsMediaPlayer1);
-			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
-			this->Name = L"musicPlayer";
-			this->Text = L"Music Player";
+			this->axWindowsMediaPlayer1->BringToFront();
+
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->axWindowsMediaPlayer1))->EndInit();
 			this->panel1->ResumeLayout(false);
 			this->panel1->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
-			this->ResumeLayout(false);
-
 		}
 #pragma endregion
 		array< String^ >^ fileName = gcnew array< String^ >(10);
 		array< String^ >^ paths = gcnew array< String^ >(10);
 
-private: System::Void BtnSelectSongs_Click(System::Object^ sender, System::EventArgs^ e) {
+	private:
+		System::Void BtnSelectSongs_Click(System::Object^ sender, System::EventArgs^ e) {
 
-	OpenFileDialog ofd;
-	ofd.Multiselect = true;
-	ofd.Filter = "MP3 Files|*.mp3|MP4 Files|*.mp4 | WAV Files|*.wav | WMA Files |*.WMA ";
+			OpenFileDialog ofd;
+			ofd.Multiselect = true;
+			ofd.Filter = "MP3 Files|*.mp3|MP4 Files|*.mp4 | WAV Files|*.wav | WMA Files |*.WMA ";
 
-	//openFileDialog1->Title = "Select Music";
-	//openFileDialog1->Filter = "MP3 files (*.mp3)|*.mp3|MP4 files (*.mp4)|*.mp4|WAV files (*.WAV)|*.WAV|WMA files (*.wma)|*.wma";
-	//openFileDialog1->Multiselect = false;
+			//openFileDialog1->Title = "Select Music";
+			//openFileDialog1->Filter = "MP3 files (*.mp3)|*.mp3|MP4 files (*.mp4)|*.mp4|WAV files (*.WAV)|*.WAV|WMA files (*.wma)|*.wma";
+			//openFileDialog1->Multiselect = false;
 
-	if (ofd.ShowDialog() == System::Windows::Forms::DialogResult::OK)
-	{
-		fileName = ofd.SafeFileNames; // save the name of track in filename array
-		paths = ofd.FileNames; // save the paths of the tracks in path array
-		for (int i = 0; i < fileName->Length; i++)
-		{
-			listBoxSongs->Items->Add(fileName[i]);
-		}
-
-		//listBoxSongs->Text = openFileDialog1->FileName;
-		//listBoxSongPath->Text=openFileDialog1->
-		/*
-		fileName = ofd.SafeFileNames; // save the name of track in filename array
-		paths = ofd.FileNames; // save the paths of the tracks in path array
-
-		for (int i = 0; i < fileName.Length; i++)
-		{
-			listBoxSongs.Items.Add(fileName[i]);
-		}
-
-
-		  if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			if (ofd.ShowDialog() == System::Windows::Forms::DialogResult::OK)
 			{
+				fileName = ofd.SafeFileNames; // save the name of track in filename array
+				paths = ofd.FileNames; // save the paths of the tracks in path array
+				for (int i = 0; i < fileName->Length; i++)
+				{
+					listBoxSongs->Items->Add(fileName[i]);
+				}
+
+				//listBoxSongs->Text = openFileDialog1->FileName;
+				//listBoxSongPath->Text=openFileDialog1->
+				/*
 				fileName = ofd.SafeFileNames; // save the name of track in filename array
 				paths = ofd.FileNames; // save the paths of the tracks in path array
 
@@ -206,52 +188,63 @@ private: System::Void BtnSelectSongs_Click(System::Object^ sender, System::Event
 				{
 					listBoxSongs.Items.Add(fileName[i]);
 				}
+
+
+				  if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+					{
+						fileName = ofd.SafeFileNames; // save the name of track in filename array
+						paths = ofd.FileNames; // save the paths of the tracks in path array
+
+						for (int i = 0; i < fileName.Length; i++)
+						{
+							listBoxSongs.Items.Add(fileName[i]);
+						}
+					}
+
 			}
 
-	}
-
-	if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
-	{
-		for each (auto path in  openFileDialog1->FileNames)
-		{
-			if (System::IO::Path::GetExtension(path) == ".txt")
+			if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
 			{
-				listBoxSongs->Text += System::IO::Path::GetExtension(path);
+				for each (auto path in  openFileDialog1->FileNames)
+				{
+					if (System::IO::Path::GetExtension(path) == ".txt")
+					{
+						listBoxSongs->Text += System::IO::Path::GetExtension(path);
 
+
+
+					}
+
+				}
+
+				*/
+				//String ^ filename = openFileDialog1->FileName;
+				//MessageBox::Show(filename);
+
+				/*String^ ex = System::IO::Path::GetExtension(filename);
+				if (ex == "txt") {}*/
+
+				/*
+				auto ex = System::IO::Directory::GetFiles("D:\\Mahdieh\\university\\Term2");
+				//MessageBox::Show(ex[0]);
+				for each (auto var in ex)
+				{
+					richTextBox1->Text += var + "\n";
+				}
+				*/
 
 
 			}
+			else
+			{
+			}
+
+
+
 
 		}
-
-		*/
-		//String ^ filename = openFileDialog1->FileName;
-		//MessageBox::Show(filename);
-
-		/*String^ ex = System::IO::Path::GetExtension(filename);
-		if (ex == "txt") {}*/
-
-		/*
-		auto ex = System::IO::Directory::GetFiles("D:\\Mahdieh\\university\\Term2");
-		//MessageBox::Show(ex[0]);
-		for each (auto var in ex)
-		{
-			richTextBox1->Text += var + "\n";
+		System::Void ListBoxSongs_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+			axWindowsMediaPlayer1->URL = paths[listBoxSongs->SelectedIndex];
 		}
-		*/
-
-
-	}
-	else
-	{
-	}
-
-
-
-
-}
-private: System::Void ListBoxSongs_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-	axWindowsMediaPlayer1->URL = paths[listBoxSongs->SelectedIndex];
-}
-};
+	};
 }

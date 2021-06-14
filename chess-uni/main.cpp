@@ -8,7 +8,7 @@ using namespace System::Windows::Forms;
 void main() {
 	Application::SetCompatibleTextRenderingDefault(false);
 	Application::EnableVisualStyles();
-	//UI::GamePage frm;
-	chessuni::musicPlayer frm;
+	UI::GamePage frm;
+	//chessuni::musicPlayer frm;
 	Application::Run(% frm);
 }
