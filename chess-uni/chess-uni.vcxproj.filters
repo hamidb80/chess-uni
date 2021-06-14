@@ -69,4 +69,13 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Interop\AxInterop.WMPLib.1.0.dll" />
+    <None Include="Interop\Interop.WMPLib.1.0.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="musicPlayer.resx">
+      <Filter>Resource Files</Filter>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

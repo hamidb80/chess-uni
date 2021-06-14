@@ -1,6 +1,5 @@
 #pragma once
-
-namespace Project1 {
+namespace chessuni {
 
 	using namespace System;
 	using namespace System::ComponentModel;
