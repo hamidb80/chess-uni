@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Timer.h"
-#include "MusicPlayer.h"
+#include "musicPlayer.h"
 #include "ChessBoard.h"
 
 namespace UI {

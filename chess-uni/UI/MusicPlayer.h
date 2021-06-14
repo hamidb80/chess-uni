@@ -1,4 +1,3 @@
-
 #pragma once
 
 namespace Project1 {
@@ -20,7 +19,7 @@ namespace Project1 {
 	public:
 		musicPlayer(void)
 		{
-
+			
 			InitializeComponent();
 			//
 			//TODO: Add the constructor code here
@@ -55,7 +54,7 @@ namespace Project1 {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		System::ComponentModel::Container^ components;
+		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -168,35 +167,92 @@ namespace Project1 {
 		array< String^ >^ fileName = gcnew array< String^ >(10);
 		array< String^ >^ paths = gcnew array< String^ >(10);
 
-	private: System::Void BtnSelectSongs_Click(System::Object^ sender, System::EventArgs^ e) {
+private: System::Void BtnSelectSongs_Click(System::Object^ sender, System::EventArgs^ e) {
 
-		OpenFileDialog ofd;
-		ofd.Multiselect = true;
-		ofd.Filter = "MP3 Files|*.mp3|MP4 Files|*.mp4 | WAV Files|*.wav | WMA Files |*.WMA ";
+	OpenFileDialog ofd;
+	ofd.Multiselect = true;
+	ofd.Filter = "MP3 Files|*.mp3|MP4 Files|*.mp4 | WAV Files|*.wav | WMA Files |*.WMA ";
 
-		//openFileDialog1->Title = "Select Music";
-		//openFileDialog1->Filter = "MP3 files (*.mp3)|*.mp3|MP4 files (*.mp4)|*.mp4|WAV files (*.WAV)|*.WAV|WMA files (*.wma)|*.wma";
-		//openFileDialog1->Multiselect = false;
+	//openFileDialog1->Title = "Select Music";
+	//openFileDialog1->Filter = "MP3 files (*.mp3)|*.mp3|MP4 files (*.mp4)|*.mp4|WAV files (*.WAV)|*.WAV|WMA files (*.wma)|*.wma";
+	//openFileDialog1->Multiselect = false;
 
-		if (ofd.ShowDialog() == System::Windows::Forms::DialogResult::OK)
+	if (ofd.ShowDialog() == System::Windows::Forms::DialogResult::OK)
+	{
+		fileName = ofd.SafeFileNames; // save the name of track in filename array
+		paths = ofd.FileNames; // save the paths of the tracks in path array
+		for (int i = 0; i < fileName->Length; i++)
 		{
-			fileName = ofd.SafeFileNames; // save the name of track in filename array
-			paths = ofd.FileNames; // save the paths of the tracks in path array
-			for (int i = 0; i < fileName->Length; i++)
+			listBoxSongs->Items->Add(fileName[i]);
+		}
+
+		//listBoxSongs->Text = openFileDialog1->FileName;
+		//listBoxSongPath->Text=openFileDialog1->
+		/*
+		fileName = ofd.SafeFileNames; // save the name of track in filename array
+		paths = ofd.FileNames; // save the paths of the tracks in path array
+
+		for (int i = 0; i < fileName.Length; i++)
+		{
+			listBoxSongs.Items.Add(fileName[i]);
+		}
+
+
+		  if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
-				listBoxSongs->Items->Add(fileName[i]);
+				fileName = ofd.SafeFileNames; // save the name of track in filename array
+				paths = ofd.FileNames; // save the paths of the tracks in path array
+
+				for (int i = 0; i < fileName.Length; i++)
+				{
+					listBoxSongs.Items.Add(fileName[i]);
+				}
 			}
-		}
-		else
+
+	}
+
+	if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
+	{
+		for each (auto path in  openFileDialog1->FileNames)
 		{
+			if (System::IO::Path::GetExtension(path) == ".txt")
+			{
+				listBoxSongs->Text += System::IO::Path::GetExtension(path);
+
+
+
+			}
+
 		}
 
+		*/
+		//String ^ filename = openFileDialog1->FileName;
+		//MessageBox::Show(filename);
 
+		/*String^ ex = System::IO::Path::GetExtension(filename);
+		if (ex == "txt") {}*/
+
+		/*
+		auto ex = System::IO::Directory::GetFiles("D:\\Mahdieh\\university\\Term2");
+		//MessageBox::Show(ex[0]);
+		for each (auto var in ex)
+		{
+			richTextBox1->Text += var + "\n";
+		}
+		*/
 
 
 	}
-	private: System::Void ListBoxSongs_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-		axWindowsMediaPlayer1->URL = paths[listBoxSongs->SelectedIndex];
+	else
+	{
 	}
-	};
+
+
+
+
+}
+private: System::Void ListBoxSongs_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+	axWindowsMediaPlayer1->URL = paths[listBoxSongs->SelectedIndex];
+}
+};
 }
