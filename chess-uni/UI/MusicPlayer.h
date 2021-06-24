@@ -9,6 +9,8 @@ namespace chessuni {
 	using namespace System::Drawing;
 	using namespace System::Text;
 	using namespace System::IO;
+   #define yMusic 500
+   #define xMusic 35
 
 	/// <summary>
 	/// Summary for musicPlayer
@@ -77,7 +79,7 @@ namespace chessuni {
 			// axWindowsMediaPlayer1
 			// 
 			this->axWindowsMediaPlayer1->Enabled = true;
-			this->axWindowsMediaPlayer1->Location = System::Drawing::Point(2, 51);
+			this->axWindowsMediaPlayer1->Location = System::Drawing::Point(2+xMusic, 51+yMusic); //2 , 51
 			this->axWindowsMediaPlayer1->Name = L"axWindowsMediaPlayer1";
 			this->axWindowsMediaPlayer1->OcxState = (cli::safe_cast<System::Windows::Forms::AxHost::State^>(resources->GetObject(L"axWindowsMediaPlayer1.OcxState")));
 			this->axWindowsMediaPlayer1->Size = System::Drawing::Size(523, 45);
@@ -88,7 +90,7 @@ namespace chessuni {
 			this->panel1->BackColor = System::Drawing::Color::DarkTurquoise;
 			this->panel1->Controls->Add(this->lblLogo);
 			this->panel1->Controls->Add(this->pictureBox1);
-			this->panel1->Location = System::Drawing::Point(2, 4);
+			this->panel1->Location = System::Drawing::Point(2+xMusic, 4+yMusic);
 			this->panel1->Name = L"panel1";
 			this->panel1->Size = System::Drawing::Size(523, 42);
 			this->panel1->TabIndex = 1;
@@ -98,7 +100,7 @@ namespace chessuni {
 			this->lblLogo->AutoSize = true;
 			this->lblLogo->Font = (gcnew System::Drawing::Font(L"Stylus BT", 14.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->lblLogo->Location = System::Drawing::Point(55, 8);
+			this->lblLogo->Location = System::Drawing::Point(55+xMusic, 8+yMusic);
 			this->lblLogo->Name = L"lblLogo";
 			this->lblLogo->Size = System::Drawing::Size(58, 23);
 			this->lblLogo->TabIndex = 6;
@@ -107,7 +109,7 @@ namespace chessuni {
 			// pictureBox1
 			// 
 			this->pictureBox1->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.Image")));
-			this->pictureBox1->Location = System::Drawing::Point(3, 2);
+			this->pictureBox1->Location = System::Drawing::Point(3+xMusic, 2+yMusic);
 			this->pictureBox1->Name = L"pictureBox1";
 			this->pictureBox1->Size = System::Drawing::Size(49, 39);
 			this->pictureBox1->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
@@ -119,7 +121,7 @@ namespace chessuni {
 			this->btnSelectSongs->BackColor = System::Drawing::Color::PeachPuff;
 			this->btnSelectSongs->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->btnSelectSongs->ForeColor = System::Drawing::Color::SaddleBrown;
-			this->btnSelectSongs->Location = System::Drawing::Point(529, 75);
+			this->btnSelectSongs->Location = System::Drawing::Point(529+xMusic, 75+yMusic);
 			this->btnSelectSongs->Name = L"btnSelectSongs";
 			this->btnSelectSongs->Size = System::Drawing::Size(120, 23);
 			this->btnSelectSongs->TabIndex = 3;
@@ -130,7 +132,7 @@ namespace chessuni {
 			// listBoxSongs
 			// 
 			this->listBoxSongs->FormattingEnabled = true;
-			this->listBoxSongs->Location = System::Drawing::Point(529, 2);
+			this->listBoxSongs->Location = System::Drawing::Point(529+xMusic, 2+yMusic);
 			this->listBoxSongs->Name = L"listBoxSongs";
 			this->listBoxSongs->Size = System::Drawing::Size(120, 69);
 			this->listBoxSongs->TabIndex = 4;
@@ -177,61 +179,6 @@ namespace chessuni {
 				{
 					listBoxSongs->Items->Add(fileName[i]);
 				}
-
-				//listBoxSongs->Text = openFileDialog1->FileName;
-				//listBoxSongPath->Text=openFileDialog1->
-				/*
-				fileName = ofd.SafeFileNames; // save the name of track in filename array
-				paths = ofd.FileNames; // save the paths of the tracks in path array
-
-				for (int i = 0; i < fileName.Length; i++)
-				{
-					listBoxSongs.Items.Add(fileName[i]);
-				}
-
-
-				  if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-					{
-						fileName = ofd.SafeFileNames; // save the name of track in filename array
-						paths = ofd.FileNames; // save the paths of the tracks in path array
-
-						for (int i = 0; i < fileName.Length; i++)
-						{
-							listBoxSongs.Items.Add(fileName[i]);
-						}
-					}
-
-			}
-
-			if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
-			{
-				for each (auto path in  openFileDialog1->FileNames)
-				{
-					if (System::IO::Path::GetExtension(path) == ".txt")
-					{
-						listBoxSongs->Text += System::IO::Path::GetExtension(path);
-
-
-
-					}
-
-				}
-
-				*/
-				//String ^ filename = openFileDialog1->FileName;
-				//MessageBox::Show(filename);
-
-				/*String^ ex = System::IO::Path::GetExtension(filename);
-				if (ex == "txt") {}*/
-
-				/*
-				auto ex = System::IO::Directory::GetFiles("D:\\Mahdieh\\university\\Term2");
-				//MessageBox::Show(ex[0]);
-				for each (auto var in ex)
-				{
-					richTextBox1->Text += var + "\n";
-				}
-				*/
 
 
 			}
