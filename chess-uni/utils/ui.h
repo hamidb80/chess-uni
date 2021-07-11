@@ -56,7 +56,7 @@ map<ChessPieces, string> peiceFileName = {
 	{BlackRook, "rook-black.png"},
 };
 
-
+// http://www.enpassant.dk/chess/fonteng.htm
 enum PieciesThemeStyle {
 	Solid,
 };
