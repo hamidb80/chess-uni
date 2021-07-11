@@ -1,7 +1,6 @@
 import json, os
 import pixie, chroma
 
-
 func replaceImageColor(img: Image, newColor: ColorRGBX): Image =
   result = img
   template pxl: untyped = result.data[i]
@@ -13,38 +12,45 @@ func replaceImageColor(img: Image, newColor: ColorRGBX): Image =
       b: newColor.b,
       a: pxl.a)
 
-const outputPath = "./output/"
-
 type
   InputData = object
-    picturePaths: tuple[
-      pawn, rook, knight, bishop, queen, king: string]
+    input: string
+    output: string
 
-    themes: seq[tuple[
+    styles: seq[string]
+
+    colors: seq[tuple[
       name, whiteColor, blackColor: string]]
+
+    pictures: tuple[
+      pawn, rook, knight, bishop, queen, king: string]
 
 
 if isMainModule:
   let data = "./input.json".readFile.parseJson.to InputData
 
+  let 
+    outputPath = data.output
+    inputPath = data.input 
+
   if dirExists outputPath: removeDir outputPath
   createDir outputPath
 
+  for color in data.colors:
+    for style in data.styles:
+      let themeDest = outputPath / style / color.name
+      createDir themeDest
 
-  for theme in data.themes:
-    let themeDest = outputPath/theme.name
-    createDir themeDest
-
-    for (pname, ppath) in [
-      ("pawn", data.picturePaths.pawn),
-      ("rook", data.picturePaths.rook),
-      ("knight", data.picturePaths.knight),
-      ("bishop", data.picturePaths.bishop),
-      ("queen", data.picturePaths.queen),
-      ("king", data.picturePaths.king)]:
-
-      let img = readImage ppath
-      replaceImageColor(img,
-        theme.whiteColor[1..^1].parseHex.asRgbx).writeFile(themeDest/(pname & "-white.png"))
-      replaceImageColor(img,
-        theme.blackColor[1..^1].parseHex.asRgbx).writeFile(themeDest/(pname & "-black.png"))
+      for (pname, ppath) in [
+        ("pawn", data.pictures.pawn),
+        ("rook", data.pictures.rook),
+        ("knight", data.pictures.knight),
+        ("bishop", data.pictures.bishop),
+        ("queen", data.pictures.queen),
+        ("king", data.pictures.king)]:
+        
+        let img = readImage inputPath / style  / ppath
+        replaceImageColor(img,
+          color.whiteColor[1..^1].parseHex.asRgbx).writeFile(themeDest/(pname & "-white.png"))
+        replaceImageColor(img,
+          color.blackColor[1..^1].parseHex.asRgbx).writeFile(themeDest/(pname & "-black.png"))

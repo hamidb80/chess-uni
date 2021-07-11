@@ -59,9 +59,13 @@ map<ChessPieces, string> peiceFileName = {
 // http://www.enpassant.dk/chess/fonteng.htm
 enum PieciesThemeStyle {
 	Solid,
+	Curly,
+	Pixel,
 };
 map<PieciesThemeStyle, string> PieciesThemeStyleString{
 	{Solid, "solid"},
+	{Curly, "curly"},
+	{Pixel, "pixel"},
 };
 
 enum PieciesThemeColor {
