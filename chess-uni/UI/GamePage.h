@@ -4,6 +4,7 @@
 #include "ChessBoard.h"
 
 namespace UI {
+
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
@@ -28,16 +29,10 @@ namespace UI {
 
 	private:
 		IContainer^ components;
-
 		Label^ lastAction;
 		ChessBoard^ board;
-		Timer^ timer;
+		Timerrr^ timer;
 
-		void whenClickedOnCell(Point p) {
-			// it shows the position like "(x, y)"
-			lastAction->Text =
-				L"(" + p.X.ToString() + ", " + p.Y.ToString() + L")";
-		}
 		void InitializeComponent(void)
 		{
 			// create window
@@ -51,12 +46,14 @@ namespace UI {
 
 			// init chess board
 			board = gcnew ChessBoard(
-				this, offsetX, offsetY,
-				gcnew Action<Point>(this, &GamePage::whenClickedOnCell));
+				this, 
+				offsetX, offsetY,
+				80,
+				gcnew Action<Point>(this, &GamePage::whenClickedOnCell)
+			);
 
 			// init timer
-			timer = gcnew UI::Timer(this, offsetX / 2, offsetY / 2);
-			timer->setTime(5 * 60 * 60);
+			timer = gcnew Timerrr(this, offsetX / 2, offsetY / 2);
 
 			// init lastAction label
 			lastAction = gcnew Label();
@@ -73,7 +70,15 @@ namespace UI {
 			this->FormClosing += gcnew FormClosingEventHandler(this, &GamePage::OnClosed);
 		}
 
+		void whenClickedOnCell(Point p) {
+			// it shows the position like "(x, y)"
+			lastAction->Text =
+				L"(" + p.X.ToString() + ", " + p.Y.ToString() + L")";
+		}
+
 		void OnLoad(Object^ sender, EventArgs^ e) {
+			board->firstDraw();
+			timer->setTime(5 * 60 * 60);
 			timer->start();
 		}
 		void OnClosed(Object^ sender, FormClosingEventArgs^ e) {

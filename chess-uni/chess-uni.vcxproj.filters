@@ -68,5 +68,11 @@
     <ClInclude Include="modules\database.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="utils\ui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\gameLogic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

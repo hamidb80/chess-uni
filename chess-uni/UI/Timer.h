@@ -32,7 +32,7 @@ namespace UI {
 			TimeFormated(sec);
 	}
 
-	public ref class Timer
+	public ref class Timerrr
 	{
 	private:
 		Form^ mainForm;
@@ -47,7 +47,7 @@ namespace UI {
 		}
 
 	public:
-		Timer(Form^ mf, int offsetX, int offsetY)
+		Timerrr(Form^ mf, int offsetX, int offsetY)
 		{
 			this->mainForm = mf;
 
@@ -58,7 +58,7 @@ namespace UI {
 			// add label to window
 			mf->Controls->Add(timer);
 		}
-		~Timer() {	}
+		//~Timerrr() {}
 
 		void setTime(int secs) { // set currentTime to ginen time (secs: per seconds]
 			currentTime = secs;
@@ -69,7 +69,7 @@ namespace UI {
 			isActive = true;
 
 			// start timer thread [ it decreases time every seconds ]
-			this->timerThread = gcnew Thread(gcnew ThreadStart(this, &Timer::loop));
+			this->timerThread = gcnew Thread(gcnew ThreadStart(this, &Timerrr::loop));
 			this->timerThread->Start();
 		}
 		void stop() {
@@ -84,7 +84,7 @@ namespace UI {
 
 				try // i dont know why that ridicouless error happens
 				{
-					mainForm->Invoke(gcnew Action(this, &Timer::updateTimeText));
+					mainForm->Invoke(gcnew Action(this, &Timerrr::updateTimeText));
 
 					if (currentTime != 0)
 						currentTime--;
