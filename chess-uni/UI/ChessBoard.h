@@ -25,7 +25,7 @@ namespace UI {
 	public ref struct ThemeOptions {
 		PieciesThemeColor pieciesThemeColor = Pink;
 		BoardBackTheme boardBackTheme = MagicalMysteryRide;
-		PieciesThemeStyle pieciesThemeStyle = Solid;
+		PieciesThemeStyle pieciesThemeStyle = Pixel;
 	};
 
 	public ref class ChessBoard
