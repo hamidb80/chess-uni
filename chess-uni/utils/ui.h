@@ -25,7 +25,7 @@ enum BoardBackTheme {
 	Wood,
 	MagicalMysteryRide,
 };
-map<BoardBackTheme, string> PieciesThemeColorString{
+map<BoardBackTheme, string> BoardBackThemeString{
 	{BlackWhite, "black & white"},
 	{Wood, "wood"},
 	{MagicalMysteryRide, "magical mystery ride"},

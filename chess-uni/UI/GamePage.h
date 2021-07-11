@@ -4,7 +4,6 @@
 #include "ChessBoard.h"
 
 namespace UI {
-
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
@@ -13,6 +12,11 @@ namespace UI {
 	using namespace System::Drawing;
 	using namespace System::Threading;
 	using DSize = System::Drawing::Size;
+
+	int
+		windowWidth = 1000, windowHeight = 800,
+		offsetX = 50, offsetY = 100
+		;
 
 	public ref class GamePage : public Form
 	{
@@ -30,25 +34,21 @@ namespace UI {
 	private:
 		IContainer^ components;
 		Label^ lastAction;
+		ThemeOptions^ theme = gcnew ThemeOptions();
 		ChessBoard^ board;
 		Timerrr^ timer;
 
 		void InitializeComponent(void)
 		{
 			// create window
-			this->AutoScaleDimensions = SizeF(14, 29);
-			this->ClientSize = DSize(800, 600);
 			this->Text = L"chess game";
-
-			int
-				offsetY = 100,
-				offsetX = 50;
+			this->Size = DSize(windowWidth, windowHeight);
+			this->BackColor = Color::White;
 
 			// init chess board
-			board = gcnew ChessBoard(
-				this, 
-				offsetX, offsetY,
-				80,
+			board = gcnew ChessBoard(this,
+				offsetX, offsetY, 80,
+				theme,
 				gcnew Action<Point>(this, &GamePage::whenClickedOnCell)
 			);
 
