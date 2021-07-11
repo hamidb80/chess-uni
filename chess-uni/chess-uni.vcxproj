@@ -138,6 +138,8 @@
     <ClInclude Include="UI\Timer.h" />
     <ClInclude Include="utils\event.hpp" />
     <ClInclude Include="utils\fileio.h" />
+    <ClInclude Include="utils\gameLogic.h" />
+    <ClInclude Include="utils\ui.h" />
     <ClInclude Include="utils\lambda.h" />
     <ClInclude Include="utils\other.hpp" />
     <ClInclude Include="utils\packet.hpp" />

@@ -1,13 +1,14 @@
 {
-  "picturePaths": {
-    "pawn": "./org/pawn.png",
-    "rook": "./org/rook.png",
-    "knight": "./org/knight.png",
-    "bishop": "./org/bishop.png",
-    "queen": "./org/queen.png",
-    "king": "./org/king.png"
-  },
-  "themes": [
+  "input": "./themes/",
+  "output": "./out/",
+
+  "styles": [
+    "solid",
+    "curly",
+    "pixel"
+  ],
+  
+  "colors": [
     {
       "name": "pink",
       "whiteColor": "#f751e0",
@@ -18,5 +19,14 @@
       "whiteColor": "#c0ffee",
       "blackColor": "#24755f"
     }
-  ]
+  ],
+
+  "pictures": {
+    "pawn": "pawn.png",
+    "rook": "rook.png",
+    "knight": "knight.png",
+    "bishop": "bishop.png",
+    "queen": "queen.png",
+    "king": "king.png"
+  }
 }

@@ -3,7 +3,7 @@
 using namespace System;
 using namespace System::Windows::Forms;
 
-void main() {
+void main(){
 	Application::SetCompatibleTextRenderingDefault(false);
 	Application::EnableVisualStyles();
 	UI::GamePage frm;
