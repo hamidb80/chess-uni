@@ -33,9 +33,9 @@ namespace UI {
 
 	private:
 		IContainer^ components;
-		Label^ lastAction;
 		ThemeOptions^ theme = gcnew ThemeOptions();
-		ChessBoard^ board;
+		ChessBoard^ boardComponent;
+		BoardClass^ boardclass = gcnew BoardClass();
 		Timerrr^ timer;
 
 		void InitializeComponent(void)
@@ -46,21 +46,15 @@ namespace UI {
 			this->BackColor = Color::White;
 
 			// init chess board
-			board = gcnew ChessBoard(this,
+			boardComponent = gcnew ChessBoard(this,
 				offsetX, offsetY, 80,
 				theme,
+				boardclass,
 				gcnew Action<Point>(this, &GamePage::whenClickedOnCell)
 			);
 
 			// init timer
 			timer = gcnew Timerrr(this, offsetX / 2, offsetY / 2);
-
-			// init lastAction label
-			lastAction = gcnew Label();
-			lastAction->Location = Point(20, 10);
-			lastAction->AutoSize = true;
-			lastAction->Text = L"None";
-			this->Controls->Add(lastAction);
 
 			// init music player
 			//auto mp = gcnew UI::MusicPlayer(this, 300, 50);
@@ -71,13 +65,12 @@ namespace UI {
 		}
 
 		void whenClickedOnCell(Point p) {
-			// it shows the position like "(x, y)"
-			lastAction->Text =
-				L"(" + p.X.ToString() + ", " + p.Y.ToString() + L")";
+			boardclass->movePoints = boardclass->possibleMoves(p);
+			boardComponent->render();
 		}
 
 		void OnLoad(Object^ sender, EventArgs^ e) {
-			board->firstDraw();
+			boardComponent->firstDraw();
 			timer->setTime(5 * 60 * 60);
 			timer->start();
 		}

@@ -58,7 +58,6 @@ namespace UI {
 			// add label to window
 			mf->Controls->Add(timer);
 		}
-		//~Timerrr() {}
 
 		void setTime(int secs) { // set currentTime to ginen time (secs: per seconds]
 			currentTime = secs;
