@@ -21,24 +21,17 @@ enum ChessPieces {
 	BlackKing = -6,
 };
 
-ChessPieces startingPeiceOrder[8][8] = {
-	{BlackRook, BlackKnight, BlackBishop, BlackQueen, BlackKing, BlackBishop, BlackKnight, BlackRook},
-	{BlackPawn, BlackPawn,BlackPawn,BlackPawn,BlackPawn,BlackPawn,BlackPawn,BlackPawn,},
+cli::array<ChessPieces, 2>^ newBoard() {
+	return gcnew cli::array<ChessPieces, 2>{
+		{BlackRook, BlackKnight, BlackBishop, BlackQueen, BlackKing, BlackBishop, BlackKnight, BlackRook},
+		{ BlackPawn, BlackPawn,BlackPawn,BlackPawn,BlackPawn,BlackPawn,BlackPawn,BlackPawn, },
 
-	{Empty, Empty,Empty,Empty,Empty,Empty,Empty,Empty,},
-	{Empty, Empty,Empty,Empty,Empty,Empty,Empty,Empty,},
-	{Empty, Empty,Empty,Empty,Empty,Empty,Empty,Empty,},
-	{Empty, Empty,Empty,Empty,Empty,Empty,Empty,Empty,},
+		{ Empty, Empty,Empty,Empty,Empty,Empty,Empty,Empty, },
+		{ Empty, Empty,Empty,Empty,Empty,Empty,Empty,Empty, },
+		{ Empty, Empty,Empty,Empty,Empty,Empty,Empty,Empty, },
+		{ Empty, Empty,Empty,Empty,Empty,Empty,Empty,Empty, },
 
-	{WhitePawn, WhitePawn,WhitePawn,WhitePawn,WhitePawn,WhitePawn,WhitePawn,WhitePawn,},
-	{WhiteRook, WhiteKnight, WhiteBishop, WhiteQueen, WhiteKing, WhiteBishop, WhiteKnight, WhiteRook},
-};
-
-//
-//public ref class BoardClass {
-//public:
-//	cli::array<cli::array<ChessPieces, 8>^, 8>^ board;
-//
-//	vector<Point> possibleMoves(Point piecePosition);
-//	ChessPieces move(Point  lastPiecePosition, Point  newPiecePosition);
-//};
+		{ WhitePawn, WhitePawn,WhitePawn,WhitePawn,WhitePawn,WhitePawn,WhitePawn,WhitePawn, },
+		{ WhiteRook, WhiteKnight, WhiteBishop, WhiteQueen, WhiteKing, WhiteBishop, WhiteKnight, WhiteRook },
+	};
+}
