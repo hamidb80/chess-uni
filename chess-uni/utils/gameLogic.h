@@ -1,5 +1,8 @@
 #pragma once
 
+using System::Drawing::Point;
+using namespace System;
+
 enum ChessPieces {
 	Empty = 0,
 
@@ -30,3 +33,12 @@ ChessPieces startingPeiceOrder[8][8] = {
 	{WhitePawn, WhitePawn,WhitePawn,WhitePawn,WhitePawn,WhitePawn,WhitePawn,WhitePawn,},
 	{WhiteRook, WhiteKnight, WhiteBishop, WhiteQueen, WhiteKing, WhiteBishop, WhiteKnight, WhiteRook},
 };
+
+//
+//public ref class BoardClass {
+//public:
+//	cli::array<cli::array<ChessPieces, 8>^, 8>^ board;
+//
+//	vector<Point> possibleMoves(Point piecePosition);
+//	ChessPieces move(Point  lastPiecePosition, Point  newPiecePosition);
+//};

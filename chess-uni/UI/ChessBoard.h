@@ -97,6 +97,9 @@ namespace UI {
 								DSize(cellSize * 0.8, cellSize)
 							));
 					}
+					else {
+						delete btn->Image;
+					}
 
 
 					// set cell color

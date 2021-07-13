@@ -27,6 +27,7 @@ using namespace std;
 class SocketAbs {
 protected:
 	map<int, DataPacketReciver*> uncompletedRecvs;
+	vector<json> eventBus;
 
 	void started_hook() {
 		isAlive = true;
@@ -34,17 +35,27 @@ protected:
 	void killed_hook() {
 		isAlive = false;
 	}
+protected:
+	SOCKET ConnectSocket = INVALID_SOCKET;
 
 public:
 	bool isAlive = false;
-	void (*userRecvHandler)(string data);
+	//void (*userRecvHandler)(string data);
 	//void(*onConnected)() = NULL;
 	//void(*onDisconnected)() = NULL;
 	//void (*onRecvComplete)(string data);
 
-	virtual void simple_send(string what) {}
 	virtual void start(string host, string port) {}
 	virtual void kill() {}
+	virtual void listen() {}
+	
+	void simple_send(string what) {
+		int res = ::send(ConnectSocket, what.c_str(), what.length(), 0);
+		if (res == SOCKET_ERROR) {
+			printf("send failed with error: %d\n", WSAGetLastError());
+			return kill();
+		}
+	}
 	void send(string what) {
 		auto bps = DataPacketSender(JSON, what);
 
@@ -70,30 +81,20 @@ public:
 			uncompletedRecvs[bp->packetId] = bp;
 		}
 
-		if (bp->isDone) { 
-			userRecvHandler(bp->data); // trigger eventHandler
+		if (bp->isDone) {
+			eventBus.push_back(bp->data); // trigger eventHandler
 		}
 	}
-	virtual void listen() {}
 };
 class SocketClient : public SocketAbs
 {
 private:
-	SOCKET ConnectSocket = INVALID_SOCKET;
 	struct
 		addrinfo* result = NULL,
 		* ptr = NULL,
 		hints;
 
 public:
-	void simple_send(string what) {
-		int res = ::send(ConnectSocket, what.c_str(), what.length(), 0); // Send an initial buffer
-		if (res == SOCKET_ERROR) {
-			printf("send failed with error: %d\n", WSAGetLastError());
-			closesocket(ConnectSocket);
-			return kill();
-		}
-	}
 	void start(string host, string port) {
 		WSADATA wsaData;
 
@@ -158,7 +159,7 @@ public:
 	}
 	void listen() {
 		while (isAlive) { // Receive until the peer closes the connection
-			char recvbuf[DEFAULT_BUFLEN] = {0};
+			char recvbuf[DEFAULT_BUFLEN] = { 0 };
 
 			int res = ::recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
 
@@ -166,11 +167,8 @@ public:
 				onRecv(string(recvbuf));
 
 			else {
-				if (res == 0)
-					printf("Connection closed\n");
-				else
-					printf("recv failed with error: %d\n", WSAGetLastError());
-
+				if (res == 0) printf("Connection closed\n");
+				else printf("recv failed with error: %d\n", WSAGetLastError());
 				break;
 			}
 		}
@@ -180,20 +178,10 @@ public:
 class SocketServer : public SocketAbs
 {
 private:
-	SOCKET
-		ListenSocket = INVALID_SOCKET,
-		ClientSocket = INVALID_SOCKET;
-
+	SOCKET ListenSocket = INVALID_SOCKET;
 	addrinfo* result = NULL;
 
 public:
-	void simple_send(string what) {
-		int res = ::send(ClientSocket, what.c_str(), what.length(), 0);
-		if (res == SOCKET_ERROR) {
-			printf("send failed with error: %d\n", WSAGetLastError());
-			return kill();
-		}
-	}
 	void start(string host, string port) {
 		WSADATA wsaData;
 
@@ -239,12 +227,11 @@ public:
 		new thread(&SocketServer::listen, this);
 	}
 	void acceptForFirstClient() {
-		ClientSocket = accept(ListenSocket, NULL, NULL); // Accept a client socket
-		if (ClientSocket == INVALID_SOCKET) {
+		ConnectSocket = accept(ListenSocket, NULL, NULL); // Accept a client socket
+		if (ConnectSocket == INVALID_SOCKET) {
 			printf("accept failed with error: %d\n", WSAGetLastError());
 			return kill();
 		}
-
 	}
 	void kill() {
 		closesocket(ListenSocket); // No longer need server socket
@@ -266,7 +253,7 @@ public:
 	void listen() {
 		while (isAlive) { // Receive until the peer shuts down the connection
 			char recvbuf[DEFAULT_BUFLEN] = { 0 };
-			int res = ::recv(ClientSocket, recvbuf, DEFAULT_BUFLEN, 0);
+			int res = ::recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
 
 			if (res > 0)
 				onRecv(recvbuf);
