@@ -4,6 +4,7 @@
 #include <string>
 #include <thread>
 #include <map>
+#include <queue>
 #include <iostream>
 
 #include <windows.h>
@@ -24,10 +25,11 @@
 using json = nlohmann::json;
 using namespace std;
 
+// ----------------------------------------------
+
 class SocketAbs {
 protected:
 	map<int, DataPacketReciver*> uncompletedRecvs;
-	vector<json> eventBus;
 
 	void started_hook() {
 		isAlive = true;
@@ -35,10 +37,10 @@ protected:
 	void killed_hook() {
 		isAlive = false;
 	}
-protected:
 	SOCKET ConnectSocket = INVALID_SOCKET;
 
 public:
+	queue<string> eventBus;
 	bool isAlive = false;
 	//void (*userRecvHandler)(string data);
 	//void(*onConnected)() = NULL;
@@ -48,7 +50,7 @@ public:
 	virtual void start(string host, string port) {}
 	virtual void kill() {}
 	virtual void listen() {}
-	
+
 	void simple_send(string what) {
 		int res = ::send(ConnectSocket, what.c_str(), what.length(), 0);
 		if (res == SOCKET_ERROR) {
@@ -82,7 +84,7 @@ public:
 		}
 
 		if (bp->isDone) {
-			eventBus.push_back(bp->data); // trigger eventHandler
+			eventBus.push(bp->data); // trigger eventHandler
 		}
 	}
 };
@@ -236,16 +238,16 @@ public:
 	void kill() {
 		closesocket(ListenSocket); // No longer need server socket
 
-		int iResult = shutdown(ClientSocket, SD_SEND); // shutdown the connection since we're done
+		int iResult = shutdown(ConnectSocket, SD_SEND); // shutdown the connection since we're done
 		if (iResult == SOCKET_ERROR) {
 			printf("shutdown failed with error: %d\n", WSAGetLastError());
-			closesocket(ClientSocket);
+			closesocket(ConnectSocket);
 			WSACleanup();
 		}
 
 		// cleanups
 		freeaddrinfo(result);
-		closesocket(ClientSocket);
+		closesocket(ConnectSocket);
 		WSACleanup();
 
 		killed_hook();
@@ -267,5 +269,58 @@ public:
 			}
 		}
 		kill();
+	}
+};
+
+// ------------------------------------------------
+
+SocketAbs* appSocket = new SocketClient();
+
+using System::Collections::Generic::Dictionary;
+using namespace System;
+using namespace System::Threading;
+
+delegate void JsonReciever(json);
+ref class SocketInterop abstract sealed{
+private:
+	static Dictionary<String^, JsonReciever^>^ eventMap = gcnew Dictionary<String^, JsonReciever^>();
+	static Thread^ eventEmmiterThread;
+
+	static void checkForUpdates() {
+		while (true)
+		{
+			while (!appSocket->eventBus.empty()) {
+				auto data = json::parse(appSocket->eventBus.front());
+				appSocket->eventBus.pop();
+
+				// TODO catch key "event" does not exists
+				trigger(data["event"].get<string>(), data); 
+			}
+
+			Thread::Sleep(20);
+		}
+	}
+	static void trigger(string eventName, json data) {
+		auto en = gcnew String(eventName.c_str());
+
+		if (eventMap->ContainsKey(en))
+			eventMap[en](data);
+	}
+
+public:
+	static void run() {
+		eventEmmiterThread = gcnew Thread(
+			gcnew ThreadStart(SocketInterop::checkForUpdates));
+		
+		eventEmmiterThread->Start();
+	}
+	
+	static void on(string eventName, JsonReciever^ func) {
+		auto en = gcnew String(eventName.c_str());
+		eventMap[en] = func;
+	}
+	static void remove(string eventName) {
+		auto en = gcnew String(eventName.c_str());
+		eventMap->Remove(en);
 	}
 };
