@@ -30,6 +30,7 @@ namespace UI {
 			TimeFormated(sec);
 	}
 
+
 	public ref class Timerrr
 	{
 	private:
@@ -37,11 +38,11 @@ namespace UI {
 		bool isActive = false;
 
 		Thread^ timerThread;
-		Label^ timer = gcnew Label();
+		Label^ timerLable = gcnew Label();
 		int currentTime = 0; // per seconds
 
 		void updateTimeText() {
-			this->timer->Text = secondsToTime(currentTime);
+			timerLable->Text = secondsToTime(currentTime);
 		}
 
 	public:
@@ -50,11 +51,13 @@ namespace UI {
 			this->mainForm = mf;
 
 			// add style to label
-			timer->Location = Point(offsetY, offsetX);
-			timer->AutoSize = true;
+			timerLable->Location = Point(offsetY, offsetX);
+			timerLable->AutoSize = true;
+			timerLable->Font = gcnew Font(
+				L"Guttman-CourMir", 20, FontStyle::Regular, GraphicsUnit::Point, 0);
 
 			// add label to window
-			mf->Controls->Add(timer);
+			mf->Controls->Add(timerLable);
 		}
 
 		void setTime(int secs) { // set currentTime to ginen time (secs: per seconds]
