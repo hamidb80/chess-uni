@@ -38,7 +38,7 @@ namespace UI {
 		ThemeOptions^ theme = gcnew ThemeOptions();
 		ChessBoard^ boardComponent;
 		BoardClass^ boardclass = gcnew BoardClass();
-		Timerrr^ timer;
+		Timerr^ timer;
 
 		void InitializeComponent(void)
 		{
@@ -56,7 +56,7 @@ namespace UI {
 			);
 
 			// init timer
-			timer = gcnew Timerrr(this, offsetX / 2, offsetY / 2);
+			timer = gcnew Timerr(this, offsetX / 2, offsetY / 2);
 
 			// init music player
 			//auto mp = gcnew UI::MusicPlayer(this, 300, 50);

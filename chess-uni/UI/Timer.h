@@ -31,7 +31,7 @@ namespace UI {
 	}
 
 
-	public ref class Timerrr
+	public ref class Timerr
 	{
 	private:
 		Form^ mainForm;
@@ -46,7 +46,7 @@ namespace UI {
 		}
 
 	public:
-		Timerrr(Form^ mf, int offsetX, int offsetY)
+		Timerr(Form^ mf, int offsetX, int offsetY)
 		{
 			this->mainForm = mf;
 
@@ -69,7 +69,7 @@ namespace UI {
 			isActive = true;
 
 			// start timer thread [ it decreases time every seconds ]
-			this->timerThread = gcnew Thread(gcnew ThreadStart(this, &Timerrr::loop));
+			this->timerThread = gcnew Thread(gcnew ThreadStart(this, &Timerr::loop));
 			this->timerThread->Start();
 		}
 		void stop() {
@@ -78,13 +78,13 @@ namespace UI {
 		void reset() {
 			currentTime = 0;
 		}
-		void loop() {
+		void loop(){
 			while (true) {
 				if (!isActive) return;
 
 				try // i dont know why that ridicouless error happens
 				{
-					mainForm->Invoke(gcnew Action(this, &Timerrr::updateTimeText));
+					mainForm->Invoke(gcnew Action(this, &Timerr::updateTimeText));
 
 					if (currentTime != 0)
 						currentTime--;
