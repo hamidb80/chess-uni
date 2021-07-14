@@ -30,7 +30,7 @@ using namespace std;
 class SocketAbs {
 protected:
 	map<int, DataPacketReciver*> uncompletedRecvs;
-
+	// TODO add queue for sending data to avoid data conflict from multplie threads
 	void started_hook() {
 		isAlive = true;
 	}
