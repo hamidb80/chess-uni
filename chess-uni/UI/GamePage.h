@@ -1,22 +1,24 @@
 #pragma once
 
+#include "../include/json.hpp"
+
 #include "Timer.h"
 #include "ChessBoard.h"
+#include "../modules/soc.hpp"
+
+extern SocketAbs *appSocket;
 
 namespace UI {
 	using namespace System;
 	using namespace System::ComponentModel;
-	using namespace System::Collections;
 	using namespace System::Windows::Forms;
-	using namespace System::Data;
 	using namespace System::Drawing;
 	using namespace System::Threading;
 	using DSize = System::Drawing::Size;
 
 	int
 		windowWidth = 1000, windowHeight = 800,
-		offsetX = 50, offsetY = 100
-		;
+		offsetX = 50, offsetY = 100;
 
 	public ref class GamePage : public Form
 	{
@@ -41,7 +43,7 @@ namespace UI {
 		void InitializeComponent(void)
 		{
 			// create window
-			this->Text = L"chess game";
+			this->Text = L"chess";
 			this->Size = DSize(windowWidth, windowHeight);
 			this->BackColor = Color::White;
 
@@ -69,13 +71,22 @@ namespace UI {
 			boardComponent->render();
 		}
 
+		void onHey(json js) {
+			Console::WriteLine(js.dump().c_str());
+		}
 		void OnLoad(Object^ sender, EventArgs^ e) {
+			// register socket events
+			SocketInterop::on("salam", gcnew JsonReciever(this, &GamePage::onHey));
+			SocketInterop::run();
+
 			boardComponent->firstDraw();
 			timer->setTime(5 * 60 * 60);
 			timer->start();
 		}
 		void OnClosed(Object^ sender, FormClosingEventArgs^ e) {
 			timer->stop();
+
+			// remove socket events
 		}
 	};
 }
