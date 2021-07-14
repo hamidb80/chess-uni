@@ -20,7 +20,7 @@ struct AppStates
 	string
 		selectedMusic = "",
 		selectedTheme = "",
-		
+
 		host_name = "",
 		client_name = ""
 		;
@@ -29,10 +29,10 @@ struct AppStates
 		canUndo = Data["canUndo"].get<bool>();
 		showMovePreview = Data["showMovePreview"].get<bool>();
 		showTimer = Data["showTimer"].get<bool>();
-		
+
 		selectedMusic = Data["selectedMusic"].get<string>();
 		selectedTheme = Data["selectedTheme"].get<string>();
-		
+
 		host_name = Data["host_name"].get<string>();
 		client_name = Data["client_name"].get<string>();
 	}

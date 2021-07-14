@@ -137,7 +137,7 @@ namespace UI {
 		}
 		void render() {
 			mainForm->SuspendLayout();
-			
+
 			for (int y = 0; y < 8; y++) {
 				for (int x = 0; x < 8; x++) {
 					auto btn = btns[y * 8 + x];

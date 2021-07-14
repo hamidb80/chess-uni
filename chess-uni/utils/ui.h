@@ -39,19 +39,19 @@ map <BoardBackTheme, vector<MyColor>> BackThemes = {
 map<ChessPieces, string> peiceFileName = {
 	{WhitePawn, "pawn-white.png"},
 	{BlackPawn, "pawn-black.png"},
-	
+
 	{WhiteBishop, "bishop-white.png"},
 	{BlackBishop, "bishop-black.png"},
-	
+
 	{WhiteKing, "king-white.png"},
 	{BlackKing, "king-black.png"},
-	
+
 	{WhiteKnight, "knight-white.png"},
 	{BlackKnight, "knight-black.png"},
-	
+
 	{WhiteQueen, "queen-white.png"},
 	{BlackQueen, "queen-black.png"},
-	
+
 	{WhiteRook, "rook-white.png"},
 	{BlackRook, "rook-black.png"},
 };

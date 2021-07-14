@@ -78,7 +78,7 @@ namespace UI {
 		void reset() {
 			currentTime = 0;
 		}
-		void loop(){
+		void loop() {
 			while (true) {
 				if (!isActive) return;
 

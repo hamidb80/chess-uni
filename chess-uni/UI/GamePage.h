@@ -6,7 +6,7 @@
 #include "ChessBoard.h"
 #include "../modules/soc.hpp"
 
-extern SocketAbs *appSocket;
+extern SocketAbs* appSocket;
 
 namespace UI {
 	using namespace System;
