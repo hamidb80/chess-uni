@@ -62,7 +62,7 @@ enum PieciesThemeStyle {
 	Curly,
 	Pixel,
 };
-map<PieciesThemeStyle, string> PieciesThemeStyleString{
+map<PieciesThemeStyle, string> PieciesThemeStyleString = {
 	{Solid, "solid"},
 	{Curly, "curly"},
 	{Pixel, "pixel"},
@@ -72,7 +72,7 @@ enum PieciesThemeColor {
 	Cyan,
 	Pink,
 };
-map<PieciesThemeColor, string> PieciesThemeColorString{
+map<PieciesThemeColor, string> PieciesThemeColorString = {
 	{Cyan, "cyan"},
 	{Pink, "pink"},
 };

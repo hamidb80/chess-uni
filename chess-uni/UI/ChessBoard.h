@@ -145,9 +145,12 @@ namespace UI {
 
 					// set cell piece image
 					if (piece != Empty) {
+						auto themeStyle = theme->pieciesThemeStyle;
+						auto pieceColor = theme->pieciesThemeColor;
+
 						string imagePath = "themes\\" +
-							PieciesThemeStyleString[theme->pieciesThemeStyle] + "\\" +
-							PieciesThemeColorString[theme->pieciesThemeColor] + "\\" +
+							PieciesThemeStyleString[themeStyle] + "\\" +
+							PieciesThemeColorString[pieceColor] + "\\" +
 							peiceFileName[piece];
 
 						// scale image to fit into the cell
@@ -162,7 +165,8 @@ namespace UI {
 					}
 
 					// set cell color
-					auto backtheme = BackThemes[theme->boardBackTheme];
+					auto selectedBackTheme = theme->boardBackTheme;
+					auto backtheme = BackThemes[selectedBackTheme];
 					MyColor c;
 					if ((x + y) % 2 == 0) c = backtheme[0];
 					else c = backtheme[1];
