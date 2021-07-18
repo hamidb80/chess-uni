@@ -5,6 +5,7 @@
 #include "Timer.h"
 #include "ChessBoard.h"
 #include "../modules/soc.hpp"
+#include "../utils/gameLogic.h"
 
 extern SocketAbs* appSocket;
 
@@ -19,6 +20,9 @@ namespace UI {
 	int
 		windowWidth = 1000, windowHeight = 800,
 		offsetX = 50, offsetY = 100;
+	
+	bool isSelectingCell = false;
+	Point lastSelectedCell;
 
 	public ref class GamePage : public Form
 	{
@@ -67,7 +71,20 @@ namespace UI {
 		}
 
 		void whenClickedOnCell(Point p) {
-			boardclass->movePoints = boardclass->possibleMoves(p);
+			if (isSelectingCell) {
+				if (contains(boardclass->movePoints, p)) {
+					auto removedPiece = boardclass->move(lastSelectedCell, p);
+				}
+
+				boardclass->movePoints->Clear();
+				isSelectingCell = false;
+			}
+			else {
+				isSelectingCell = true;
+				lastSelectedCell = p;
+				boardclass->movePoints = boardclass->possibleMoves(p);
+			}
+		
 			boardComponent->render();
 		}
 

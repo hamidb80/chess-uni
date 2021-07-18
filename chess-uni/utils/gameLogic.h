@@ -2,6 +2,7 @@
 
 using System::Drawing::Point;
 using namespace System;
+using namespace System::Collections::Generic;
 
 enum ChessPieces {
 	Empty = 0,
@@ -34,4 +35,12 @@ cli::array<ChessPieces, 2>^ newBoard() {
 		{ WhitePawn, WhitePawn,WhitePawn,WhitePawn,WhitePawn,WhitePawn,WhitePawn,WhitePawn, },
 		{ WhiteRook, WhiteKnight, WhiteBishop, WhiteQueen, WhiteKing, WhiteBishop, WhiteKnight, WhiteRook },
 	};
+}
+
+bool contains(List<Point>^ list, Point point) {
+	for (int i = 0; i < list->Count; i++)
+		if (list[i] == point)
+			return true;
+
+	return false;
 }

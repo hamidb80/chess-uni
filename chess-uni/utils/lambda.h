@@ -7,6 +7,6 @@ generic<class Type>
 		Type valToPass;
 		Action<Type>^ nextFunc;
 		void func(Object^ sender, EventArgs^ e) {
-			nextFunc(valToPass);
+			nextFunc(valToPass);		
 		}
 	};

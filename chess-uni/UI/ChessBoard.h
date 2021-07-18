@@ -44,7 +44,7 @@ namespace UI {
 			{
 			case Empty:
 				break;
-///////////////////////////PAWN
+				///////////////////////////PAWN
 			case WhitePawn:
 				result->Add(Point(piecePosition.X, piecePosition.Y - 1));
 				result->Add(Point(piecePosition.X, piecePosition.Y - 2));
@@ -53,23 +53,23 @@ namespace UI {
 				result->Add(Point(piecePosition.X, piecePosition.Y + 1));
 				result->Add(Point(piecePosition.X, piecePosition.Y + 2));
 				break;
-////////////////////////////ROOK
+				////////////////////////////ROOK
 			case WhiteRook:
 				int d[8];
 				for (int i = 0; i < 8; i++)
-				{ 
-				result->Add(Point(piecePosition.X, i));
-				result->Add(Point(i , piecePosition.Y ));
+				{
+					result->Add(Point(piecePosition.X, i));
+					result->Add(Point(i, piecePosition.Y));
 				}
 				break;
 			case BlackRook:
 				for (int i = 0; i < 8; i++)
 				{
-				result->Add(Point(piecePosition.X, i));
-				result->Add(Point(i, piecePosition.Y));
+					result->Add(Point(piecePosition.X, i));
+					result->Add(Point(i, piecePosition.Y));
 				}
 				break;
-////////////////////////////KNIGHT
+				////////////////////////////KNIGHT
 
 			case WhiteKnight:
 				if (piecePosition.X + 2 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y - 2 > -1 && piecePosition.X - 2 > -1)
@@ -84,7 +84,7 @@ namespace UI {
 					result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
 					result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
 				}
-				else 
+				else
 				{
 					if (piecePosition.X + 1 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y + 2 > -1 && piecePosition.X + 1 > -1)
 						result->Add(Point(piecePosition.X + 1, piecePosition.Y + 2));
@@ -105,7 +105,7 @@ namespace UI {
 						result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
 
 				}
-			
+
 				break;
 			case BlackKnight:
 				if (piecePosition.X + 2 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y - 2 > -1 && piecePosition.X - 2 > -1)
@@ -151,9 +151,9 @@ namespace UI {
 					for (int j = 0; j < 8; j++)
 					{
 						if (i - piecePosition.X == j - piecePosition.Y)
-						result->Add(Point(i, j));
-						else if (i - piecePosition.X ==   piecePosition.Y -j)
-						result->Add(Point(i, j));
+							result->Add(Point(i, j));
+						else if (i - piecePosition.X == piecePosition.Y - j)
+							result->Add(Point(i, j));
 					}
 				}
 				break;
@@ -163,9 +163,9 @@ namespace UI {
 					for (int j = 0; j < 8; j++)
 					{
 						if (i - piecePosition.X == j - piecePosition.Y)
-						result->Add(Point(i, j));
+							result->Add(Point(i, j));
 						else if (i - piecePosition.X == piecePosition.Y - j)
-						result->Add(Point(i, j));
+							result->Add(Point(i, j));
 					}
 				}
 				break;
@@ -184,7 +184,7 @@ namespace UI {
 					result->Add(Point(i, piecePosition.Y));
 				}
 				break;
-				
+
 			case BlackQueen:
 				for (int i = 0; i < 8; i++)
 				{
@@ -200,14 +200,14 @@ namespace UI {
 				}
 				break;
 
-////////////////////////////KING
+				////////////////////////////KING
 			case WhiteKing:
-				result->Add(Point(piecePosition.X, piecePosition.Y+1));
-				result->Add(Point(piecePosition.X, piecePosition.Y-1));
-				result->Add(Point(piecePosition.X+1, piecePosition.Y ));
+				result->Add(Point(piecePosition.X, piecePosition.Y + 1));
+				result->Add(Point(piecePosition.X, piecePosition.Y - 1));
+				result->Add(Point(piecePosition.X + 1, piecePosition.Y));
 				result->Add(Point(piecePosition.X - 1, piecePosition.Y));
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y+1));
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y-1));
+				result->Add(Point(piecePosition.X + 1, piecePosition.Y + 1));
+				result->Add(Point(piecePosition.X + 1, piecePosition.Y - 1));
 				result->Add(Point(piecePosition.X - 1, piecePosition.Y - 1));
 				result->Add(Point(piecePosition.X - 1, piecePosition.Y + 1));
 				break;
@@ -305,18 +305,15 @@ namespace UI {
 							PieciesThemeColorString[pieceColor] + "\\" +
 							peiceFileName[piece];
 
-						// scale image to fit into the cell
-
-				
-					btn->Image = safe_cast<Image^>(
+						btn->Image = safe_cast<Image^>(
 							gcnew Bitmap(
 								Image::FromFile(currentDir() + gcnew String(imagePath.c_str())),
 								DSize(cellSize * 0.8, cellSize)
 							));
-							
+
 					}
 					else {
-						delete btn->Image;
+						btn->Image = safe_cast<Image^>(gcnew Bitmap(1, 1)); // empty image
 					}
 
 					// set cell color
@@ -335,10 +332,10 @@ namespace UI {
 				auto p = boardclass->movePoints[i];
 				if (0 <= p.Y * 8 + p.X && p.Y * 8 + p.X < 64)
 				{
-				auto btn = btns[p.Y * 8 + p.X];
-				btn->BackColor = Color::SkyBlue;
+					auto btn = btns[p.Y * 8 + p.X];
+					btn->BackColor = Color::SkyBlue;
 				}
-					
+
 			}
 			/// danger points
 			for (int i = 0; i < boardclass->dangerPoints->Count; i++) {
