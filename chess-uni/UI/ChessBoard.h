@@ -72,26 +72,77 @@ namespace UI {
 ////////////////////////////KNIGHT
 
 			case WhiteKnight:
-				result->Add(Point(piecePosition.X+1, piecePosition.Y + 2));
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y - 2));
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y + 2));
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y - 2));
+				if (piecePosition.X + 2 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y - 2 > -1 && piecePosition.X - 2 > -1)
+				{
+					result->Add(Point(piecePosition.X + 1, piecePosition.Y + 2));
+					result->Add(Point(piecePosition.X + 1, piecePosition.Y - 2));
+					result->Add(Point(piecePosition.X - 1, piecePosition.Y + 2));
+					result->Add(Point(piecePosition.X - 1, piecePosition.Y - 2));
 
-				result->Add(Point(piecePosition.X + 2, piecePosition.Y + 1));
-				result->Add(Point(piecePosition.X + 2, piecePosition.Y - 1));
-				result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
-				result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
+					result->Add(Point(piecePosition.X + 2, piecePosition.Y + 1));
+					result->Add(Point(piecePosition.X + 2, piecePosition.Y - 1));
+					result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
+					result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
+				}
+				else 
+				{
+					if (piecePosition.X + 1 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y + 2 > -1 && piecePosition.X + 1 > -1)
+						result->Add(Point(piecePosition.X + 1, piecePosition.Y + 2));
+					if (piecePosition.X + 1 < 8 && piecePosition.Y - 2 < 8 && piecePosition.Y - 2 > -1 && piecePosition.X + 1 > -1)
+						result->Add(Point(piecePosition.X + 1, piecePosition.Y - 2));
+					if (piecePosition.X - 1 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y + 2 > -1 && piecePosition.X - 1 > -1)
+						result->Add(Point(piecePosition.X - 1, piecePosition.Y + 2));
+					if (piecePosition.X - 1 < 8 && piecePosition.Y - 2 < 8 && piecePosition.Y - 2 > -1 && piecePosition.X - 1 > -1)
+						result->Add(Point(piecePosition.X - 1, piecePosition.Y - 2));
+
+					if (piecePosition.X + 2 < 8 && piecePosition.Y + 1 < 8 && piecePosition.Y + 1 > -1 && piecePosition.X + 2 > -1)
+						result->Add(Point(piecePosition.X + 2, piecePosition.Y + 1));
+					if (piecePosition.X + 2 < 8 && piecePosition.Y - 1 < 8 && piecePosition.Y - 1 > -1 && piecePosition.X + 2 > -1)
+						result->Add(Point(piecePosition.X + 2, piecePosition.Y - 1));
+					if (piecePosition.X - 2 < 8 && piecePosition.Y + 1 < 8 && piecePosition.Y + 1 > -1 && piecePosition.X - 2 > -1)
+						result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
+					if (piecePosition.X - 2 < 8 && piecePosition.Y - 1 < 8 && piecePosition.Y - 1 > -1 && piecePosition.X - 2 > -1)
+						result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
+
+				}
+			
 				break;
 			case BlackKnight:
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y + 2));
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y - 2));
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y + 2));
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y - 2));
+				if (piecePosition.X + 2 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y - 2 > -1 && piecePosition.X - 2 > -1)
+				{
+					result->Add(Point(piecePosition.X + 1, piecePosition.Y + 2));
+					result->Add(Point(piecePosition.X + 1, piecePosition.Y - 2));
+					result->Add(Point(piecePosition.X - 1, piecePosition.Y + 2));
+					result->Add(Point(piecePosition.X - 1, piecePosition.Y - 2));
 
-				result->Add(Point(piecePosition.X + 2, piecePosition.Y + 1));
-				result->Add(Point(piecePosition.X + 2, piecePosition.Y - 1));
-				result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
-				result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
+					result->Add(Point(piecePosition.X + 2, piecePosition.Y + 1));
+					result->Add(Point(piecePosition.X + 2, piecePosition.Y - 1));
+					result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
+					result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
+				}
+				else
+				{
+					if (piecePosition.X + 1 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y + 2 > -1 && piecePosition.X + 1 > -1)
+						result->Add(Point(piecePosition.X + 1, piecePosition.Y + 2));
+					if (piecePosition.X + 1 < 8 && piecePosition.Y - 2 < 8 && piecePosition.Y - 2 > -1 && piecePosition.X + 1 > -1)
+						result->Add(Point(piecePosition.X + 1, piecePosition.Y - 2));
+					if (piecePosition.X - 1 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y + 2 > -1 && piecePosition.X - 1 > -1)
+						result->Add(Point(piecePosition.X - 1, piecePosition.Y + 2));
+					if (piecePosition.X - 1 < 8 && piecePosition.Y - 2 < 8 && piecePosition.Y - 2 > -1 && piecePosition.X - 1 > -1)
+						result->Add(Point(piecePosition.X - 1, piecePosition.Y - 2));
+
+					if (piecePosition.X + 2 < 8 && piecePosition.Y + 1 < 8 && piecePosition.Y + 1 > -1 && piecePosition.X + 2 > -1)
+						result->Add(Point(piecePosition.X + 2, piecePosition.Y + 1));
+					if (piecePosition.X + 2 < 8 && piecePosition.Y - 1 < 8 && piecePosition.Y - 1 > -1 && piecePosition.X + 2 > -1)
+						result->Add(Point(piecePosition.X + 2, piecePosition.Y - 1));
+					if (piecePosition.X - 2 < 8 && piecePosition.Y + 1 < 8 && piecePosition.Y + 1 > -1 && piecePosition.X - 2 > -1)
+						result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
+					if (piecePosition.X - 2 < 8 && piecePosition.Y - 1 < 8 && piecePosition.Y - 1 > -1 && piecePosition.X - 2 > -1)
+						result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
+
+				}
+
+
 				break;
 
 			case WhiteBishop:
@@ -104,7 +155,6 @@ namespace UI {
 						else if (i - piecePosition.X ==   piecePosition.Y -j)
 						result->Add(Point(i, j));
 					}
-
 				}
 				break;
 			case BlackBishop:
@@ -121,8 +171,33 @@ namespace UI {
 				break;
 
 			case WhiteQueen:
+				for (int i = 0; i < 8; i++)
+				{
+					for (int j = 0; j < 8; j++)
+					{
+						if (i - piecePosition.X == j - piecePosition.Y)
+							result->Add(Point(i, j));
+						else if (i - piecePosition.X == piecePosition.Y - j)
+							result->Add(Point(i, j));
+					}
+					result->Add(Point(piecePosition.X, i));
+					result->Add(Point(i, piecePosition.Y));
+				}
+				break;
 				
 			case BlackQueen:
+				for (int i = 0; i < 8; i++)
+				{
+					for (int j = 0; j < 8; j++)
+					{
+						if (i - piecePosition.X == j - piecePosition.Y)
+							result->Add(Point(i, j));
+						else if (i - piecePosition.X == piecePosition.Y - j)
+							result->Add(Point(i, j));
+					}
+					result->Add(Point(piecePosition.X, i));
+					result->Add(Point(i, piecePosition.Y));
+				}
 				break;
 
 ////////////////////////////KING
