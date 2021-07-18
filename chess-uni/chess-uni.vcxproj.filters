@@ -74,6 +74,9 @@
     <ClInclude Include="utils\gameLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UI\MusicPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Interop\AxInterop.WMPLib.1.0.dll" />
