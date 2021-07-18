@@ -31,44 +31,41 @@ class SocketAbs {
 protected:
 	map<int, DataPacketReciver*> uncompletedRecvs;
 	// TODO add queue for sending data to avoid data conflict from multplie threads
+	// TODO add connected and disconnected event
 	void started_hook() {
 		isAlive = true;
+		new thread(&SocketAbs::sendThread, this);
 	}
 	void killed_hook() {
 		isAlive = false;
 	}
 	SOCKET ConnectSocket = INVALID_SOCKET;
 
-public:
-	queue<string> eventBus;
-	bool isAlive = false;
-	//void (*userRecvHandler)(string data);
-	//void(*onConnected)() = NULL;
-	//void(*onDisconnected)() = NULL;
-	//void (*onRecvComplete)(string data);
+	void sendThread() {
+		while (true)
+		{
+			while (!sendQueue.empty())
+			{
+				auto bps = DataPacketSender(JSON, sendQueue.front());
+				sendQueue.pop();
 
-	virtual void start(string host, string port) {}
-	virtual void kill() {}
-	virtual void listen() {}
+				while (!bps.isDone()) {
+					simpleLowLevel(bps.getNextBuffer());
+				}
+			}
 
-	void simple_send(string what) {
+			Thread::Sleep(100); // wait for 100 ms	
+		}
+	}
+	void simpleLowLevel(string what) {
 		int res = ::send(ConnectSocket, what.c_str(), what.length(), 0);
 		if (res == SOCKET_ERROR) {
 			printf("send failed with error: %d\n", WSAGetLastError());
 			return kill();
 		}
 	}
-	void send(string what) {
-		auto bps = DataPacketSender(JSON, what);
 
-		while (!bps.isDone()) {
-			this->simple_send(bps.getNextBuffer());
-		}
-	}
-	void sendBeat() {
-		auto bps = DataPacketSender(HEARTBEAT, "");
-		this->simple_send(bps.getNextBuffer());
-	}
+protected:
 	void onRecv(string what) {
 		auto bp = new DataPacketReciver(what);
 
@@ -87,6 +84,39 @@ public:
 			eventBus.push(bp->data); // trigger eventHandler
 		}
 	}
+	void listen() {
+		while (isAlive) { // Receive until the peer closes the connection
+			char recvbuf[DEFAULT_BUFLEN] = { 0 };
+
+			int res = ::recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
+
+			if (res > 0)
+				onRecv(string(recvbuf));
+
+			else {
+				if (res == 0) printf("Connection closed\n");
+				else printf("recv failed with error: %d\n", WSAGetLastError());
+				break;
+			}
+		}
+		//kill();
+	}
+
+public:
+	queue<string> sendQueue;
+	queue<string> eventBus;
+	bool isAlive = false;
+
+	virtual void start(string host, string port) {}
+	virtual void kill() {}
+
+	void send(string what) {
+		sendQueue.push(what);
+	}
+	//void sendBeat() {
+	//	auto bps = DataPacketSender(HEARTBEAT, "");
+	//	this->addToSendQueue(bps.getNextBuffer());
+	//}
 };
 class SocketClient : public SocketAbs
 {
@@ -158,23 +188,6 @@ public:
 		WSACleanup();
 
 		killed_hook();
-	}
-	void listen() {
-		while (isAlive) { // Receive until the peer closes the connection
-			char recvbuf[DEFAULT_BUFLEN] = { 0 };
-
-			int res = ::recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
-
-			if (res > 0)
-				onRecv(string(recvbuf));
-
-			else {
-				if (res == 0) printf("Connection closed\n");
-				else printf("recv failed with error: %d\n", WSAGetLastError());
-				break;
-			}
-		}
-		//kill();
 	}
 };
 class SocketServer : public SocketAbs
@@ -252,24 +265,6 @@ public:
 
 		killed_hook();
 	}
-	void listen() {
-		while (isAlive) { // Receive until the peer shuts down the connection
-			char recvbuf[DEFAULT_BUFLEN] = { 0 };
-			int res = ::recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
-
-			if (res > 0)
-				onRecv(recvbuf);
-
-			else {
-				if (res == 0)
-					printf("Connection closing...\n");
-				else
-					printf("recv failed with error: %d\n", WSAGetLastError());
-				break;
-			}
-		}
-		kill();
-	}
 };
 
 // ------------------------------------------------
@@ -281,7 +276,7 @@ using namespace System;
 using namespace System::Threading;
 
 delegate void JsonReciever(json);
-ref class SocketInterop abstract sealed{
+ref class SocketInterop abstract sealed {
 private:
 	static Dictionary<String^, JsonReciever^>^ eventMap = gcnew Dictionary<String^, JsonReciever^>();
 	static Thread^ eventEmmiterThread;
@@ -294,7 +289,7 @@ private:
 				appSocket->eventBus.pop();
 
 				// TODO catch key "event" does not exists
-				trigger(data["event"].get<string>(), data); 
+				trigger(data["event"].get<string>(), data);
 			}
 
 			Thread::Sleep(20);
@@ -311,10 +306,12 @@ public:
 	static void run() {
 		eventEmmiterThread = gcnew Thread(
 			gcnew ThreadStart(SocketInterop::checkForUpdates));
-		
+
 		eventEmmiterThread->Start();
 	}
-	
+	static void send(string what) {
+		appSocket->send(what);
+	}
 	static void on(string eventName, JsonReciever^ func) {
 		auto en = gcnew String(eventName.c_str());
 		eventMap[en] = func;
