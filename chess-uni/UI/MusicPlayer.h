@@ -1,6 +1,5 @@
 #pragma once
 namespace chessuni {
-
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
@@ -9,12 +8,9 @@ namespace chessuni {
 	using namespace System::Drawing;
 	using namespace System::Text;
 	using namespace System::IO;
-   #define yMusic 500
-   #define xMusic 35
+#define yMusic 500
+#define xMusic 35
 
-	/// <summary>
-	/// Summary for musicPlayer
-	/// </summary>
 	public ref class musicPlayer
 	{
 	public:
@@ -34,12 +30,6 @@ namespace chessuni {
 		}
 		void show() {}
 
-	protected:
-		~musicPlayer()
-		{
-			if (components)
-				delete components;
-		}
 	private: AxWMPLib::AxWindowsMediaPlayer^ axWindowsMediaPlayer1;
 	private: System::Windows::Forms::Panel^ panel1;
 
@@ -79,7 +69,7 @@ namespace chessuni {
 			// axWindowsMediaPlayer1
 			// 
 			this->axWindowsMediaPlayer1->Enabled = true;
-			this->axWindowsMediaPlayer1->Location = System::Drawing::Point(2+xMusic, 51+yMusic); //2 , 51
+			this->axWindowsMediaPlayer1->Location = System::Drawing::Point(2 + xMusic, 51 + yMusic); //2 , 51
 			this->axWindowsMediaPlayer1->Name = L"axWindowsMediaPlayer1";
 			this->axWindowsMediaPlayer1->OcxState = (cli::safe_cast<System::Windows::Forms::AxHost::State^>(resources->GetObject(L"axWindowsMediaPlayer1.OcxState")));
 			this->axWindowsMediaPlayer1->Size = System::Drawing::Size(523, 45);
@@ -90,7 +80,7 @@ namespace chessuni {
 			this->panel1->BackColor = System::Drawing::Color::DarkTurquoise;
 			this->panel1->Controls->Add(this->lblLogo);
 			this->panel1->Controls->Add(this->pictureBox1);
-			this->panel1->Location = System::Drawing::Point(2+xMusic, 4+yMusic);
+			this->panel1->Location = System::Drawing::Point(2 + xMusic, 4 + yMusic);
 			this->panel1->Name = L"panel1";
 			this->panel1->Size = System::Drawing::Size(523, 42);
 			this->panel1->TabIndex = 1;
@@ -100,7 +90,7 @@ namespace chessuni {
 			this->lblLogo->AutoSize = true;
 			this->lblLogo->Font = (gcnew System::Drawing::Font(L"Stylus BT", 14.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->lblLogo->Location = System::Drawing::Point(55+xMusic, 8+yMusic);
+			this->lblLogo->Location = System::Drawing::Point(55 + xMusic, 8 + yMusic);
 			this->lblLogo->Name = L"lblLogo";
 			this->lblLogo->Size = System::Drawing::Size(58, 23);
 			this->lblLogo->TabIndex = 6;
@@ -109,7 +99,7 @@ namespace chessuni {
 			// pictureBox1
 			// 
 			this->pictureBox1->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.Image")));
-			this->pictureBox1->Location = System::Drawing::Point(3+xMusic, 2+yMusic);
+			this->pictureBox1->Location = System::Drawing::Point(3 + xMusic, 2 + yMusic);
 			this->pictureBox1->Name = L"pictureBox1";
 			this->pictureBox1->Size = System::Drawing::Size(49, 39);
 			this->pictureBox1->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
@@ -121,7 +111,7 @@ namespace chessuni {
 			this->btnSelectSongs->BackColor = System::Drawing::Color::PeachPuff;
 			this->btnSelectSongs->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->btnSelectSongs->ForeColor = System::Drawing::Color::SaddleBrown;
-			this->btnSelectSongs->Location = System::Drawing::Point(529+xMusic, 75+yMusic);
+			this->btnSelectSongs->Location = System::Drawing::Point(529 + xMusic, 75 + yMusic);
 			this->btnSelectSongs->Name = L"btnSelectSongs";
 			this->btnSelectSongs->Size = System::Drawing::Size(120, 23);
 			this->btnSelectSongs->TabIndex = 3;
@@ -132,7 +122,7 @@ namespace chessuni {
 			// listBoxSongs
 			// 
 			this->listBoxSongs->FormattingEnabled = true;
-			this->listBoxSongs->Location = System::Drawing::Point(529+xMusic, 2+yMusic);
+			this->listBoxSongs->Location = System::Drawing::Point(529 + xMusic, 2 + yMusic);
 			this->listBoxSongs->Name = L"listBoxSongs";
 			this->listBoxSongs->Size = System::Drawing::Size(120, 69);
 			this->listBoxSongs->TabIndex = 4;
@@ -157,8 +147,8 @@ namespace chessuni {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 		}
 #pragma endregion
-		array< String^ >^ fileName = gcnew array< String^ >(10);
-		array< String^ >^ paths = gcnew array< String^ >(10);
+		array<String^>^ fileName = gcnew array< String^ >(10);
+		array<String^>^ paths = gcnew array< String^ >(10);
 
 	private:
 		System::Void BtnSelectSongs_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -179,15 +169,10 @@ namespace chessuni {
 				{
 					listBoxSongs->Items->Add(fileName[i]);
 				}
-
-
 			}
 			else
 			{
 			}
-
-
-
 
 		}
 		System::Void ListBoxSongs_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
