@@ -30,10 +30,9 @@ namespace UI {
 			if (components)
 				delete components;
 		}
-	private:
-		Button^ button1;
-		Button^ button2;
-		Label^ label1;
+	private: System::Windows::Forms::Button^ button1;
+	private: System::Windows::Forms::Button^ button2;
+	private: System::Windows::Forms::Label^ label1;
 
 	private:
 		System::ComponentModel::Container^ components;

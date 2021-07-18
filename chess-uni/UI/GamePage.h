@@ -98,7 +98,7 @@ namespace UI {
 			SocketInterop::run();
 
 			boardComponent->firstDraw();
-			timer->setTime(5 * 60 * 60);
+			timer->setTime(1 * 60 * 60);
 			timer->start();
 		}
 		void OnClosed(Object^ sender, FormClosingEventArgs^ e) {

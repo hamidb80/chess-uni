@@ -1,6 +1,7 @@
 #include "UI/GamePage.h"
 #include "UI/MusicPlayer.h"
 #include "UI/IntroPage.h"
+#include "UI/WaitRoom.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -18,7 +19,8 @@ void main(){
 	else
 		appSocket = new SocketClient();
 	
-
+	//UI::WaitRoom waitForm;
+	//Application::Run(% waitForm);
 
 	UI::GamePage form;
 	Application::Run(% form);

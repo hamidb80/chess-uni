@@ -139,6 +139,9 @@
     <ClInclude Include="UI\IntroPage.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="UI\WaitRoom.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="UI\Timer.h" />
     <ClInclude Include="utils\event.hpp" />
     <ClInclude Include="utils\fileio.h" />
@@ -174,6 +177,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="musicPlayer.resx" />
+    <EmbeddedResource Include="UI\WaitRoom.resx">
+      <DependentUpon>UI\WaitRoom.h</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
