@@ -9,7 +9,12 @@ namespace UI {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
-	bool* isServer = new bool(false);
+	enum UserRoles {
+		NotSetRole,
+		ServerRole,
+		ClientRole,
+	};
+	UserRoles* userRole = new UserRoles(NotSetRole);
 
 	public ref class IntroPage : public System::Windows::Forms::Form
 	{
@@ -81,18 +86,24 @@ namespace UI {
 			this->Controls->Add(this->button1);
 			this->Name = L"Intro";
 			this->Text = L"Intro";
+			this->FormClosing += gcnew FormClosingEventHandler(this, &IntroPage::onClosingForm);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 		}
-	
+
 	private:
 		Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-			*isServer = true;
+			*userRole = ServerRole;
 			this->Close();
 		}
 		Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
-			*isServer = false;
+			*userRole = ClientRole;
 			this->Close();
+		}
+
+		Void onClosingForm(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e) {
+			if (*userRole == NotSetRole)
+				e->Cancel = true;
 		}
 	};
 }

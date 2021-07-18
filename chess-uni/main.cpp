@@ -13,11 +13,13 @@ void main(){
 	UI::IntroPage inp;
 	Application::Run(% inp);
 
-	if (UI::isServer)
+	if (*UI::userRole == UI::ServerRole)
 		appSocket = new SocketServer();
 	else
 		appSocket = new SocketClient();
 	
+
+
 	UI::GamePage form;
 	Application::Run(% form);
 }
