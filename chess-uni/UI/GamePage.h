@@ -4,6 +4,7 @@
 
 #include "Timer.h"
 #include "ChessBoard.h"
+#include "MusicPlayer.h"
 #include "../modules/soc.hpp"
 #include "../utils/gameLogic.h"
 
@@ -18,8 +19,8 @@ namespace UI {
 	using DSize = System::Drawing::Size;
 
 	int
-		windowWidth = 1000, windowHeight = 800,
-		offsetX = 50, offsetY = 100;
+		windowWidth = 1000, windowHeight = 840,
+		offsetX = 50, offsetY = 140;
 	
 	bool isSelectingCell = false;
 	Point lastSelectedCell;
@@ -62,8 +63,8 @@ namespace UI {
 			// init timer
 			timer = gcnew Timerr(this, offsetX / 2, offsetY / 2);
 
-			// init music player
-			//auto mp = gcnew UI::MusicPlayer(this, 300, 50);
+			 //init music player
+			auto mp = gcnew chessuni::musicPlayer(this->Controls, 200, 20);
 
 			// set form events
 			this->Load += gcnew EventHandler(this, &GamePage::OnLoad);

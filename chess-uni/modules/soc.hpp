@@ -54,7 +54,7 @@ protected:
 				}
 			}
 
-			Thread::Sleep(100); // wait for 100 ms	
+			this_thread::sleep_for(10ms);
 		}
 	}
 	void simpleLowLevel(string what) {

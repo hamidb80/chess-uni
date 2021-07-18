@@ -8,14 +8,14 @@ namespace chessuni {
 	using namespace System::Drawing;
 	using namespace System::Text;
 	using namespace System::IO;
-#define yMusic 500
-#define xMusic 35
-
 	public ref class musicPlayer
 	{
 	public:
 		Control::ControlCollection^ Controls;
-		musicPlayer(Control::ControlCollection^ cntrl)
+		int yMusic, xMusic;
+
+		musicPlayer(Control::ControlCollection^ cntrl, int offx, int offy) :
+		xMusic(offx), yMusic(offy)
 		{
 			Controls = cntrl;
 			InitializeComponent();
@@ -147,8 +147,8 @@ namespace chessuni {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 		}
 #pragma endregion
-		array<String^>^ fileName = gcnew array< String^ >(10);
-		array<String^>^ paths = gcnew array< String^ >(10);
+		cli::array<String^>^ fileName = gcnew cli::array< String^ >(10);
+		cli::array<String^>^ paths = gcnew cli::array< String^ >(10);
 
 	private:
 		System::Void BtnSelectSongs_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -173,7 +173,6 @@ namespace chessuni {
 			else
 			{
 			}
-
 		}
 		System::Void ListBoxSongs_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
 			axWindowsMediaPlayer1->URL = paths[listBoxSongs->SelectedIndex];
