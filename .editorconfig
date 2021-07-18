@@ -1,0 +1,5 @@
+# Rules in this file were initially inferred by Visual Studio IntelliCode from the C:\Users\HamidB80\source\repos\chess-uni codebase based on best match to current usage at 6/14/2021
+# You can modify the rules from these initially generated values to suit your own policies
+# You can learn more about editorconfig here: https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference
+[*.cs]
+
