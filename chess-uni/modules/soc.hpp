@@ -269,7 +269,7 @@ public:
 
 // ------------------------------------------------
 
-SocketAbs* appSocket = new SocketClient();
+SocketAbs* appSocket;
 
 using System::Collections::Generic::Dictionary;
 using namespace System;

@@ -1,5 +1,6 @@
 #include "UI/GamePage.h"
 #include "UI/MusicPlayer.h"
+#include "UI/IntroPage.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -8,6 +9,15 @@ using namespace System::Windows::Forms;
 void main(){
 	Application::SetCompatibleTextRenderingDefault(false);
 	Application::EnableVisualStyles();
-	UI::GamePage frm;
-	Application::Run(% frm);
+	
+	UI::IntroPage inp;
+	Application::Run(% inp);
+
+	if (UI::isServer)
+		appSocket = new SocketServer();
+	else
+		appSocket = new SocketClient();
+	
+	UI::GamePage form;
+	Application::Run(% form);
 }
