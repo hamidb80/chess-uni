@@ -6,30 +6,26 @@
 
 using namespace std;
 
-enum FileType { HEARTBEAT, JSON };
-
 class DataPacket {
 protected:
-	/// packetId<16> fileType<1> isEnd?<1> data<...rest>
+	/// packetId<16> isEnd?<1> data<...rest>
 	const int
-		chunkHeaderSize = 16 + 1 + 1,
+		chunkHeaderSize = 16 + 1,
 		purePacketSize = DEFAULT_BUFLEN - chunkHeaderSize;
 
 public:
-	FileType fileType;
 	int packetId;
 	string data;
 };
 class DataPacketSender : public DataPacket {
 private:
-	/// packetId<16> fileType<1> isEnd?<1> data<...rest>
+	/// packetId<16> isEnd?<1> data<...rest>
 	int lastCursorPosition = 0;
 
 public:
-	DataPacketSender(FileType ft, string d)
+	DataPacketSender(string d)
 	{
 		packetId = freakin_random_number();
-		fileType = ft;
 		data = d;
 	}
 
@@ -41,7 +37,6 @@ public:
 
 		string buffer =
 			binaryRepr<16>(packetId) +
-			binaryRepr<1>(fileType) +
 			binaryRepr<1>(isDone(purePacketSize)) +
 			data.substr(lastCursorPosition, purePacketSize);
 
@@ -53,7 +48,7 @@ class DataPacketReciver : public DataPacket {
 public:
 	bool isDone;
 
-	/// packetId<16> fileType<1> isEnd?<1> data<...rest>
+	/// packetId<16> isEnd?<1> data<...rest>
 	DataPacketReciver(string currentData) {
 		string temp;
 
@@ -61,12 +56,9 @@ public:
 		packetId = stoi(temp, 0, 2);
 
 		temp = currentData.substr(16, 1);
-		fileType = FileType(stoi(temp, 0, 2));
-
-		temp = currentData.substr(17, 1);
 		isDone = stoi(temp, 0, 2);
 
-		data = currentData.substr(18, purePacketSize);
+		data = currentData.substr(17, purePacketSize);
 	}
 
 	void append(DataPacketReciver& another) {

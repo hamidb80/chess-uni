@@ -61,10 +61,6 @@ protected:
 			return kill();
 		}
 	}
-	void sendBeat() {
-		auto bps = DataPacketSender(HEARTBEAT, "");
-		this->sendLowLevel(bps.getNextBuffer());
-	}
 	void onRecv(string what) {
 		auto bp = new DataPacketReciver(what);
 
@@ -88,7 +84,7 @@ protected:
 		{
 			while (!sendQueue.empty())
 			{
-				auto bps = DataPacketSender(JSON, sendQueue.front());
+				auto bps = DataPacketSender(sendQueue.front());
 				sendQueue.pop();
 
 				while (!bps.isDone()) {
