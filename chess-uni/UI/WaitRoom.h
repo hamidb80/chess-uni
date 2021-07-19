@@ -116,7 +116,8 @@ namespace UI {
 		void onConnect(json data) {
 			Console::WriteLine("connected");
 			SocketInterop::remove("connect");
-			this->Close();
+			this->isActive = false;
+			this->Invoke(gcnew Action(this, &WaitRoom::Close)); // close via another thread
 		}
 
 		Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
@@ -133,7 +134,7 @@ namespace UI {
 			label3->Text = gcnew String(s.c_str());
 		}
 		Void loop() {
-			while (isActive) {
+			while (this->isActive) {
 				this->Invoke(gcnew Action(this, &WaitRoom::updateLoading));
 
 				counter++;
