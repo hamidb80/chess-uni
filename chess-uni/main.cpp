@@ -19,8 +19,10 @@ void main(){
 	else
 		appSocket = new SocketClient();
 	
-	//UI::WaitRoom waitForm;
-	//Application::Run(% waitForm);
+	SocketInterop::run();
+
+	UI::WaitRoom waitForm;
+	Application::Run(% waitForm);
 
 	UI::GamePage form;
 	Application::Run(% form);

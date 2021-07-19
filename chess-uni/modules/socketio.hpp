@@ -30,17 +30,25 @@ using namespace std;
 class SocketAbs {
 protected:
 	map<int, DataPacketReciver*> uncompletedRecvs;
-	// TODO add queue for sending data to avoid data conflict from multplie threads
-	// TODO add connected and disconnected event
+	SOCKET ConnectSocket = INVALID_SOCKET;
+	thread* background;
+
+public:
+	queue<string> sendQueue;
+	queue<string> eventBus;
+	bool isAlive = false;
+
+protected:
 	void started_hook() {
 		isAlive = true;
 		new thread(&SocketAbs::sendThread, this);
+		eventBus.push(json{ {"eventName", "connect"} });
 	}
 	void killed_hook() {
 		isAlive = false;
+		eventBus.push(json{ {"eventName", "disconnect"} });
 	}
-	SOCKET ConnectSocket = INVALID_SOCKET;
-
+	
 	void sendThread() {
 		while (true)
 		{
@@ -50,22 +58,20 @@ protected:
 				sendQueue.pop();
 
 				while (!bps.isDone()) {
-					simpleLowLevel(bps.getNextBuffer());
+					sendLowLevel(bps.getNextBuffer());
 				}
 			}
 
 			this_thread::sleep_for(10ms);
 		}
 	}
-	void simpleLowLevel(string what) {
+	void sendLowLevel(string what) {
 		int res = ::send(ConnectSocket, what.c_str(), what.length(), 0);
 		if (res == SOCKET_ERROR) {
 			printf("send failed with error: %d\n", WSAGetLastError());
 			return kill();
 		}
 	}
-
-protected:
 	void onRecv(string what) {
 		auto bp = new DataPacketReciver(what);
 
@@ -103,20 +109,13 @@ protected:
 	}
 
 public:
-	queue<string> sendQueue;
-	queue<string> eventBus;
-	bool isAlive = false;
-
 	virtual void start(string host, string port) {}
 	virtual void kill() {}
-
+	
+	virtual void run(string host ="localhost", string port="9897") {}
 	void send(string what) {
 		sendQueue.push(what);
 	}
-	//void sendBeat() {
-	//	auto bps = DataPacketSender(HEARTBEAT, "");
-	//	this->addToSendQueue(bps.getNextBuffer());
-	//}
 };
 class SocketClient : public SocketAbs
 {
@@ -170,9 +169,10 @@ public:
 			printf("Unable to connect to server!\n");
 			return kill();
 		}
-
+		// TODO try again
+		
 		started_hook();
-		new thread(&SocketClient::listen, this);
+		listen();
 	}
 	void kill() {
 		int iResult = shutdown(ConnectSocket, SD_SEND); // shutdown the connection since no more data will be sent
@@ -188,6 +188,9 @@ public:
 		WSACleanup();
 
 		killed_hook();
+	}
+	void run(string host = "localhost", string port = "9897") {
+		background = new thread(&SocketClient::start, this, host, port);
 	}
 };
 class SocketServer : public SocketAbs
@@ -236,10 +239,11 @@ public:
 			return kill();
 		}
 
-		started_hook();
+		
 		acceptForFirstClient();
+		started_hook();
 
-		new thread(&SocketServer::listen, this);
+		listen();
 	}
 	void acceptForFirstClient() {
 		ConnectSocket = accept(ListenSocket, NULL, NULL); // Accept a client socket
@@ -265,15 +269,19 @@ public:
 
 		killed_hook();
 	}
+	void run(string host = "localhost", string port = "9897") {
+		background = new thread(&SocketServer::start, this, host, port);
+	}
 };
 
 // ------------------------------------------------
 
 SocketAbs* appSocket;
 
-using System::Collections::Generic::Dictionary;
+
 using namespace System;
 using namespace System::Threading;
+using System::Collections::Generic::Dictionary;
 
 delegate void JsonReciever(json);
 ref class SocketInterop abstract sealed {
@@ -308,9 +316,11 @@ public:
 			gcnew ThreadStart(SocketInterop::checkForUpdates));
 
 		eventEmmiterThread->Start();
+		appSocket->run();
 	}
-	static void send(string what) {
-		appSocket->send(what);
+	static void send(string event, json data) {
+		data["eventName"] = event;
+		appSocket->send(data.dump());
 	}
 	static void on(string eventName, JsonReciever^ func) {
 		auto en = gcnew String(eventName.c_str());
@@ -320,4 +330,8 @@ public:
 		auto en = gcnew String(eventName.c_str());
 		eventMap->Remove(en);
 	}
+	//void sendBeat() {
+	//	auto bps = DataPacketSender(HEARTBEAT, "");
+	//	this->addToSendQueue(bps.getNextBuffer());
+	//}
 };

@@ -4,7 +4,7 @@
 #include "Timer.h"
 #include "ChessBoard.h"
 #include "MusicPlayer.h"
-#include "../modules/soc.hpp"
+#include "../modules/socketio.hpp"
 #include "../utils/gameLogic.h"
 
 extern SocketAbs* appSocket;
