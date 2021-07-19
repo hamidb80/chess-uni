@@ -1,5 +1,4 @@
 #pragma once
-
 #include "../include/json.hpp"
 
 #include "Timer.h"
@@ -71,7 +70,7 @@ namespace UI {
 			this->Load += gcnew EventHandler(this, &GamePage::OnLoad);
 			this->FormClosing += gcnew FormClosingEventHandler(this, &GamePage::OnClosed);
 		}
-
+		
 		void whenClickedOnCell(Point p) {
 			if (isSelectingCell) {
 				if (contains(boardclass->movePoints, p)) {
@@ -89,14 +88,12 @@ namespace UI {
 		
 			boardComponent->render();
 		}
-
-		void onHey(json js) {
+		void onMove(json js) {
 			Console::WriteLine(js.dump().c_str());
 		}
 		void OnLoad(Object^ sender, EventArgs^ e) {
 			// register socket events
-			SocketInterop::on("salam", gcnew JsonReciever(this, &GamePage::onHey));
-			SocketInterop::run();
+			SocketInterop::on("move", gcnew JsonReciever(this, &GamePage::onMove));
 
 			boardComponent->firstDraw();
 			timer->setTime(1 * 60 * 60);
