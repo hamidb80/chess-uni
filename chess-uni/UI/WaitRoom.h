@@ -46,8 +46,6 @@ namespace UI {
 		Thread^ timerThread;
 
 	private: System::Windows::Forms::ColorDialog^ colorDialog1;
-		   bool isActive = true;
-
 
 #pragma region Windows Form Designer generated code
 		   /// <summary>
@@ -115,13 +113,11 @@ namespace UI {
 	private:
 		void onConnect(json data) {
 			Console::WriteLine("connected");
-			SocketInterop::remove("connect");
-			this->isActive = false;
 			this->Invoke(gcnew Action(this, &WaitRoom::Close)); // close via another thread
 		}
 
 		Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
-			this->timerThread = gcnew Thread(gcnew ThreadStart(this, &WaitRoom::loop));
+			this->timerThread = gcnew Thread(gcnew ThreadStart(this, &WaitRoom::loadingLoop));
 			this->timerThread->Start();
 
 			SocketInterop::on("connect", gcnew JsonReciever(this, &WaitRoom::onConnect));
@@ -133,8 +129,8 @@ namespace UI {
 
 			label3->Text = gcnew String(s.c_str());
 		}
-		Void loop() {
-			while (this->isActive) {
+		Void loadingLoop() {
+			while (this->IsAccessible) {
 				this->Invoke(gcnew Action(this, &WaitRoom::updateLoading));
 
 				counter++;
@@ -144,8 +140,8 @@ namespace UI {
 			}
 		}
 		Void onClosingForm(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e) {
-			isActive = false;
 			this->timerThread->Join();
+			SocketInterop::remove("connect");
 		}
 	};
 }
