@@ -17,6 +17,7 @@ public:
 	int packetId;
 	string data;
 };
+
 class DataPacketSender : public DataPacket {
 private:
 	/// packetId<16> isEnd?<1> data<...rest>

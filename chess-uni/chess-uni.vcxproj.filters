@@ -32,9 +32,6 @@
     <ClInclude Include="UI\ChessBoard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\lambda.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="modules\email.h">
       <Filter>Header Files</Filter>
     </ClInclude>

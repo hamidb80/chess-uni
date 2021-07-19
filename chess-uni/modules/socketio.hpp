@@ -44,11 +44,13 @@ public:
 	bool isAlive = false;
 
 protected:
+	// after connecting sockets to each other...
 	void started_hook() {
 		isAlive = true;
 		sendThread = new thread(&SocketAbs::sendBackground, this);
 		eventBus.push("{\"event\": \"connect\"}");
 	}
+	// after disconnecting 
 	void killed_hook() {
 		isAlive = false;
 		eventBus.push("{\"event\": \"disconnect\"}");

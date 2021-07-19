@@ -102,6 +102,7 @@ namespace UI {
 			SocketInterop::on("begin", gcnew JsonReciever(this, &GamePage::onGameBegin));
 
 			boardComponent->firstDraw();
+			timer->setTime(0);
 		}
 		void OnClosed(Object^ sender, FormClosingEventArgs^ e) {
 			SocketInterop::removeAll();

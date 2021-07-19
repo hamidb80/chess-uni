@@ -130,7 +130,7 @@ namespace UI {
 			label3->Text = gcnew String(s.c_str());
 		}
 		Void loadingLoop() {
-			while (this->IsAccessible) {
+			while (! this->IsDisposed) {
 				this->Invoke(gcnew Action(this, &WaitRoom::updateLoading));
 
 				counter++;
