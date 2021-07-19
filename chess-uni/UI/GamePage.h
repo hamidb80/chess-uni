@@ -20,7 +20,7 @@ namespace UI {
 	int
 		windowWidth = 1000, windowHeight = 840,
 		offsetX = 50, offsetY = 140;
-	
+
 	bool isSelectingCell = false;
 	Point lastSelectedCell;
 
@@ -62,7 +62,7 @@ namespace UI {
 			// init timer
 			timer = gcnew Timerr(this, offsetX / 2, offsetY / 2);
 
-			 //init music player
+			//init music player
 			auto mp = gcnew chessuni::musicPlayer(this->Controls);
 			mp->setOffset(700, 40);
 
@@ -70,7 +70,7 @@ namespace UI {
 			this->Load += gcnew EventHandler(this, &GamePage::OnLoad);
 			this->FormClosing += gcnew FormClosingEventHandler(this, &GamePage::OnClosed);
 		}
-		
+
 		void whenClickedOnCell(Point p) {
 			if (isSelectingCell) {
 				if (contains(boardclass->movePoints, p)) {
@@ -85,24 +85,27 @@ namespace UI {
 				lastSelectedCell = p;
 				boardclass->movePoints = boardclass->possibleMoves(p);
 			}
-		
+
 			boardComponent->render();
 		}
-		void onMove(json js) {
-			Console::WriteLine(js.dump().c_str());
+		void onMove(json data) {
+			Console::WriteLine(data.dump().c_str());
 		}
+		void onGameBegin(json data) {
+			timer->setTime(data["time"].get<int>());
+			timer->start();
+		}
+
 		void OnLoad(Object^ sender, EventArgs^ e) {
 			// register socket events
 			SocketInterop::on("move", gcnew JsonReciever(this, &GamePage::onMove));
+			SocketInterop::on("begin", gcnew JsonReciever(this, &GamePage::onGameBegin));
 
 			boardComponent->firstDraw();
-			timer->setTime(1 * 60 * 60);
-			timer->start();
 		}
 		void OnClosed(Object^ sender, FormClosingEventArgs^ e) {
+			SocketInterop::removeAll();
 			timer->stop();
-
-			// remove socket events
 		}
 	};
 }

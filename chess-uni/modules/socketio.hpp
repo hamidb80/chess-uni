@@ -25,29 +25,33 @@
 using json = nlohmann::json;
 using namespace std;
 
+using System::Collections::Generic::Dictionary;
+using namespace System;
+using namespace System::Threading;
+
 // ----------------------------------------------
 
 class SocketAbs {
 protected:
-	map<int, DataPacketReciver*> uncompletedRecvs;
-	thread* background;
+	map<int, DataPacketReciver*> uncompletedRecvs; // uncompleted recieved data are stored here
+	thread* sendThread; // background thread to send messages
 	SOCKET ConnectSocket = INVALID_SOCKET;
 
 
 public:
 	queue<string> sendQueue;
-	queue<string> eventBus;
+	queue<string> eventBus; // recieved data are stored here
 	bool isAlive = false;
 
 protected:
-	// TODO add queue for sending data to avoid data conflict from multplie threads
 	void started_hook() {
 		isAlive = true;
-		background = new thread(&SocketAbs::sendThread, this);
+		sendThread = new thread(&SocketAbs::sendBackground, this);
 		eventBus.push("{\"event\": \"connect\"}");
 	}
 	void killed_hook() {
 		isAlive = false;
+		eventBus.push("{\"event\": \"disconnect\"}");
 	}
 
 	void sendLowLevel(string what) {
@@ -79,7 +83,7 @@ protected:
 			eventBus.push(bp->data); // trigger eventHandler
 		}
 	}
-	void sendThread() {
+	void sendBackground() {
 		while (true)
 		{
 			while (!sendQueue.empty())
@@ -298,18 +302,17 @@ public:
 
 // ------------------------------------------------
 
+// global socket object
 SocketAbs* appSocket = new SocketClient();
 
-using System::Collections::Generic::Dictionary;
-using namespace System;
-using namespace System::Threading;
-
 delegate void JsonReciever(json);
+// a static class to interact with 'appSocket' object
 ref class SocketInterop abstract sealed {
 private:
 	static Dictionary<String^, JsonReciever^>^ eventMap = gcnew Dictionary<String^, JsonReciever^>();
 	static Thread^ eventEmmiterThread;
 
+	// check for new messages intervaly
 	static void checkForUpdates() {
 		while (true)
 		{
@@ -325,6 +328,7 @@ private:
 			Thread::Sleep(20);
 		}
 	}
+	// trigger an event - [call corresponding function with custom data]
 	static void trigger(string eventName, json data) {
 		auto en = gcnew String(eventName.c_str());
 
@@ -333,6 +337,7 @@ private:
 	}
 
 public:
+	// start socket 
 	static void run() {
 		eventEmmiterThread = gcnew Thread(
 			gcnew ThreadStart(SocketInterop::checkForUpdates));
@@ -340,17 +345,24 @@ public:
 		eventEmmiterThread->Start();
 		appSocket->run();
 	}
+	// send data via socket
 	static void send(string event, json data) {
 		data["event"] = event;
 		appSocket->send(data.dump());
 	}
+	// register a new event
 	static void on(string eventName, JsonReciever^ func) {
 		auto en = gcnew String(eventName.c_str());
 		eventMap[en] = func;
 	}
-	static void remove(string eventName) {
+	// remove specific event
+	static void remove(string eventName) { 
 		auto en = gcnew String(eventName.c_str());
 		eventMap->Remove(en);
+	}
+	// remove all registered events
+	static void removeAll(){ 
+		eventMap->Clear();
 	}
 	//void sendBeat() {
 	//	auto bps = DataPacketSender(HEARTBEAT, "");
