@@ -64,7 +64,8 @@ namespace UI {
 			timer = gcnew Timerr(this, offsetX / 2, offsetY / 2);
 
 			 //init music player
-			auto mp = gcnew chessuni::musicPlayer(this->Controls, 200, 20);
+			auto mp = gcnew chessuni::musicPlayer(this->Controls);
+			mp->setOffset(700, 40);
 
 			// set form events
 			this->Load += gcnew EventHandler(this, &GamePage::OnLoad);
