@@ -46,6 +46,7 @@ namespace UI {
 		Thread^ timerThread;
 
 	private: System::Windows::Forms::ColorDialog^ colorDialog1;
+		   bool isActive = true;
 
 #pragma region Windows Form Designer generated code
 		   /// <summary>
@@ -104,6 +105,7 @@ namespace UI {
 			   this->Controls->Add(this->label1);
 			   this->Name = L"WaitRoom";
 			   this->Text = L"Wait Room";
+			   this->FormClosing += gcnew System::Windows::Forms::FormClosingEventHandler(this, &WaitRoom::onClosingForm);
 			   this->Load += gcnew System::EventHandler(this, &WaitRoom::MyForm_Load);
 			   this->ResumeLayout(false);
 			   this->PerformLayout();
@@ -124,24 +126,29 @@ namespace UI {
 		}
 		Void updateLoading() {
 			string s = "";
-			for (int i = 0; i <= counter; i++)
+			for (int i = 0; i <= int(counter / 3); i++)
 				s += ".";
 
 			label3->Text = gcnew String(s.c_str());
 		}
 		Void loadingLoop() {
-			while (! this->IsDisposed) {
+			while (isActive) {
 				this->Invoke(gcnew Action(this, &WaitRoom::updateLoading));
 
 				counter++;
-				if (counter == 3) counter = 0;
+				if (counter == 12) counter = 0;
 
-				Thread::Sleep(1000); // wait for 1 second [ 1000 ms ]
+				Thread::Sleep(100); // wait for 10ms
 			}
+
+			this->Invoke(gcnew Action(this, &WaitRoom::Close));
 		}
 		Void onClosingForm(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e) {
-			this->timerThread->Join();
-			SocketInterop::remove("connect");
+			if (this->isActive) { // for safe closing X-|
+				this->isActive = false;
+				e->Cancel = true;
+				SocketInterop::removeAll();
+			}
 		}
 	};
 }
