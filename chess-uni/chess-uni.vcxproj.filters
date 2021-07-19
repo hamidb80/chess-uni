@@ -38,7 +38,7 @@
     <ClInclude Include="modules\email.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="modules\soc.hpp">
+    <ClInclude Include="modules\socketio.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\base64.h">
