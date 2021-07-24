@@ -326,14 +326,6 @@ private:
 			Thread::Sleep(20);
 		}
 	}
-	// trigger an event - [call corresponding function with custom data]
-	static void trigger(string eventName, json data) {
-		auto en = gcnew String(eventName.c_str());
-
-		if (eventMap->ContainsKey(en))
-			eventMap[en](data);
-	}
-
 public:
 	// start socket 
 	static void run() {
@@ -347,6 +339,13 @@ public:
 	static void send(string event, json data) {
 		data["event"] = event;
 		appSocket->send(data.dump());
+	}
+	// trigger an event - [call corresponding function with custom data]
+	static void trigger(string eventName, json data) {
+		auto en = gcnew String(eventName.c_str());
+
+		if (eventMap->ContainsKey(en))
+			eventMap[en](data);
 	}
 	// register a new event
 	static void on(string eventName, JsonReciever^ func) {

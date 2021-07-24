@@ -23,6 +23,7 @@ namespace UI {
 		PieciesThemeColor pieciesThemeColor = Pink;
 		BoardBackTheme boardBackTheme = BlackWhite;
 		PieciesThemeStyle pieciesThemeStyle = Solid;
+		bool showMovePreview = true;
 	};
 
 	public ref struct BoardClass {
@@ -328,15 +329,16 @@ namespace UI {
 			}
 
 			/// move points
-			for (int i = 0; i < boardclass->movePoints->Count; i++) {
-				auto p = boardclass->movePoints[i];
-				if (0 <= p.Y * 8 + p.X && p.Y * 8 + p.X < 64)
-				{
-					auto btn = btns[p.Y * 8 + p.X];
-					btn->BackColor = Color::SkyBlue;
+			if (theme->showMovePreview)
+				for (int i = 0; i < boardclass->movePoints->Count; i++) {
+					auto p = boardclass->movePoints[i];
+					if (0 <= p.Y * 8 + p.X && p.Y * 8 + p.X < 64)
+					{
+						auto btn = btns[p.Y * 8 + p.X];
+						btn->BackColor = Color::SkyBlue;
+					}
 				}
 
-			}
 			/// danger points
 			for (int i = 0; i < boardclass->dangerPoints->Count; i++) {
 				auto p = boardclass->dangerPoints[i];

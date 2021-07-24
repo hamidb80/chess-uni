@@ -6,8 +6,7 @@
 using namespace System;
 using namespace System::Windows::Forms;
 
-[STAThreadAttribute]
-void main() {
+void run() {
 	Application::SetCompatibleTextRenderingDefault(false);
 	Application::EnableVisualStyles();
 
@@ -16,19 +15,24 @@ void main() {
 
 	if (*UI::userRole == UI::ServerRole)
 		appSocket = new SocketServer();
-	else
+	else if (*UI::userRole == UI::ClientRole)
 		appSocket = new SocketClient();
+	else 
+		return;
 
 	SocketInterop::run();
 
 	UI::WaitRoom waitForm;
 	Application::Run(% waitForm);
 
-	if (!*UI::isCanceled)
-	{
-		UI::GamePage form;
-		Application::Run(% form);
-	}
+	if (*UI::isCanceled) return;
 
+	UI::GamePage form;
+	Application::Run(% form);
+}
+
+[STAThreadAttribute]
+void main() {
+	run();
 	System::Diagnostics::Process::GetCurrentProcess()->Kill(); // to close all threads
 }

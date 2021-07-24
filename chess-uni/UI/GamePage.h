@@ -6,6 +6,7 @@
 #include "IntroPage.h"
 #include "MusicPlayer.h"
 #include "../modules/socketio.hpp"
+#include "../modules/database.h"
 #include "../utils/gameLogic.h"
 
 extern SocketAbs* appSocket;
@@ -25,13 +26,6 @@ namespace UI {
 	public ref class GamePage : public Form
 	{
 	public:
-		bool
-			isSelectingCell = false,
-			isMyTrun = false;
-		
-		Point lastSelectedCell;
-
-
 		GamePage()
 		{
 			InitializeComponent();
@@ -43,12 +37,24 @@ namespace UI {
 		}
 
 	private:
+		// visual components
 		IContainer^ components;
-		ThemeOptions^ theme = gcnew ThemeOptions();
 		ChessBoard^ boardComponent;
-		BoardClass^ boardclass = gcnew BoardClass();
 		Timerr^ timer;
 		Label^ roleLabel = gcnew Label();
+		chessuni::musicPlayer^ mp;
+
+		// state components
+		AppStates^ as = gcnew AppStates();
+		BoardClass^ boardclass = gcnew BoardClass();
+		ThemeOptions^ theme = gcnew ThemeOptions();
+
+		bool
+			isSelectingCell = false,
+			isMyTrun = false;
+
+		Point lastSelectedCell;
+
 
 		void InitializeComponent(void)
 		{
@@ -80,7 +86,7 @@ namespace UI {
 			timer = gcnew Timerr(this, offsetX / 2, offsetY / 2);
 
 			//init music player
-			auto mp = gcnew chessuni::musicPlayer(this->Controls);
+			mp = gcnew chessuni::musicPlayer(as, this->Controls);
 			mp->setOffset(700, 40);
 
 			// set form events
@@ -95,13 +101,22 @@ namespace UI {
 			SocketInterop::on("setting-change", gcnew JsonReciever(this, &GamePage::onSettingChange));
 
 			// init enviroment
+			as->board = boardclass->board;
+			as->selectedTheme = theme;
+
 			if (*UI::userRole == ServerRole)
 				isMyTrun = true;
 
 			// prepare UI
 			boardComponent->firstDraw();
+
 			timer->setTime(30 * 60);
 			timer->start();
+
+			mp->setUImode();
+			if (*UI::userRole == ClientRole)
+				mp->hide();
+
 		}
 		void OnClosed(Object^ sender, FormClosingEventArgs^ e) {
 			SocketInterop::removeAll();
@@ -112,14 +127,12 @@ namespace UI {
 
 			if (isSelectingCell) {
 				if (contains(boardclass->movePoints, p)) {
-					auto removedPiece = boardclass->move(lastSelectedCell, p);
-
-					SocketInterop::send("move", json{
+					json data = {
 						{"from", {lastSelectedCell.X, lastSelectedCell.Y}},
 						{"to",   {p.X, p.Y}},
-						});
-
-					isMyTrun = false;
+					};
+					SocketInterop::trigger("move", data);
+					SocketInterop::send("move", data);
 				}
 
 				boardclass->movePoints->Clear();
@@ -136,7 +149,6 @@ namespace UI {
 				lastSelectedCell = p;
 				boardclass->movePoints = boardclass->possibleMoves(p);
 			}
-
 			boardComponent->render();
 		}
 
@@ -149,7 +161,7 @@ namespace UI {
 			boardclass->move(p1, p2);
 			boardComponent->render();
 
-			isMyTrun = true;
+			isMyTrun = !isMyTrun;
 		}
 		void onSettingChange(json data) {
 

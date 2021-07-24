@@ -1,4 +1,6 @@
 #pragma once
+#include "../modules/database.h"
+
 namespace chessuni {
 	using namespace System;
 	using namespace System::ComponentModel;
@@ -14,8 +16,10 @@ namespace chessuni {
 		Control::ControlCollection^ Controls;
 
 	public:
-		musicPlayer(Control::ControlCollection^ cntrl)
+		AppStates^ as;
+		musicPlayer(AppStates^ _apst, Control::ControlCollection^ cntrl)
 		{
+			as = _apst;
 			Controls = cntrl;
 			InitializeComponent();
 		}
@@ -30,15 +34,16 @@ namespace chessuni {
 		}
 		void hide()
 		{
-			axWindowsMediaPlayer1->Ctlcontrols->pause();
 			groupBoxMusic->Hide();
 		}
 		void show()
 		{
-			axWindowsMediaPlayer1->Ctlcontrols->play();
 			groupBoxMusic->Show();
 		}
-
+		void setUImode() {
+			this->axWindowsMediaPlayer1->uiMode = "mini";
+		}
+		
 		void setOffset(int offx, int offy) {
 			groupBoxMusic->Location = Point(offx, offy);
 		}
@@ -87,6 +92,7 @@ namespace chessuni {
 			   this->axWindowsMediaPlayer1->OcxState = (cli::safe_cast<System::Windows::Forms::AxHost::State^>(resources->GetObject(L"axWindowsMediaPlayer1.OcxState")));
 			   this->axWindowsMediaPlayer1->Size = System::Drawing::Size(227, 45);
 			   this->axWindowsMediaPlayer1->TabIndex = 0;
+			   this->axWindowsMediaPlayer1->PlayStateChange += gcnew AxWMPLib::_WMPOCXEvents_PlayStateChangeEventHandler(this, &musicPlayer::onStatusChanged);
 			   // 
 			   // panel1
 			   // 
@@ -170,35 +176,57 @@ namespace chessuni {
 #pragma endregion
 		   List< String^ >^ paths = gcnew List< String^ >();
 
-	private: System::Void BtnSelectSongs_Click(System::Object^ sender, System::EventArgs^ e) {
+	private:
+		System::Void BtnSelectSongs_Click(System::Object^ sender, System::EventArgs^ e) {
 
-		OpenFileDialog ofd;
-		ofd.Multiselect = true;
-		ofd.Filter = "MP3 Files|*.mp3|MP4 Files|*.mp4 | WAV Files|*.wav | WMA Files |*.WMA ";
+			OpenFileDialog ofd;
+			ofd.Multiselect = true;
+			ofd.Filter = "MP3 Files|*.mp3|MP4 Files|*.mp4 | WAV Files|*.wav | WMA Files |*.WMA ";
 
-		//openFileDialog1->Title = "Select Music";
-		//openFileDialog1->Filter = "MP3 files (*.mp3)|*.mp3|MP4 files (*.mp4)|*.mp4|WAV files (*.WAV)|*.WAV|WMA files (*.wma)|*.wma";
-		//openFileDialog1->Multiselect = false;
+			//openFileDialog1->Title = "Select Music";
+			//openFileDialog1->Filter = "MP3 files (*.mp3)|*.mp3|MP4 files (*.mp4)|*.mp4|WAV files (*.WAV)|*.WAV|WMA files (*.wma)|*.wma";
+			//openFileDialog1->Multiselect = false;
 
-		if (ofd.ShowDialog() == System::Windows::Forms::DialogResult::OK)
-		{
-			for (int i = 0; i < ofd.FileNames->Length; i++)
+			if (ofd.ShowDialog() == System::Windows::Forms::DialogResult::OK)
 			{
-				paths->Add(ofd.FileNames[i]); // save the paths of the tracks in path array
+				for (int i = 0; i < ofd.FileNames->Length; i++)
+				{
+					paths->Add(ofd.FileNames[i]); // save the paths of the tracks in path array
+				}
+
+				for (int i = 0; i < ofd.SafeFileNames->Length; i++)
+				{
+					listBoxSongs->Items->Add(ofd.SafeFileNames[i]);
+				}
 			}
-
-			for (int i = 0; i < ofd.SafeFileNames->Length; i++)
+			else
 			{
-				listBoxSongs->Items->Add(ofd.SafeFileNames[i]);
 			}
 		}
-		else
-		{
+		System::Void ListBoxSongs_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+			if (listBoxSongs->SelectedIndex != -1)
+				axWindowsMediaPlayer1->URL = paths[listBoxSongs->SelectedIndex];
 		}
-	}
-	private: System::Void ListBoxSongs_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-		if (listBoxSongs->SelectedIndex != -1)
-			axWindowsMediaPlayer1->URL = paths[listBoxSongs->SelectedIndex];
-	}
+
+		void onStatusChanged(Object^ sender, AxWMPLib::_WMPOCXEvents_PlayStateChangeEvent^ e) {
+			const int
+				STOPPED = 1,
+				PAUSED = 2,
+				PLAYING = 3;
+
+			if (e->newState == PLAYING)
+			{
+				as->IsMusicPlaying == true; // trigger
+			}
+
+			else if (e->newState == PAUSED)
+			{
+				as->IsMusicPlaying == false;
+			}
+
+			else if (e->newState == STOPPED)
+				if (as->IsMusicPlaying)
+					this->Play();
+		}
 	};
 }

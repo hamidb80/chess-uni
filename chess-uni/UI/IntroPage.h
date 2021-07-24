@@ -85,7 +85,6 @@ namespace UI {
 			this->Controls->Add(this->button1);
 			this->Name = L"Intro";
 			this->Text = L"Intro";
-			this->FormClosing += gcnew FormClosingEventHandler(this, &IntroPage::onClosingForm);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 		}
@@ -98,11 +97,6 @@ namespace UI {
 		Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
 			*userRole = ClientRole;
 			this->Close();
-		}
-
-		Void onClosingForm(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e) {
-			if (*userRole == NotSetRole)
-				e->Cancel = true;
 		}
 	};
 }

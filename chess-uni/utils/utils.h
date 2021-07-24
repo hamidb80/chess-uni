@@ -10,3 +10,9 @@ string toStdString(String^ s) {
  
     return chars;
 }
+
+template <class T>
+T selfGet(T s) {
+    return s;
+}
+

@@ -11,76 +11,60 @@
 using namespace std;
 using json = nlohmann::json;
 using namespace System;
+using namespace UI;
+
 
 ref struct AppStates
 {
-	bool
-		showMovePreview = true,
-		showTimer = true;
-
-	String^ selectedMusic = gcnew String("");
-	String^ selectedTheme = gcnew String("");
-
-	void serialize(json Data) {
-		showMovePreview = Data["showMovePreview"].get<bool>();
-		showTimer = Data["showTimer"].get<bool>();
-
-		selectedMusic = gcnew String(Data["selectedMusic"].get<string>().c_str());
-		selectedTheme = gcnew String(Data["selectedTheme"].get<string>().c_str());
-	}
-	json deserialize() {
-		json result = {
-			{"showMovePreview", json::boolean_t(showMovePreview)},
-			{"showTimer" 	  , json::boolean_t(showTimer)},
-
-			{"selectedMusic", toStdString(selectedMusic)},
-			{"selectedTheme", toStdString(selectedTheme)},
-		};
-
-		return result;
-	}
-};
-
-ref struct GameStates
-{
-	UI::BoardClass^ boardc;
+	ThemeOptions^ selectedTheme;
+	bool showTimer = true;
 
 	bool IsMusicPlaying = false;
+	String^ selectedMusic = gcnew String("");
+	cli::array<ChessPieces, 2>^ board;
 
-	void serialize(json Data) {
-		IsMusicPlaying = Data["IsMusicPlaying"].get<bool>();
+	void deserialize(json Data) {
+		showTimer = Data["showTimer"].get<bool>();
+		selectedMusic = gcnew String(Data["music"].get<string>().c_str());
+
+		selectedTheme->pieciesThemeStyle = PieciesThemeStyle(Data["theme-style"].get<int>());
+		selectedTheme->pieciesThemeColor = PieciesThemeColor(Data["theme-color"].get<int>());
+		selectedTheme->boardBackTheme = BoardBackTheme(Data["theme-bg"].get<int>());
+		selectedTheme->showMovePreview = Data["showMovePreview"].get<bool>();
+
+		for (int y = 0; y < 8; y++)
+			for (int x = 0; x < 8; x++)
+				board[y, x] = ChessPieces(Data["board"][y][x].get<int>());
 	}
-	json deserialize() {
-		// convert array[8][8] to vector[8][8] to use in json
+	json serialize() {
 		vector<vector<int>> vboard;
 		for (int y = 0; y < 8; y++)
 		{
-			vector<int> row;
-			for (int x = 0; x < 8; x++)
-				row.push_back(int(boardc->board[y, x]));
+			vector<int> row; for (int x = 0; x < 8; x++)
+				row.push_back(int(board[y, x]));
 
 			vboard.push_back(row);
 		}
 
-		json result = {
+		return json{
 			{"board", vboard},
-			{"IsMusicPlaying", json::boolean_t(IsMusicPlaying) },
+
+			{"selectedMusic", toStdString(selectedMusic)},
+			{"showTimer", selfGet(showTimer)},
+
+			{"showMovePreview", selfGet(selectedTheme->showMovePreview) },
+			{"theme-style", selfGet(selectedTheme->pieciesThemeStyle) },
+			{"theme-color", selfGet(selectedTheme->pieciesThemeColor) },
+			{"theme-bg", selfGet(selectedTheme->boardBackTheme) },
 		};
-		return result;
 	}
 };
 
-void saveData(string path, AppStates^ as, GameStates^ gs) {
-	json result = {
-		{"AppStates", as->deserialize()},
-		{"GameStates", gs->deserialize()},
-	};
-
+void saveData(string path, AppStates^ as) {
+	json result = as->serialize();
 	writeFile(path, result.dump());
 }
-void laodData(string path, AppStates^ as, GameStates^ gs) {
+void laodData(string path, AppStates^ as) {
 	auto jsData = json::parse(readFile(path));
-
-	as->serialize(jsData["AppStates"]);
-	gs->serialize(jsData["GameStates"]);
+	as->deserialize(jsData);
 }
