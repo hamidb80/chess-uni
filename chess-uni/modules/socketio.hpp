@@ -348,6 +348,10 @@ public:
 			eventMap[en](data);
 	}
 	// register a new event
+	static void sendNtrigger(string eventName, json data) {
+		send(eventName, data);
+		trigger(eventName, data);
+	}
 	static void on(string eventName, JsonReciever^ func) {
 		auto en = gcnew String(eventName.c_str());
 		eventMap[en] = func;

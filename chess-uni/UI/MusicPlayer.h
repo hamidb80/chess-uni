@@ -1,6 +1,8 @@
 #pragma once
 #include "../modules/database.h"
 
+delegate void OnNewFileSelected(string fpath, string fname);
+
 namespace chessuni {
 	using namespace System;
 	using namespace System::ComponentModel;
@@ -17,8 +19,15 @@ namespace chessuni {
 
 	public:
 		AppStates^ as;
-		musicPlayer(AppStates^ _apst, Control::ControlCollection^ cntrl)
+		OnNewFileSelected^ nse;
+
+		musicPlayer(
+			AppStates^ _apst,
+			Control::ControlCollection^ cntrl,
+			OnNewFileSelected^ _nse
+		)
 		{
+			nse = _nse;
 			as = _apst;
 			Controls = cntrl;
 			InitializeComponent();
@@ -43,7 +52,7 @@ namespace chessuni {
 		void setUImode() {
 			this->axWindowsMediaPlayer1->uiMode = "mini";
 		}
-		
+
 		void setOffset(int offx, int offy) {
 			groupBoxMusic->Location = Point(offx, offy);
 		}
@@ -183,26 +192,16 @@ namespace chessuni {
 			ofd.Multiselect = true;
 			ofd.Filter = "MP3 Files|*.mp3|MP4 Files|*.mp4 | WAV Files|*.wav | WMA Files |*.WMA ";
 
-			//openFileDialog1->Title = "Select Music";
-			//openFileDialog1->Filter = "MP3 files (*.mp3)|*.mp3|MP4 files (*.mp4)|*.mp4|WAV files (*.WAV)|*.WAV|WMA files (*.wma)|*.wma";
-			//openFileDialog1->Multiselect = false;
-
 			if (ofd.ShowDialog() == System::Windows::Forms::DialogResult::OK)
 			{
-				for (int i = 0; i < ofd.FileNames->Length; i++)
-				{
+				for (int i = 0; i < ofd.FileNames->Length; i++) {
 					paths->Add(ofd.FileNames[i]); // save the paths of the tracks in path array
-				}
-
-				for (int i = 0; i < ofd.SafeFileNames->Length; i++)
-				{
 					listBoxSongs->Items->Add(ofd.SafeFileNames[i]);
+					nse(toStdString(ofd.FileNames[i]), toStdString(ofd.SafeFileNames[i]));
 				}
-			}
-			else
-			{
 			}
 		}
+
 		System::Void ListBoxSongs_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
 			if (listBoxSongs->SelectedIndex != -1)
 				axWindowsMediaPlayer1->URL = paths[listBoxSongs->SelectedIndex];

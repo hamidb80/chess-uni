@@ -135,10 +135,11 @@
     <ClInclude Include="test\tests.h" />
     <ClInclude Include="UI\GamePage.h" />
     <ClInclude Include="UI\ChessBoard.h" />
-    <ClInclude Include="UI\MusicPlayer.h" />
+    <ClInclude Include="UI\selectOption.h" />
     <ClInclude Include="UI\IntroPage.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="UI\MusicPlayer.h" />
     <ClInclude Include="UI\WaitRoom.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -176,6 +177,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="musicPlayer.resx" />
+    <EmbeddedResource Include="UI\IntroPage.resx">
+      <DependentUpon>UI\IntroPage.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\WaitRoom.resx">
       <DependentUpon>UI\WaitRoom.h</DependentUpon>
     </EmbeddedResource>

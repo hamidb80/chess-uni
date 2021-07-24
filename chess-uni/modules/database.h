@@ -25,7 +25,7 @@ ref struct AppStates
 
 	void deserialize(json Data) {
 		showTimer = Data["showTimer"].get<bool>();
-		selectedMusic = gcnew String(Data["music"].get<string>().c_str());
+		selectedMusic = gcnew String(Data["selectedMusic"].get<string>().c_str());
 
 		selectedTheme->pieciesThemeStyle = PieciesThemeStyle(Data["theme-style"].get<int>());
 		selectedTheme->pieciesThemeColor = PieciesThemeColor(Data["theme-color"].get<int>());
@@ -53,9 +53,9 @@ ref struct AppStates
 			{"showTimer", selfGet(showTimer)},
 
 			{"showMovePreview", selfGet(selectedTheme->showMovePreview) },
-			{"theme-style", selfGet(selectedTheme->pieciesThemeStyle) },
-			{"theme-color", selfGet(selectedTheme->pieciesThemeColor) },
-			{"theme-bg", selfGet(selectedTheme->boardBackTheme) },
+			{"theme-style", selfGet(int(selectedTheme->pieciesThemeStyle)) },
+			{"theme-color", selfGet(int(selectedTheme->pieciesThemeColor)) },
+			{"theme-bg", selfGet(int(selectedTheme->boardBackTheme))},
 		};
 	}
 };
