@@ -21,7 +21,6 @@ inline string readFile(string path)
 	inf.close();
 	return res;
 }
-
 inline void writeFile(string path, string content)
 {
 	auto outf = ofstream(path, ios::binary);

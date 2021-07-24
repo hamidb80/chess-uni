@@ -22,6 +22,14 @@ enum ChessPieces {
 	BlackKing = -6,
 };
 
+bool isBlack(ChessPieces cp) {
+	return int(cp) < 0;
+}
+
+bool isWhite(ChessPieces cp) {
+	return int(cp) > 0;
+}
+
 cli::array<ChessPieces, 2>^ newBoard() {
 	return gcnew cli::array<ChessPieces, 2>{
 		{BlackRook, BlackKnight, BlackBishop, BlackQueen, BlackKing, BlackBishop, BlackKnight, BlackRook},

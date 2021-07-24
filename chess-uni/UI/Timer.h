@@ -51,7 +51,7 @@ namespace UI {
 			this->mainForm = mf;
 
 			// add style to label
-			timerLable->Location = Point(offsetY, offsetX);
+			timerLable->Location = Point(offsetX, offsetY);
 			timerLable->AutoSize = true;
 			timerLable->Font = gcnew Font(
 				L"Guttman-CourMir", 20, FontStyle::Regular, GraphicsUnit::Point, 0);

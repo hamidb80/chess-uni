@@ -5,84 +5,50 @@
 
 #include "json.hpp"
 #include "../utils/fileio.h"
+#include "../UI/ChessBoard.h"
+#include "../utils/utils.h"
 
 using namespace std;
 using json = nlohmann::json;
+using namespace System;
 
-struct AppStates
+ref struct AppStates
 {
 	bool
-		canUndo = false,
 		showMovePreview = true,
-		showTimer = true
-		;
+		showTimer = true;
 
-	string
-		selectedMusic = "",
-		selectedTheme = "",
-
-		host_name = "",
-		client_name = ""
-		;
+	String^ selectedMusic = gcnew String("");
+	String^ selectedTheme = gcnew String("");
 
 	void serialize(json Data) {
-		canUndo = Data["canUndo"].get<bool>();
 		showMovePreview = Data["showMovePreview"].get<bool>();
 		showTimer = Data["showTimer"].get<bool>();
 
-		selectedMusic = Data["selectedMusic"].get<string>();
-		selectedTheme = Data["selectedTheme"].get<string>();
-
-		host_name = Data["host_name"].get<string>();
-		client_name = Data["client_name"].get<string>();
+		selectedMusic = gcnew String(Data["selectedMusic"].get<string>().c_str());
+		selectedTheme = gcnew String(Data["selectedTheme"].get<string>().c_str());
 	}
 	json deserialize() {
 		json result = {
-			{"canUndo" 		  , canUndo},
-			{"showMovePreview", showMovePreview},
-			{"showTimer" 	  , showTimer},
+			{"showMovePreview", json::boolean_t(showMovePreview)},
+			{"showTimer" 	  , json::boolean_t(showTimer)},
 
-			{"selectedMusic", selectedMusic},
-			{"selectedTheme", selectedTheme},
-
-			{"host_name", host_name		   },
-			{"client_name", client_name	   }
+			{"selectedMusic", toStdString(selectedMusic)},
+			{"selectedTheme", toStdString(selectedTheme)},
 		};
 
 		return result;
 	}
 };
-struct ClientPermissions
-{
-	bool
-		canControlMusic = false, // upload, play, pause, ...
-		canControlTimer = false
-		;
 
-	void serialize(json Data) {
-		canControlMusic = Data["canControlMusic"].get<bool>();
-		canControlTimer = Data["canControlTimer"].get<bool>();
-	}
-	json deserialize() {
-		json result = {
-			{"canControlMusic",canControlMusic},
-			{"canControlTimer", canControlTimer}
-		};
-		return result;
-	}
-};
-struct GameStates
+ref struct GameStates
 {
-	int board[8][8] = { {0} }; // TODO: replace with ChessPieces
+	UI::BoardClass^ boardc;
 
-	bool
-		IsMusicPlaying = false,
-		isUndoEnabled = true
-		;
+	bool IsMusicPlaying = false;
 
 	void serialize(json Data) {
 		IsMusicPlaying = Data["IsMusicPlaying"].get<bool>();
-		isUndoEnabled = Data["isUndoEnabled"].get<bool>();
 	}
 	json deserialize() {
 		// convert array[8][8] to vector[8][8] to use in json
@@ -91,33 +57,30 @@ struct GameStates
 		{
 			vector<int> row;
 			for (int x = 0; x < 8; x++)
-				row.push_back(board[y][x]);
+				row.push_back(int(boardc->board[y, x]));
 
 			vboard.push_back(row);
 		}
 
 		json result = {
 			{"board", vboard},
-			{"IsMusicPlaying", IsMusicPlaying },
-			{"isUndoEnabled", isUndoEnabled},
+			{"IsMusicPlaying", json::boolean_t(IsMusicPlaying) },
 		};
 		return result;
 	}
 };
 
-void saveData(string path, AppStates as, ClientPermissions cp, GameStates gs) {
+void saveData(string path, AppStates^ as, GameStates^ gs) {
 	json result = {
-		{"AppStates", as.deserialize()},
-		{"ClientPermissions", cp.deserialize()},
-		{"GameStates", gs.deserialize()},
+		{"AppStates", as->deserialize()},
+		{"GameStates", gs->deserialize()},
 	};
 
 	writeFile(path, result.dump());
 }
-void laodData(string path, AppStates* as, ClientPermissions* cp, GameStates* gs) {
+void laodData(string path, AppStates^ as, GameStates^ gs) {
 	auto jsData = json::parse(readFile(path));
 
 	as->serialize(jsData["AppStates"]);
-	cp->serialize(jsData["ClientPermissions"]);
 	gs->serialize(jsData["GameStates"]);
 }

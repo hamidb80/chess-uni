@@ -17,9 +17,8 @@ namespace UI {
 	using namespace System::Drawing;
 	using namespace System::Threading;
 
-	/// <summary>
-	/// Summary for MyForm
-	/// </summary>
+	bool *isCanceled = new bool(false);
+
 	public ref class WaitRoom : public System::Windows::Forms::Form
 	{
 	public:
@@ -39,9 +38,6 @@ namespace UI {
 	private: System::Windows::Forms::Label^ label3;
 
 	private:
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
 		System::ComponentModel::Container^ components;
 		Thread^ timerThread;
 
@@ -113,8 +109,10 @@ namespace UI {
 		   }
 #pragma endregion
 	private:
+		bool isConnected = false;
 		void onConnect(json data) {
 			Console::WriteLine("connected");
+			isConnected = true;
 			this->Invoke(gcnew Action(this, &WaitRoom::Close)); // close via another thread
 		}
 
@@ -144,6 +142,9 @@ namespace UI {
 			this->Invoke(gcnew Action(this, &WaitRoom::Close));
 		}
 		Void onClosingForm(System::Object^ sender, System::Windows::Forms::FormClosingEventArgs^ e) {
+			if (!isConnected) 
+				*isCanceled = true;
+			
 			if (this->isActive) { // for safe closing X-|
 				this->isActive = false;
 				e->Cancel = true;

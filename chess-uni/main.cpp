@@ -7,10 +7,10 @@ using namespace System;
 using namespace System::Windows::Forms;
 
 [STAThreadAttribute]
-void main(){
+void main() {
 	Application::SetCompatibleTextRenderingDefault(false);
 	Application::EnableVisualStyles();
-	
+
 	UI::IntroPage inp;
 	Application::Run(% inp);
 
@@ -18,12 +18,17 @@ void main(){
 		appSocket = new SocketServer();
 	else
 		appSocket = new SocketClient();
-	
+
 	SocketInterop::run();
 
 	UI::WaitRoom waitForm;
 	Application::Run(% waitForm);
 
-	UI::GamePage form;
-	Application::Run(% form);
+	if (!*UI::isCanceled)
+	{
+		UI::GamePage form;
+		Application::Run(% form);
+	}
+
+	System::Diagnostics::Process::GetCurrentProcess()->Kill(); // to close all threads
 }

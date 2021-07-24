@@ -3,6 +3,7 @@
 
 #include "Timer.h"
 #include "ChessBoard.h"
+#include "IntroPage.h"
 #include "MusicPlayer.h"
 #include "../modules/socketio.hpp"
 #include "../utils/gameLogic.h"
@@ -21,12 +22,16 @@ namespace UI {
 		windowWidth = 1000, windowHeight = 840,
 		offsetX = 50, offsetY = 140;
 
-	bool isSelectingCell = false;
-	Point lastSelectedCell;
-
 	public ref class GamePage : public Form
 	{
 	public:
+		bool
+			isSelectingCell = false,
+			isMyTrun = false;
+		
+		Point lastSelectedCell;
+
+
 		GamePage()
 		{
 			InitializeComponent();
@@ -43,6 +48,7 @@ namespace UI {
 		ChessBoard^ boardComponent;
 		BoardClass^ boardclass = gcnew BoardClass();
 		Timerr^ timer;
+		Label^ roleLabel = gcnew Label();
 
 		void InitializeComponent(void)
 		{
@@ -50,6 +56,17 @@ namespace UI {
 			this->Text = L"chess";
 			this->Size = DSize(windowWidth, windowHeight);
 			this->BackColor = Color::White;
+
+			roleLabel->Text = gcnew String(
+				*UI::userRole == ServerRole ? "server" : "client"
+			);
+			roleLabel->Location = Point(10, 20);
+			roleLabel->AutoSize = true;
+			roleLabel->Font = gcnew Drawing::Font(
+				L"Guttman-CourMir", 20, FontStyle::Regular, GraphicsUnit::Point, 0);
+
+
+			this->Controls->Add(roleLabel); // add label to window
 
 			// init chess board
 			boardComponent = gcnew ChessBoard(this,
@@ -71,16 +88,50 @@ namespace UI {
 			this->FormClosing += gcnew FormClosingEventHandler(this, &GamePage::OnClosed);
 		}
 
+		/// form events ----------------------------------------------
+		void OnLoad(Object^ sender, EventArgs^ e) {
+			// register socket events
+			SocketInterop::on("move", gcnew JsonReciever(this, &GamePage::onMove));
+			SocketInterop::on("setting-change", gcnew JsonReciever(this, &GamePage::onSettingChange));
+
+			// init enviroment
+			if (*UI::userRole == ServerRole)
+				isMyTrun = true;
+
+			// prepare UI
+			boardComponent->firstDraw();
+			timer->setTime(30 * 60);
+			timer->start();
+		}
+		void OnClosed(Object^ sender, FormClosingEventArgs^ e) {
+			SocketInterop::removeAll();
+			timer->stop();
+		}
 		void whenClickedOnCell(Point p) {
+			if (!isMyTrun) return;
+
 			if (isSelectingCell) {
 				if (contains(boardclass->movePoints, p)) {
 					auto removedPiece = boardclass->move(lastSelectedCell, p);
+
+					SocketInterop::send("move", json{
+						{"from", {lastSelectedCell.X, lastSelectedCell.Y}},
+						{"to",   {p.X, p.Y}},
+						});
+
+					isMyTrun = false;
 				}
 
 				boardclass->movePoints->Clear();
 				isSelectingCell = false;
 			}
 			else {
+				// check user clicked on a valid cell or not
+				if (!(
+					(*UI::userRole == ServerRole && isWhite(boardclass->board[p.Y, p.X])) ||
+					(*UI::userRole == ClientRole && isBlack(boardclass->board[p.Y, p.X]))
+					)) return;
+
 				isSelectingCell = true;
 				lastSelectedCell = p;
 				boardclass->movePoints = boardclass->possibleMoves(p);
@@ -88,25 +139,20 @@ namespace UI {
 
 			boardComponent->render();
 		}
+
+		/// socket events ----------------------------------------------
 		void onMove(json data) {
-			Console::WriteLine(data.dump().c_str());
-		}
-		void onGameBegin(json data) {
-			timer->setTime(data["time"].get<int>());
-			timer->start();
-		}
+			auto
+				p1 = Point(data["from"][0].get<int>(), data["from"][1].get<int>()),
+				p2 = Point(data["to"][0].get<int>(), data["to"][1].get<int>());
 
-		void OnLoad(Object^ sender, EventArgs^ e) {
-			// register socket events
-			SocketInterop::on("move", gcnew JsonReciever(this, &GamePage::onMove));
-			SocketInterop::on("begin", gcnew JsonReciever(this, &GamePage::onGameBegin));
+			boardclass->move(p1, p2);
+			boardComponent->render();
 
-			boardComponent->firstDraw();
-			timer->setTime(0);
+			isMyTrun = true;
 		}
-		void OnClosed(Object^ sender, FormClosingEventArgs^ e) {
-			SocketInterop::removeAll();
-			timer->stop();
+		void onSettingChange(json data) {
+
 		}
 	};
 }
