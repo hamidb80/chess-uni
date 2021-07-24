@@ -215,7 +215,7 @@ namespace chessuni {
 
 			if (e->newState == PLAYING)
 			{
-				as->IsMusicPlaying == true; // trigger
+				as->IsMusicPlaying == true; // trigger [state + time]
 			}
 
 			else if (e->newState == PAUSED)
