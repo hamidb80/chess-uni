@@ -10,9 +10,10 @@
 
 using namespace std;
 using json = nlohmann::json;
-using namespace System;
-using namespace UI;
 
+using namespace System;
+using namespace System::Collections::Generic;
+using namespace UI;
 
 ref struct AppStates
 {
@@ -22,6 +23,7 @@ ref struct AppStates
 	bool IsMusicPlaying = false;
 	String^ selectedMusic = gcnew String("");
 	cli::array<ChessPieces, 2>^ board;
+	List<FileInfo^>^ musicList; // (name, path)
 
 	void deserialize(json Data) {
 		showTimer = Data["showTimer"].get<bool>();

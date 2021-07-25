@@ -16,3 +16,7 @@ T selfGet(T s) {
     return s;
 }
 
+public ref struct FileInfo {
+    String^ name;
+    String^ path;
+};

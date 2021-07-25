@@ -60,11 +60,13 @@ namespace UI {
 			mf->Controls->Add(timerLable);
 		}
 
+		void setVisibility(bool isVisible) {
+			timerLable->Visible = isVisible;
+		}
 		void setTime(int secs) { // set currentTime to ginen time (secs: per seconds]
 			currentTime = secs;
 			updateTimeText();
 		}
-
 		void start() {
 			isActive = true;
 

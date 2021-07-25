@@ -48,6 +48,8 @@ namespace UI {
 		Label^ roleLabel;
 		GroupBox^ settings;
 		chessuni::musicPlayer^ mp;
+		CheckBox^ showMovePreviewCheckBox;
+		CheckBox^ showTimerCheckBox;
 
 		// state components
 		AppStates^ as = gcnew AppStates();
@@ -79,6 +81,8 @@ namespace UI {
 			this->Controls->Add(roleLabel); // add label to window
 
 			// settings -------------------------------------
+			auto settings_font = gcnew System::Drawing::Font(L"Guttman-CourMir", 14, FontStyle::Regular, GraphicsUnit::Point, 0);
+
 			settings = gcnew GroupBox();
 			settings->Width = 100;
 			settings->AutoSize = true;
@@ -87,12 +91,12 @@ namespace UI {
 			auto so1 = gcnew SelectOption(
 				settings->Controls,
 				"board bg",
-				gcnew System::Drawing::Font(L"Guttman-CourMir", 14, FontStyle::Regular, GraphicsUnit::Point, 0),
+				settings_font,
 				140, 30,
 				0, 0
 			);
 
-			for (map<BoardBackTheme, string>::iterator  it = BoardBackThemeString.begin(); it != BoardBackThemeString.end(); it++)
+			for (map<BoardBackTheme, string>::iterator it = BoardBackThemeString.begin(); it != BoardBackThemeString.end(); it++)
 			{
 				so1->addOption(
 					it->second,
@@ -104,7 +108,7 @@ namespace UI {
 			auto so2 = gcnew SelectOption(
 				settings->Controls,
 				"piece color",
-				gcnew System::Drawing::Font(L"Guttman-CourMir", 14, FontStyle::Regular, GraphicsUnit::Point, 0),
+				settings_font,
 				140, 30,
 				0, 140
 			);
@@ -121,12 +125,12 @@ namespace UI {
 			auto so3 = gcnew SelectOption(
 				settings->Controls,
 				"piece style",
-				gcnew System::Drawing::Font(L"Guttman-CourMir", 14, FontStyle::Regular, GraphicsUnit::Point, 0),
+				settings_font,
 				140, 30,
 				0, 280
 			);
 
-			for (map<PieciesThemeStyle, string>::iterator  it = PieciesThemeStyleString.begin(); it != PieciesThemeStyleString.end(); it++)
+			for (map<PieciesThemeStyle, string>::iterator it = PieciesThemeStyleString.begin(); it != PieciesThemeStyleString.end(); it++)
 			{
 				so3->addOption(
 					it->second,
@@ -135,6 +139,23 @@ namespace UI {
 				);
 			}
 
+			showMovePreviewCheckBox = gcnew CheckBox();
+			showMovePreviewCheckBox->AutoSize = true;
+			showMovePreviewCheckBox->Location = System::Drawing::Point(0, 400);
+			showMovePreviewCheckBox->Text = L"show move preview";
+			showMovePreviewCheckBox->Font = settings_font;
+			showMovePreviewCheckBox->Click += gcnew EventHandler(this, &GamePage::checkBox1_Click);
+
+			showTimerCheckBox = gcnew CheckBox();
+			showTimerCheckBox->AutoSize = true;
+			showTimerCheckBox->Location = System::Drawing::Point(0, 430);
+			showTimerCheckBox->Text = L"show timer";
+			showTimerCheckBox->Font = settings_font;
+			showTimerCheckBox->Click += gcnew EventHandler(this, &GamePage::checkBox2_Click);
+
+
+			settings->Controls->Add(showMovePreviewCheckBox);
+			settings->Controls->Add(showTimerCheckBox);
 			this->Controls->Add(settings);
 			// init chess board ---------------------------------
 			boardComponent = gcnew ChessBoard(this,
@@ -173,10 +194,14 @@ namespace UI {
 
 			if (*UI::userRole == ServerRole)
 				isMyTrun = true;
+			else
+				settings->Visible = false;
 
 			// prepare UI
 			boardComponent->firstDraw();
-
+			showMovePreviewCheckBox->Checked = as->selectedTheme->showMovePreview;
+			showTimerCheckBox->Checked = as->showTimer;
+			timer->setVisibility(as->showTimer);
 			timer->setTime(30 * 60);
 			timer->start();
 
@@ -216,6 +241,15 @@ namespace UI {
 			}
 			boardComponent->render();
 		}
+		void checkBox1_Click(Object^ sender, EventArgs^ e) {
+			theme->showMovePreview = showMovePreviewCheckBox->Checked;
+			SocketInterop::sendNtrigger("setting", as->serialize());
+		}
+		void checkBox2_Click(Object^ sender, EventArgs^ e) {
+			as->showTimer = showTimerCheckBox->Checked;
+			SocketInterop::sendNtrigger("setting", as->serialize());
+		}
+
 		void onMusicSelected(string name) {
 
 		}
@@ -223,16 +257,17 @@ namespace UI {
 		{
 			// send the file
 		}
+
 		void onBoardThemeChange(int newColor) {
 			theme->boardBackTheme = BoardBackTheme(newColor);
 			SocketInterop::sendNtrigger("setting", as->serialize());
 		}
 		void onPieceStyleChange(int newColor) {
-			theme->pieciesThemeStyle= PieciesThemeStyle(newColor);
+			theme->pieciesThemeStyle = PieciesThemeStyle(newColor);
 			SocketInterop::sendNtrigger("setting", as->serialize());
 		}
 		void onPieceColorChange(int newColor) {
-			theme->pieciesThemeColor= PieciesThemeColor(newColor);
+			theme->pieciesThemeColor = PieciesThemeColor(newColor);
 			SocketInterop::sendNtrigger("setting", as->serialize());
 		}
 
@@ -257,6 +292,9 @@ namespace UI {
 
 			this->boardclass->board = as->board;
 			theme = as->selectedTheme;
+
+			showMovePreviewCheckBox->Checked = theme->showMovePreview;
+			timer->setVisibility(as->showTimer);
 
 			// move preview
 			// selected music

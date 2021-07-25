@@ -35,6 +35,7 @@ namespace UI {
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Label^ label2;
 
+
 	private:
 		System::ComponentModel::Container^ components;
 
@@ -47,6 +48,7 @@ namespace UI {
 			// 
 			// button1
 			// 
+			this->button1->FlatAppearance->BorderSize = 2;
 			this->button1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 16, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->button1->Location = System::Drawing::Point(404, 139);
@@ -79,7 +81,6 @@ namespace UI {
 			this->label1->Size = System::Drawing::Size(271, 40);
 			this->label1->TabIndex = 2;
 			this->label1->Text = L"select  your role";
-			
 			// 
 			// IntroPage
 			// 
@@ -93,6 +94,7 @@ namespace UI {
 			this->Text = L"Intro";
 			this->ResumeLayout(false);
 			this->PerformLayout();
+
 		}
 
 	private:
@@ -104,5 +106,6 @@ namespace UI {
 			*userRole = ClientRole;
 			this->Close();
 		}
-	};
+	
+};
 }

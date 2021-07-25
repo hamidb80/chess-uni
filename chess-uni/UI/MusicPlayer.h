@@ -186,7 +186,7 @@ namespace chessuni {
 		   List< String^ >^ paths = gcnew List< String^ >();
 
 	private:
-		System::Void BtnSelectSongs_Click(System::Object^ sender, System::EventArgs^ e) {
+		void BtnSelectSongs_Click(System::Object^ sender, System::EventArgs^ e) {
 
 			OpenFileDialog ofd;
 			ofd.Multiselect = true;
@@ -201,12 +201,10 @@ namespace chessuni {
 				}
 			}
 		}
-
-		System::Void ListBoxSongs_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+		void ListBoxSongs_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
 			if (listBoxSongs->SelectedIndex != -1)
 				axWindowsMediaPlayer1->URL = paths[listBoxSongs->SelectedIndex];
 		}
-
 		void onStatusChanged(Object^ sender, AxWMPLib::_WMPOCXEvents_PlayStateChangeEvent^ e) {
 			const int
 				STOPPED = 1,
