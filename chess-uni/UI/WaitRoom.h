@@ -23,7 +23,7 @@ namespace UI {
 	{
 	public:
 		int counter = 0;
-		WaitRoom(void)
+		WaitRoom()
 		{
 			InitializeComponent();
 		}

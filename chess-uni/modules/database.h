@@ -19,14 +19,14 @@ ref struct AppStates
 {
 	ThemeOptions^ selectedTheme;
 	bool showTimer = true;
-
 	bool IsMusicPlaying = false;
 	String^ selectedMusic = gcnew String("");
 	cli::array<ChessPieces, 2>^ board;
-	List<FileInfo^>^ musicList; // (name, path)
+	List<MyFileInfo^>^ musicList; // (name, path)
 
 	void deserialize(json Data) {
 		showTimer = Data["showTimer"].get<bool>();
+		IsMusicPlaying = Data["IsMusicPlaying"].get<bool>();
 		selectedMusic = gcnew String(Data["selectedMusic"].get<string>().c_str());
 
 		selectedTheme->pieciesThemeStyle = PieciesThemeStyle(Data["theme-style"].get<int>());
@@ -53,6 +53,7 @@ ref struct AppStates
 
 			{"selectedMusic", toStdString(selectedMusic)},
 			{"showTimer", selfGet(showTimer)},
+			{"IsMusicPlaying", selfGet(this->IsMusicPlaying)},
 
 			{"showMovePreview", selfGet(selectedTheme->showMovePreview) },
 			{"theme-style", selfGet(int(selectedTheme->pieciesThemeStyle)) },

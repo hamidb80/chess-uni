@@ -7,8 +7,8 @@ using namespace System;
 using namespace System::Windows::Forms;
 
 void run() {
-	Application::SetCompatibleTextRenderingDefault(false);
-	Application::EnableVisualStyles();
+	//Application::SetCompatibleTextRenderingDefault(false);
+	//Application::EnableVisualStyles();
 
 	//UI::IntroPage inp;
 	//Application::Run(% inp);

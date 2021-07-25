@@ -1,7 +1,15 @@
 #pragma once
 #include "../modules/database.h"
+#include "../modules/socketio.hpp"
 
-delegate void OnNewFileSelected(string fpath, string fname);
+delegate void OnNewFileSelectedEvent(string fpath, string fname);
+delegate void OnMusicChangedEvent(string fname);
+delegate void OnPlayStateChangeEvent(int stateCode);
+
+const int
+STOPPED = 1,
+PAUSED = 2,
+PLAYING = 3;
 
 namespace chessuni {
 	using namespace System;
@@ -15,23 +23,32 @@ namespace chessuni {
 
 	public ref class musicPlayer
 	{
+		AppStates^ as;
 		Control::ControlCollection^ Controls;
+		OnNewFileSelectedEvent^ onse;
+		OnMusicChangedEvent^ omc;
+		OnPlayStateChangeEvent^ opsc;
+
 
 	public:
-		AppStates^ as;
-		OnNewFileSelected^ nse;
-
 		musicPlayer(
 			AppStates^ _apst,
 			Control::ControlCollection^ cntrl,
-			OnNewFileSelected^ _nse
+			OnNewFileSelectedEvent^ _nse,
+			OnMusicChangedEvent^ _om,
+			OnPlayStateChangeEvent^ _opsc
 		)
 		{
-			nse = _nse;
+			opsc = _opsc;
+			onse = _nse;
+			omc = _om;
 			as = _apst;
 			Controls = cntrl;
 			InitializeComponent();
 		}
+
+		List<String^>^ names = gcnew List<String^>();
+		List<String^>^ paths = gcnew List<String^>();
 
 		void Play()
 		{
@@ -41,25 +58,50 @@ namespace chessuni {
 		{
 			axWindowsMediaPlayer1->Ctlcontrols->pause();
 		}
-		void hide()
-		{
-			groupBoxMusic->Hide();
+		bool isPlaying() {
+			return axWindowsMediaPlayer1->playState == WMPLib::WMPPlayState::wmppsPlaying;
 		}
-		void show()
+		void initUI()
 		{
-			groupBoxMusic->Show();
+			this->axWindowsMediaPlayer1->uiMode = "none";
 		}
-		void setUImode() {
-			this->axWindowsMediaPlayer1->uiMode = "mini";
+		void setControlVisibility(bool isVisible) {
+
 		}
 
 		void setOffset(int offx, int offy) {
 			groupBoxMusic->Location = Point(offx, offy);
 		}
+		void addMusic(string fname, string fpath) {
+			auto path = gcnew String(fpath.c_str());
+			auto name = gcnew String(fname.c_str());
+
+			paths->Add(path);
+			names->Add(name);
+			listBoxSongs->Items->Add(name);
+		}
+		void selectMusicByIndex(int index) {
+			auto p = paths[index];
+
+			if (System::IO::File::Exists(p))
+				axWindowsMediaPlayer1->URL = p;
+
+		}
+		void selectMusicByName(String^ name) {
+			for (int i = 0; i < names->Count; i++)
+				if (name == names[i])
+					return selectMusicByIndex(i);
+
+			throw "wow";
+		}
+
+		// https://docs.microsoft.com/en-us/windows/win32/wmp/axwindowsmediaplayer-object--vb-and-c
+
+	private: System::ComponentModel::IContainer^ components;
 
 	private: AxWMPLib::AxWindowsMediaPlayer^ axWindowsMediaPlayer1;
-	private: System::Windows::Forms::Panel^ panel1;
 
+	private: System::Windows::Forms::Panel^ panel1;
 	private: System::Windows::Forms::PictureBox^ pictureBox1;
 	private: System::Windows::Forms::Button^ btnSelectSongs;
 	private: System::Windows::Forms::ListBox^ listBoxSongs;
@@ -68,7 +110,8 @@ namespace chessuni {
 	private: System::Windows::Forms::SaveFileDialog^ saveFileDialog1;
 	private: System::Windows::Forms::GroupBox^ groupBoxMusic;
 
-	private: System::ComponentModel::IContainer^ components;
+	private: System::Windows::Forms::GroupBox^ controlGroup;
+	private: System::Windows::Forms::Button^ btnPlayPause;
 
 #pragma region Windows Form Designer generated code
 		   /// <summary>
@@ -84,10 +127,12 @@ namespace chessuni {
 			   this->lblLogo = (gcnew System::Windows::Forms::Label());
 			   this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
 			   this->btnSelectSongs = (gcnew System::Windows::Forms::Button());
+			   this->btnPlayPause = (gcnew System::Windows::Forms::Button());
 			   this->listBoxSongs = (gcnew System::Windows::Forms::ListBox());
 			   this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			   this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
 			   this->groupBoxMusic = (gcnew System::Windows::Forms::GroupBox());
+			   this->controlGroup = (gcnew System::Windows::Forms::GroupBox());
 			   (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->axWindowsMediaPlayer1))->BeginInit();
 			   this->panel1->SuspendLayout();
 			   (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
@@ -169,13 +214,33 @@ namespace chessuni {
 			   this->groupBoxMusic->Controls->Add(this->btnSelectSongs);
 			   this->groupBoxMusic->Location = System::Drawing::Point(0, 27);
 			   this->groupBoxMusic->Name = L"groupBoxMusic";
-			   this->groupBoxMusic->Size = System::Drawing::Size(239, 208);
-			   this->groupBoxMusic->TabIndex = 5;
+			   this->groupBoxMusic->Size = System::Drawing::Size(239, 230);
+			   this->groupBoxMusic->TabIndex = 2;
 			   this->groupBoxMusic->TabStop = false;
 			   // 
 			   // musicPlayer
 			   // 
+
+			   this->controlGroup->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			   this->controlGroup->Location = System::Drawing::Point(0, 200);
+			   this->controlGroup->AutoSize = true;
+			   //
+			   // btn play pause
+			   // 
+			   this->btnPlayPause->BackColor = System::Drawing::Color::PeachPuff;
+			   this->btnPlayPause->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			   this->btnPlayPause->ForeColor = System::Drawing::Color::SaddleBrown;
+			   this->btnPlayPause->TabIndex = 3;
+			   this->btnPlayPause->Text = L"play / pause";
+			   this->btnPlayPause->UseVisualStyleBackColor = false;
+			   this->btnPlayPause->Click += gcnew System::EventHandler(this, &musicPlayer::playPauseHandlre);
+			   // 
+			   // musicPlayer
+			   // 
+			   controlGroup->Controls->Add(this->btnPlayPause);
+			   groupBoxMusic->Controls->Add(this->controlGroup);
 			   this->Controls->Add(this->groupBoxMusic);
+
 			   (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->axWindowsMediaPlayer1))->EndInit();
 			   this->panel1->ResumeLayout(false);
 			   this->panel1->PerformLayout();
@@ -183,10 +248,9 @@ namespace chessuni {
 			   this->groupBoxMusic->ResumeLayout(false);
 		   }
 #pragma endregion
-		   List< String^ >^ paths = gcnew List< String^ >();
 
 	private:
-		void BtnSelectSongs_Click(System::Object^ sender, System::EventArgs^ e) {
+		void BtnSelectSongs_Click(Object^ sender, EventArgs^ e) {
 
 			OpenFileDialog ofd;
 			ofd.Multiselect = true;
@@ -195,35 +259,34 @@ namespace chessuni {
 			if (ofd.ShowDialog() == System::Windows::Forms::DialogResult::OK)
 			{
 				for (int i = 0; i < ofd.FileNames->Length; i++) {
-					paths->Add(ofd.FileNames[i]); // save the paths of the tracks in path array
-					listBoxSongs->Items->Add(ofd.SafeFileNames[i]);
-					nse(toStdString(ofd.FileNames[i]), toStdString(ofd.SafeFileNames[i]));
+					// add to music list
+					addMusic(toStdString(ofd.SafeFileNames[i]), toStdString(ofd.FileNames[i]));
+
+					// trigger event handler
+					onse(toStdString(ofd.FileNames[i]), toStdString(ofd.SafeFileNames[i]));
 				}
 			}
 		}
-		void ListBoxSongs_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-			if (listBoxSongs->SelectedIndex != -1)
-				axWindowsMediaPlayer1->URL = paths[listBoxSongs->SelectedIndex];
+		void ListBoxSongs_SelectedIndexChanged(Object^ sender, EventArgs^ e) {
+			if (listBoxSongs->SelectedIndex != -1) {
+				omc(toStdString(names[listBoxSongs->SelectedIndex]));
+				selectMusicByIndex(listBoxSongs->SelectedIndex);
+			}
 		}
 		void onStatusChanged(Object^ sender, AxWMPLib::_WMPOCXEvents_PlayStateChangeEvent^ e) {
-			const int
-				STOPPED = 1,
-				PAUSED = 2,
-				PLAYING = 3;
 
-			if (e->newState == PLAYING)
-			{
-				as->IsMusicPlaying == true; // trigger [state + time]
-			}
-
-			else if (e->newState == PAUSED)
-			{
-				as->IsMusicPlaying == false;
-			}
+			if (e->newState == PLAYING || e->newState == PAUSED)
+				opsc(e->newState);
 
 			else if (e->newState == STOPPED)
 				if (as->IsMusicPlaying)
 					this->Play();
+		}
+		void playPauseHandlre(Object^ sender, EventArgs^ e) {
+			if (isPlaying())
+				Pause();
+			else
+				Play();
 		}
 	};
 }

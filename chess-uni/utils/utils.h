@@ -16,7 +16,7 @@ T selfGet(T s) {
     return s;
 }
 
-public ref struct FileInfo {
+public ref struct MyFileInfo {
     String^ name;
     String^ path;
 };

@@ -1,6 +1,8 @@
 #pragma once
 #include "../include/json.hpp"
 
+#include <base64.h>
+#include <json.hpp>
 #include "Timer.h"
 #include "ChessBoard.h"
 #include "IntroPage.h"
@@ -10,13 +12,15 @@
 #include "../utils/gameLogic.h"
 #include "../utils/fileio.h"
 #include "../utils/ui.h"
+#include "../utils/utils.h"
 #include "./selectOption.h"
 
-
+using json = nlohmann::json;
 extern SocketAbs* appSocket;
 
 namespace UI {
 	using namespace System;
+	using namespace System::Collections::Generic;
 	using namespace System::ComponentModel;
 	using namespace System::Windows::Forms;
 	using namespace System::Drawing;
@@ -44,10 +48,10 @@ namespace UI {
 		// visual components
 		IContainer^ components;
 		ChessBoard^ boardComponent;
-		Timerr^ timer;
 		Label^ roleLabel;
-		GroupBox^ settings;
+		Timerr^ timer;
 		chessuni::musicPlayer^ mp;
+		GroupBox^ settings;
 		CheckBox^ showMovePreviewCheckBox;
 		CheckBox^ showTimerCheckBox;
 
@@ -61,6 +65,9 @@ namespace UI {
 			isMyTrun = false;
 
 		Point lastSelectedCell;
+
+		Generic::Queue<MyFileInfo^>^ filesToSendQueue =
+			gcnew Generic::Queue<MyFileInfo^>();
 
 
 		void InitializeComponent()
@@ -81,7 +88,7 @@ namespace UI {
 			this->Controls->Add(roleLabel); // add label to window
 
 			// settings -------------------------------------
-			auto settings_font = gcnew System::Drawing::Font(L"Guttman-CourMir", 14, FontStyle::Regular, GraphicsUnit::Point, 0);
+			auto settings_font = gcnew System::Drawing::Font(L"Guttman-CourMir", 10, FontStyle::Regular, GraphicsUnit::Point, 0);
 
 			settings = gcnew GroupBox();
 			settings->Width = 100;
@@ -154,9 +161,6 @@ namespace UI {
 			showTimerCheckBox->Click += gcnew EventHandler(this, &GamePage::checkBox2_Click);
 
 
-			settings->Controls->Add(showMovePreviewCheckBox);
-			settings->Controls->Add(showTimerCheckBox);
-			this->Controls->Add(settings);
 			// init chess board ---------------------------------
 			boardComponent = gcnew ChessBoard(this,
 				offsetX, offsetY, 80,
@@ -172,10 +176,16 @@ namespace UI {
 			mp = gcnew chessuni::musicPlayer(
 				as,
 				this->Controls,
-				gcnew OnNewFileSelected(this, &GamePage::onNewMusicSelected)
+				gcnew OnNewFileSelectedEvent(this, &GamePage::onNewMusicSelected),
+				gcnew OnMusicChangedEvent(this, &GamePage::onMusicChanged),
+				gcnew OnPlayStateChangeEvent(this, &GamePage::onPlayStateChanged)
 			);
 			mp->setOffset(700, 40);
 
+
+			settings->Controls->Add(showMovePreviewCheckBox);
+			settings->Controls->Add(showTimerCheckBox);
+			this->Controls->Add(settings);
 
 			// set form events
 			this->Load += gcnew EventHandler(this, &GamePage::OnLoad);
@@ -187,6 +197,7 @@ namespace UI {
 			// register socket events
 			SocketInterop::on("move", gcnew JsonReciever(this, &GamePage::onMove));
 			SocketInterop::on("setting", gcnew JsonReciever(this, &GamePage::onSettingChange));
+			SocketInterop::on("file", gcnew JsonReciever(this, &GamePage::onFileRecv));
 
 			// init enviroment
 			as->board = boardclass->board;
@@ -205,9 +216,7 @@ namespace UI {
 			timer->setTime(30 * 60);
 			timer->start();
 
-			mp->setUImode();
-			if (*UI::userRole == ClientRole)
-				mp->hide();
+			mp->initUI();
 		}
 		void OnClosed(Object^ sender, FormClosingEventArgs^ e) {
 			SocketInterop::removeAll();
@@ -250,12 +259,33 @@ namespace UI {
 			SocketInterop::sendNtrigger("setting", as->serialize());
 		}
 
-		void onMusicSelected(string name) {
+		void onMusicChanged(string fname) {
+			as->selectedMusic = gcnew String(fname.c_str());
+		}
+		void onPlayStateChanged(int stateCode) {
+			as->IsMusicPlaying = (stateCode == PLAYING);
 
+			if (*UI::userRole == ServerRole)
+				SocketInterop::send("setting", as->serialize());
 		}
 		void onNewMusicSelected(string fpath, string fname)
 		{
-			// send the file
+			auto fi = gcnew MyFileInfo();
+			fi->name = gcnew String(fname.c_str());;
+			fi->path = gcnew String(fpath.c_str());;
+			filesToSendQueue->Enqueue(fi);
+
+			auto t = gcnew Thread(gcnew ThreadStart(this, &GamePage::sendMusicBackground));
+			t->Start();
+		}
+		void sendMusicBackground() {
+			auto fi = filesToSendQueue->Dequeue();
+			auto content = base64_encode(readFile(toStdString(fi->path)));
+			SocketInterop::send("file", json{
+				{"type", "music"},
+				{"name", toStdString(fi->name)},
+				{"content", content},
+				});
 		}
 
 		void onBoardThemeChange(int newColor) {
@@ -271,6 +301,7 @@ namespace UI {
 			SocketInterop::sendNtrigger("setting", as->serialize());
 		}
 
+
 		/// socket events ----------------------------------------------
 		void onMove(json data) {
 			auto
@@ -283,12 +314,20 @@ namespace UI {
 			isMyTrun = !isMyTrun;
 		}
 		void onSettingChange(json data) {
+			auto lastMusicName = as->selectedMusic;
+			Console::WriteLine(gcnew String(
+				data.dump().c_str()));
+
 			as->deserialize(data);
+
+			if (as->selectedMusic != lastMusicName)
+				mp->selectMusicByName(as->selectedMusic);
 
 			if (as->IsMusicPlaying)
 				mp->Play();
 			else
 				mp->Pause();
+
 
 			this->boardclass->board = as->board;
 			theme = as->selectedTheme;
@@ -296,10 +335,16 @@ namespace UI {
 			showMovePreviewCheckBox->Checked = theme->showMovePreview;
 			timer->setVisibility(as->showTimer);
 
-			// move preview
-			// selected music
-
 			this->boardComponent->render();
+		}
+		void onFileRecv(json data) {
+			auto
+				content = base64_decode(data["content"].get<string>()),
+				fname = data["name"].get<string>(),
+				fpath = "musics/" + fname;
+				
+			writeFile(fpath, content);
+			mp->addMusic(fname, fpath);
 		}
 	};
 }
