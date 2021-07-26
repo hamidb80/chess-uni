@@ -129,10 +129,8 @@
     <ClInclude Include="config.h" />
     <ClInclude Include="include\base64.h" />
     <ClInclude Include="include\json.hpp" />
-    <ClInclude Include="modules\email.h" />
     <ClInclude Include="modules\database.h" />
     <ClInclude Include="modules\socketio.hpp" />
-    <ClInclude Include="test\tests.h" />
     <ClInclude Include="UI\GamePage.h" />
     <ClInclude Include="UI\ChessBoard.h" />
     <ClInclude Include="UI\selectOption.h" />

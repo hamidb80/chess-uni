@@ -15,9 +15,9 @@ void production() {
 	UI::IntroPage inp;
 	Application::Run(% inp);
 
-	if (*UI::userRole == UI::ServerRole)
+	if (isServer())
 		appSocket = new SocketServer();
-	else if (*UI::userRole == UI::ClientRole)
+	else if (isClient())
 		appSocket = new SocketClient();
 	else
 		return;
