@@ -1,4 +1,5 @@
 #pragma once
+#include"../modules/database.h"
 
 namespace UI {
 	using namespace System;
@@ -41,13 +42,17 @@ namespace UI {
 		Label^ timerLable = gcnew Label();
 		int currentTime = 0; // per seconds
 
+		AppStates^ as;
+
 		void updateTimeText() {
+			as->restTime = currentTime;
 			timerLable->Text = secondsToTime(currentTime);
 		}
 
 	public:
-		Timerr(Form^ mf, int offsetX, int offsetY)
+		Timerr(Form^ mf, AppStates^ _as, int offsetX, int offsetY)
 		{
+			this->as = _as;
 			this->mainForm = mf;
 
 			// add style to label

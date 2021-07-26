@@ -10,7 +10,6 @@
 
 using namespace std;
 using json = nlohmann::json;
-
 using namespace System;
 using namespace System::Collections::Generic;
 using namespace UI;
@@ -18,13 +17,18 @@ using namespace UI;
 ref struct AppStates
 {
 	ThemeOptions^ selectedTheme;
+	
 	bool showTimer = true;
+	int restTime = 0;
+
 	bool IsMusicPlaying = false;
 	String^ selectedMusic = gcnew String("");
+	List<MyFileInfo^>^ musicList; // todo
+	
 	cli::array<ChessPieces, 2>^ board;
-	List<MyFileInfo^>^ musicList; // (name, path)
-
+	
 	void deserialize(json Data) {
+		restTime = Data["restTime"].get<int>();
 		showTimer = Data["showTimer"].get<bool>();
 		IsMusicPlaying = Data["IsMusicPlaying"].get<bool>();
 		selectedMusic = gcnew String(Data["selectedMusic"].get<string>().c_str());
@@ -51,8 +55,10 @@ ref struct AppStates
 		return json{
 			{"board", vboard},
 
-			{"selectedMusic", toStdString(selectedMusic)},
 			{"showTimer", selfGet(showTimer)},
+			{"restTime", selfGet(restTime) },
+
+			{"selectedMusic", toStdString(selectedMusic)},
 			{"IsMusicPlaying", selfGet(this->IsMusicPlaying)},
 
 			{"showMovePreview", selfGet(selectedTheme->showMovePreview) },
@@ -63,11 +69,11 @@ ref struct AppStates
 	}
 };
 
-void saveData(string path, AppStates^ as) {
-	json result = as->serialize();
+void saveData(string path, AppStates^ dest) {
+	json result = dest->serialize();
 	writeFile(path, result.dump());
 }
-void laodData(string path, AppStates^ as) {
+void laodData(string path, AppStates^ dest) {
 	auto jsData = json::parse(readFile(path));
-	as->deserialize(jsData);
+	dest->deserialize(jsData);
 }

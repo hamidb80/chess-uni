@@ -264,7 +264,7 @@ namespace UI {
 			whenClicked(_whenClicked)
 		{}
 
-		void firstDraw() {
+		void initUI() {
 			for (int y = 0; y < 8; y++) {
 				for (int x = 0; x < 8; x++) {
 					auto btn = btns[y * 8 + x] = gcnew Button();

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "../config.h"
+#include "./utils.h"
 #include <string>
 #include <bitset>
-#include <random>
 
 using namespace std;
 
@@ -13,9 +13,6 @@ inline string binaryRepr(int n) {
 	return bit_repr.to_string();
 }
 
-int freakin_random_number() {
-	return rand();
-}
 
 class DataPacket {
 protected:

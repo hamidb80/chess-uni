@@ -28,7 +28,7 @@ namespace chessuni {
 		OnNewFileSelectedEvent^ onse;
 		OnMusicChangedEvent^ omc;
 		OnPlayStateChangeEvent^ opsc;
-
+		int lastSelectedMusicIndex = -1;
 
 	public:
 		musicPlayer(
@@ -52,11 +52,19 @@ namespace chessuni {
 
 		void Play()
 		{
-			axWindowsMediaPlayer1->Ctlcontrols->play();
+			if (!isPlaying())
+				axWindowsMediaPlayer1->Ctlcontrols->play();
 		}
 		void Pause()
 		{
-			axWindowsMediaPlayer1->Ctlcontrols->pause();
+			if (isPlaying())
+				axWindowsMediaPlayer1->Ctlcontrols->pause();
+		}
+		void setPlay(bool play) {
+			if (play)
+				Play();
+			else
+				Pause();
 		}
 		bool isPlaying() {
 			return axWindowsMediaPlayer1->playState == WMPLib::WMPPlayState::wmppsPlaying;
@@ -81,18 +89,19 @@ namespace chessuni {
 			listBoxSongs->Items->Add(name);
 		}
 		void selectMusicByIndex(int index) {
+			if (index == lastSelectedMusicIndex) return; // avoid replay
+
 			auto p = paths[index];
 
 			if (System::IO::File::Exists(p))
 				axWindowsMediaPlayer1->URL = p;
 
+			lastSelectedMusicIndex = index;
 		}
 		void selectMusicByName(String^ name) {
 			for (int i = 0; i < names->Count; i++)
 				if (name == names[i])
 					return selectMusicByIndex(i);
-
-			throw "wow";
 		}
 
 		// https://docs.microsoft.com/en-us/windows/win32/wmp/axwindowsmediaplayer-object--vb-and-c
@@ -233,6 +242,7 @@ namespace chessuni {
 			   this->btnPlayPause->TabIndex = 3;
 			   this->btnPlayPause->Text = L"play / pause";
 			   this->btnPlayPause->UseVisualStyleBackColor = false;
+			   this->btnPlayPause->AutoSize = true;
 			   this->btnPlayPause->Click += gcnew System::EventHandler(this, &musicPlayer::playPauseHandlre);
 			   // 
 			   // musicPlayer

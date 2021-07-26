@@ -1,7 +1,14 @@
 #pragma once
-#include<string>
+
+#include <string>
+
 using namespace std;
 using namespace System;
+
+int freakin_random_number(int from = 0, int to=10000) {
+    Random^ rnd = gcnew Random();
+    return rnd->Next(from, to);
+}
 
 string toStdString(String^ s) {
     using namespace Runtime::InteropServices;

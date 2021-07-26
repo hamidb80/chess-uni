@@ -27,15 +27,17 @@ namespace UI {
 	using namespace System::Threading;
 	using DSize = System::Drawing::Size;
 
-	int
-		windowWidth = 1000, windowHeight = 840,
+	int windowWidth = 1000, windowHeight = 840,
 		offsetX = 50, offsetY = 140;
+
+	string DBpath;
 
 	public ref class GamePage : public Form
 	{
 	public:
 		GamePage()
 		{
+			DBpath = toStdString(currentDir()) + "databases/" + to_string(freakin_random_number()) + ".json";
 			InitializeComponent();
 		}
 		~GamePage()
@@ -54,11 +56,13 @@ namespace UI {
 		GroupBox^ settings;
 		CheckBox^ showMovePreviewCheckBox;
 		CheckBox^ showTimerCheckBox;
+		Button^ loadDataBtn;
 
 		// state components
 		AppStates^ as = gcnew AppStates();
 		BoardClass^ boardclass = gcnew BoardClass();
 		ThemeOptions^ theme = gcnew ThemeOptions();
+		Thread^ saver;
 
 		bool
 			isSelectingCell = false,
@@ -77,6 +81,7 @@ namespace UI {
 			this->Size = DSize(windowWidth, windowHeight);
 			this->BackColor = Color::White;
 
+			// roleLabel ---------------------------------------
 			roleLabel = gcnew Label();
 			roleLabel->Text = gcnew String(
 				*UI::userRole == ServerRole ? "server" : "client"
@@ -87,6 +92,7 @@ namespace UI {
 				L"Guttman-CourMir", 20, FontStyle::Regular, GraphicsUnit::Point, 0);
 			this->Controls->Add(roleLabel); // add label to window
 
+	
 			// settings -------------------------------------
 			auto settings_font = gcnew System::Drawing::Font(L"Guttman-CourMir", 10, FontStyle::Regular, GraphicsUnit::Point, 0);
 
@@ -151,14 +157,21 @@ namespace UI {
 			showMovePreviewCheckBox->Location = System::Drawing::Point(0, 400);
 			showMovePreviewCheckBox->Text = L"show move preview";
 			showMovePreviewCheckBox->Font = settings_font;
-			showMovePreviewCheckBox->Click += gcnew EventHandler(this, &GamePage::checkBox1_Click);
+			showMovePreviewCheckBox->Click += gcnew EventHandler(this, &GamePage::toggleShowPreview);
 
 			showTimerCheckBox = gcnew CheckBox();
 			showTimerCheckBox->AutoSize = true;
 			showTimerCheckBox->Location = System::Drawing::Point(0, 430);
 			showTimerCheckBox->Text = L"show timer";
 			showTimerCheckBox->Font = settings_font;
-			showTimerCheckBox->Click += gcnew EventHandler(this, &GamePage::checkBox2_Click);
+			showTimerCheckBox->Click += gcnew EventHandler(this, &GamePage::toggleShowTimer);
+
+			loadDataBtn = gcnew Button();
+			loadDataBtn->AutoSize = true;
+			loadDataBtn->Text = "Load Data";
+			loadDataBtn->Font = settings_font;
+			loadDataBtn->Location = System::Drawing::Point(0, 460);
+			loadDataBtn->Click += gcnew EventHandler(this, &GamePage::loadDataClick);
 
 
 			// init chess board ---------------------------------
@@ -170,7 +183,7 @@ namespace UI {
 			);
 
 			// init timer
-			timer = gcnew Timerr(this, offsetX / 2, offsetY / 2);
+			timer = gcnew Timerr(this, as, offsetX / 2, offsetY / 2);
 
 			//init music player
 			mp = gcnew chessuni::musicPlayer(
@@ -182,46 +195,78 @@ namespace UI {
 			);
 			mp->setOffset(700, 40);
 
-
+			// add to the page ----------------------------
 			settings->Controls->Add(showMovePreviewCheckBox);
 			settings->Controls->Add(showTimerCheckBox);
+			settings->Controls->Add(loadDataBtn);
 			this->Controls->Add(settings);
 
 			// set form events
 			this->Load += gcnew EventHandler(this, &GamePage::OnLoad);
 			this->FormClosing += gcnew FormClosingEventHandler(this, &GamePage::OnClosed);
 		}
-
+		
 		/// form events ----------------------------------------------
 		void OnLoad(Object^ sender, EventArgs^ e) {
 			// register socket events
 			SocketInterop::on("move", gcnew JsonReciever(this, &GamePage::onMove));
 			SocketInterop::on("setting", gcnew JsonReciever(this, &GamePage::onSettingChange));
 			SocketInterop::on("file", gcnew JsonReciever(this, &GamePage::onFileRecv));
+			SocketInterop::on("game-init", gcnew JsonReciever(this, &GamePage::onGameInit));
+
 
 			// init enviroment
 			as->board = boardclass->board;
 			as->selectedTheme = theme;
 
-			if (*UI::userRole == ServerRole)
+			if (*UI::userRole == ServerRole) {
 				isMyTrun = true;
-			else
+				saver = gcnew Thread(gcnew ThreadStart(this, &GamePage::saveDataThread));
+				saver->Start();
+			}
+			else {
 				settings->Visible = false;
+			}
 
 			// prepare UI
-			boardComponent->firstDraw();
+			boardComponent->initUI();
+			
 			showMovePreviewCheckBox->Checked = as->selectedTheme->showMovePreview;
 			showTimerCheckBox->Checked = as->showTimer;
+			
 			timer->setVisibility(as->showTimer);
 			timer->setTime(30 * 60);
 			timer->start();
-
+			
 			mp->initUI();
 		}
 		void OnClosed(Object^ sender, FormClosingEventArgs^ e) {
 			SocketInterop::removeAll();
 			timer->stop();
 		}
+		void loadDataClick(Object^ sender, EventArgs^ e) {
+			OpenFileDialog ^ofd = gcnew OpenFileDialog();
+			ofd->Multiselect = false;
+			ofd->Filter = "JSON Files|*.json";
+
+			if (ofd->ShowDialog() == System::Windows::Forms::DialogResult::OK) 
+			{
+				auto content = readFile(toStdString(ofd->FileName));
+				SocketInterop::sendNtrigger("game-init", json::parse(content));
+			}
+		}
+
+		// indirect events -------------------------------------------
+		
+		// by threads
+		void saveDataThread() {
+			while (!this->IsDisposed) {
+				writeFile(DBpath, as->serialize().dump());
+				Thread::Sleep(1 * 5 * 1000); // wait for 1 minute
+			}
+		}
+
+		// board events
 		void OnClickedOnCell(Point p) {
 			if (!isMyTrun) return;
 
@@ -250,15 +295,8 @@ namespace UI {
 			}
 			boardComponent->render();
 		}
-		void checkBox1_Click(Object^ sender, EventArgs^ e) {
-			theme->showMovePreview = showMovePreviewCheckBox->Checked;
-			SocketInterop::sendNtrigger("setting", as->serialize());
-		}
-		void checkBox2_Click(Object^ sender, EventArgs^ e) {
-			as->showTimer = showTimerCheckBox->Checked;
-			SocketInterop::sendNtrigger("setting", as->serialize());
-		}
 
+		// music player events
 		void onMusicChanged(string fname) {
 			as->selectedMusic = gcnew String(fname.c_str());
 		}
@@ -288,6 +326,7 @@ namespace UI {
 				});
 		}
 
+		// theme events
 		void onBoardThemeChange(int newColor) {
 			theme->boardBackTheme = BoardBackTheme(newColor);
 			SocketInterop::sendNtrigger("setting", as->serialize());
@@ -300,9 +339,17 @@ namespace UI {
 			theme->pieciesThemeColor = PieciesThemeColor(newColor);
 			SocketInterop::sendNtrigger("setting", as->serialize());
 		}
+		void toggleShowPreview(Object^ sender, EventArgs^ e) {
+			theme->showMovePreview = showMovePreviewCheckBox->Checked;
+			SocketInterop::sendNtrigger("setting", as->serialize());
+		}
+		void toggleShowTimer(Object^ sender, EventArgs^ e) {
+			as->showTimer = showTimerCheckBox->Checked;
+			SocketInterop::sendNtrigger("setting", as->serialize());
+		}
 
 
-		/// socket events ----------------------------------------------
+		// socket events ----------------------------------------------
 		void onMove(json data) {
 			auto
 				p1 = Point(data["from"][0].get<int>(), data["from"][1].get<int>()),
@@ -314,37 +361,34 @@ namespace UI {
 			isMyTrun = !isMyTrun;
 		}
 		void onSettingChange(json data) {
-			auto lastMusicName = as->selectedMusic;
-			Console::WriteLine(gcnew String(
-				data.dump().c_str()));
-
+			Console::WriteLine(gcnew String(data.dump().c_str()));
 			as->deserialize(data);
 
-			if (as->selectedMusic != lastMusicName)
-				mp->selectMusicByName(as->selectedMusic);
+			mp->selectMusicByName(as->selectedMusic);
+			mp->setPlay(as->IsMusicPlaying);
 
-			if (as->IsMusicPlaying)
-				mp->Play();
-			else
-				mp->Pause();
-
-
-			this->boardclass->board = as->board;
-			theme = as->selectedTheme;
-
-			showMovePreviewCheckBox->Checked = theme->showMovePreview;
 			timer->setVisibility(as->showTimer);
+			showMovePreviewCheckBox->Checked = theme->showMovePreview;
 
-			this->boardComponent->render();
+			theme = as->selectedTheme;
+			boardclass->board = as->board;
+			boardComponent->render();
+		}
+		void onGameInit(json data) {
+			as->deserialize(data);
+
+			timer->setTime(as->restTime);
+			onSettingChange(data);
 		}
 		void onFileRecv(json data) {
 			auto
 				content = base64_decode(data["content"].get<string>()),
 				fname = data["name"].get<string>(),
-				fpath = "musics/" + fname;
-				
+				fpath = toStdString(currentDir()) + "musics/" + fname;
+
 			writeFile(fpath, content);
 			mp->addMusic(fname, fpath);
 		}
+		void onDisconnect() {}
 	};
 }
