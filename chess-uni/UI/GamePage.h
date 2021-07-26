@@ -24,6 +24,7 @@ namespace UI {
 	using namespace System::ComponentModel;
 	using namespace System::Windows::Forms;
 	using namespace System::Drawing;
+	using namespace System::Collections::Generic;
 	using namespace System::Threading;
 	using DSize = System::Drawing::Size;
 
@@ -226,7 +227,6 @@ namespace UI {
 			SocketInterop::on("file", gcnew JsonReciever(this, &GamePage::onFileRecv));
 			SocketInterop::on("game-init", gcnew JsonReciever(this, &GamePage::onGameInit));
 
-
 			// init enviroment
 			as->board = boardclass->board;
 			as->selectedTheme = theme;
@@ -255,6 +255,15 @@ namespace UI {
 
 			mp->initUI();
 			mp->setControlVisibility(isServer());
+
+			// add original musics
+			auto originalMusicsDir = currentDir() + gcnew String("musics/original/");
+			auto files = System::IO::Directory::GetFiles(originalMusicsDir, "*");
+
+			for (int i = 0; i < files->Length; i++)
+				mp->addMusic(
+					toStdString(System::IO::Path::GetFileName(files[i])),
+					toStdString(files[i]));
 		}
 		void OnClosed(Object^ sender, FormClosingEventArgs^ e) {
 			SocketInterop::removeAll();
@@ -332,8 +341,10 @@ namespace UI {
 
 		// music player events
 		void onMusicChanged(string fname) {
-			as->selectedMusic = gcnew String(fname.c_str());
-			setNewSetting();
+			if (isServer()) {
+				as->selectedMusic = gcnew String(fname.c_str());
+				setNewSetting();
+			}
 		}
 		void onPlayStateChanged(int stateCode) {
 			as->IsMusicPlaying = (stateCode == PLAYING);
@@ -410,7 +421,7 @@ namespace UI {
 			auto
 				content = base64_decode(data["content"].get<string>()),
 				fname = data["name"].get<string>(),
-				fpath = toStdString(currentDir()) + "musics/" + fname;
+				fpath = toStdString(currentDir()) + "musics/downloaded/" + fname;
 
 			writeFile(fpath, content);
 			mp->addMusic(fname, fpath);

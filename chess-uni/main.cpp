@@ -6,10 +6,12 @@
 using namespace System;
 using namespace System::Windows::Forms;
 
-void run() {
+void prepare() {
 	Application::SetCompatibleTextRenderingDefault(false);
 	Application::EnableVisualStyles();
+}
 
+void production() {
 	UI::IntroPage inp;
 	Application::Run(% inp);
 
@@ -17,17 +19,21 @@ void run() {
 		appSocket = new SocketServer();
 	else if (*UI::userRole == UI::ClientRole)
 		appSocket = new SocketClient();
-	else 
+	else
 		return;
 
-	SocketInterop::run(); 
+	SocketInterop::run();
 
 	UI::WaitRoom waitForm;
 	Application::Run(% waitForm);
 
 	if (*UI::isCanceled) return;
 
-	//* UI::userRole = UI::ServerRole;
+	UI::GamePage form;
+	Application::Run(% form);
+}
+void dev() {
+	* UI::userRole = UI::ServerRole;
 
 	UI::GamePage form;
 	Application::Run(% form);
@@ -35,6 +41,8 @@ void run() {
 
 [STAThreadAttribute]
 void main() {
-	run();
+	prepare();
+	production();
+	//dev();
 	System::Diagnostics::Process::GetCurrentProcess()->Kill(); // to close all threads
 }
