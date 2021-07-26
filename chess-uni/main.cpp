@@ -10,24 +10,24 @@ void run() {
 	Application::SetCompatibleTextRenderingDefault(false);
 	Application::EnableVisualStyles();
 
-	//UI::IntroPage inp;
-	//Application::Run(% inp);
+	UI::IntroPage inp;
+	Application::Run(% inp);
 
-	//if (*UI::userRole == UI::ServerRole)
-	//	appSocket = new SocketServer();
-	//else if (*UI::userRole == UI::ClientRole)
-	//	appSocket = new SocketClient();
-	//else 
-	//	return;
+	if (*UI::userRole == UI::ServerRole)
+		appSocket = new SocketServer();
+	else if (*UI::userRole == UI::ClientRole)
+		appSocket = new SocketClient();
+	else 
+		return;
 
-	//SocketInterop::run(); 
+	SocketInterop::run(); 
 
-	//UI::WaitRoom waitForm;
-	//Application::Run(% waitForm);
+	UI::WaitRoom waitForm;
+	Application::Run(% waitForm);
 
-	//if (*UI::isCanceled) return;
+	if (*UI::isCanceled) return;
 
-	* UI::userRole = UI::ServerRole;
+	//* UI::userRole = UI::ServerRole;
 
 	UI::GamePage form;
 	Application::Run(% form);
