@@ -25,6 +25,7 @@ namespace chessuni {
 	{
 		AppStates^ as;
 		Control::ControlCollection^ Controls;
+		Form^ mainForm;
 		OnNewFileSelectedEvent^ onse;
 		OnMusicChangedEvent^ omc;
 		OnPlayStateChangeEvent^ opsc;
@@ -33,7 +34,7 @@ namespace chessuni {
 	public:
 		musicPlayer(
 			AppStates^ _apst,
-			Control::ControlCollection^ cntrl,
+			Form^ mf,
 			OnNewFileSelectedEvent^ _nse,
 			OnMusicChangedEvent^ _om,
 			OnPlayStateChangeEvent^ _opsc
@@ -43,7 +44,8 @@ namespace chessuni {
 			onse = _nse;
 			omc = _om;
 			as = _apst;
-			Controls = cntrl;
+			Controls = mf->Controls;
+			mainForm = mf;
 			InitializeComponent();
 		}
 
@@ -52,7 +54,7 @@ namespace chessuni {
 
 		void Play()
 		{
-			if (!isPlaying())
+			if (!isPlaying() && lastSelectedMusicIndex != -1)
 				axWindowsMediaPlayer1->Ctlcontrols->play();
 		}
 		void Pause()
@@ -87,10 +89,10 @@ namespace chessuni {
 
 			paths->Add(path);
 			names->Add(name);
-			listBoxSongs->Items->Add(name);
+			mainForm->Invoke(gcnew Action<String^>(this, &musicPlayer::addItemToList), name);
 		}
 		void selectMusicByIndex(int index) {
-			if (index == lastSelectedMusicIndex) return; // avoid replay
+			if (index == lastSelectedMusicIndex && index < paths->Count) return; // avoid replay
 
 			auto p = paths[index];
 
@@ -252,6 +254,10 @@ namespace chessuni {
 #pragma endregion
 
 	private:
+		void addItemToList(String^ music_name) {
+			listBoxSongs->Items->Add(music_name);
+		}
+
 		void BtnSelectSongs_Click(Object^ sender, EventArgs^ e) {
 
 			OpenFileDialog ofd;

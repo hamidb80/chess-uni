@@ -30,7 +30,7 @@ namespace UI {
 	int windowWidth = 940, windowHeight = 840,
 		offsetX = 20, offsetY = 140;
 
-	
+
 
 	public ref class GamePage : public Form
 	{
@@ -202,7 +202,7 @@ namespace UI {
 			//init music player
 			mp = gcnew chessuni::musicPlayer(
 				as,
-				this->Controls,
+				this,
 				gcnew OnNewFileSelectedEvent(this, &GamePage::onNewMusicSelected),
 				gcnew OnMusicChangedEvent(this, &GamePage::onMusicChanged),
 				gcnew OnPlayStateChangeEvent(this, &GamePage::onPlayStateChanged)
@@ -237,8 +237,11 @@ namespace UI {
 				isMyTrun = true;
 				saver = gcnew Thread(gcnew ThreadStart(this, &GamePage::saveDataThread));
 				saver->Start();
+				auto t = gcnew Thread(gcnew ThreadStart(this, &GamePage::serverWorker));
+				t->Start();
 			}
 			else {
+				sessionIdLabel->Visible = false;
 				settings->Visible = false;
 			}
 
@@ -274,6 +277,20 @@ namespace UI {
 		// indirect events -------------------------------------------
 
 		// by threads
+		void serverWorker() {
+			while (true) {
+				while (filesToSendQueue->Count) {
+					auto fi = filesToSendQueue->Dequeue();
+					auto content = base64_encode(readFile(toStdString(fi->path)));
+					SocketInterop::send("file", json{
+						{"type", "music"},
+						{"name", toStdString(fi->name)},
+						{"content", content},
+						});
+				}
+				Thread::Sleep(100); // sleep for 0.1s
+			}
+		}
 		void saveDataThread() {
 			while (!this->IsDisposed) {
 				writeFile(toStdString(DBpath), as->serialize().dump());
@@ -327,18 +344,6 @@ namespace UI {
 			fi->name = gcnew String(fname.c_str());;
 			fi->path = gcnew String(fpath.c_str());;
 			filesToSendQueue->Enqueue(fi);
-
-			auto t = gcnew Thread(gcnew ThreadStart(this, &GamePage::sendMusicBackground));
-			t->Start();
-		}
-		void sendMusicBackground() {
-			auto fi = filesToSendQueue->Dequeue();
-			auto content = base64_encode(readFile(toStdString(fi->path)));
-			SocketInterop::send("file", json{
-				{"type", "music"},
-				{"name", toStdString(fi->name)},
-				{"content", content},
-				});
 		}
 
 		// theme events
@@ -382,7 +387,7 @@ namespace UI {
 			mp->selectMusicByName(as->selectedMusic);
 			mp->setPlay(as->IsMusicPlaying);
 
-			timer->setVisibility(as->showTimer);
+			this->Invoke(gcnew Action<bool>(timer, &Timerr::setVisibility), as->showTimer);
 			showMovePreviewCheckBox->Checked = theme->showMovePreview;
 
 			theme = as->selectedTheme;
@@ -403,7 +408,8 @@ namespace UI {
 
 			writeFile(fpath, content);
 			mp->addMusic(fname, fpath);
+			SocketInterop::send("again", json{});
 		}
-		void onDisconnect() {}
+		void onDisconnect(json data) {}
 	};
 }

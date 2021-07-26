@@ -33,7 +33,3 @@ inline void writeFile(string path, string content)
 
 	outf.close();
 }
-inline void copyFile(string sourcePath, string targetPath)
-{
-	writeFile(targetPath, readFile(sourcePath));
-}
