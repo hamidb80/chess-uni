@@ -235,6 +235,7 @@ namespace UI {
 				isMyTrun = true;
 				saver = gcnew Thread(gcnew ThreadStart(this, &GamePage::saveDataThread));
 				saver->Start();
+		
 				auto t = gcnew Thread(gcnew ThreadStart(this, &GamePage::serverWorker));
 				t->Start();
 			}
