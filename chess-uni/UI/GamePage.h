@@ -30,8 +30,6 @@ namespace UI {
 	int windowWidth = 940, windowHeight = 840,
 		offsetX = 20, offsetY = 140;
 
-
-
 	public ref class GamePage : public Form
 	{
 		String^ DBpath;
@@ -281,12 +279,16 @@ namespace UI {
 			while (true) {
 				while (filesToSendQueue->Count) {
 					auto fi = filesToSendQueue->Dequeue();
-					auto content = base64_encode(readFile(toStdString(fi->path)));
-					SocketInterop::send("file", json{
-						{"type", "music"},
-						{"name", toStdString(fi->name)},
-						{"content", content},
-						});
+					try
+					{
+						auto content = base64_encode(readFile(toStdString(fi->path)));
+						SocketInterop::send("file", json{
+							{"type", "music"},
+							{"name", toStdString(fi->name)},
+							{"content", content},
+							});
+					}
+					catch (...) {}
 				}
 				Thread::Sleep(100); // sleep for 0.1s
 			}
@@ -331,12 +333,13 @@ namespace UI {
 		// music player events
 		void onMusicChanged(string fname) {
 			as->selectedMusic = gcnew String(fname.c_str());
+			setNewSetting();
 		}
 		void onPlayStateChanged(int stateCode) {
 			as->IsMusicPlaying = (stateCode == PLAYING);
 
 			if (isServer())
-				SocketInterop::send("setting", as->serialize());
+				setNewSetting();
 		}
 		void onNewMusicSelected(string fpath, string fname)
 		{
@@ -349,25 +352,28 @@ namespace UI {
 		// theme events
 		void onBoardThemeChange(int newColor) {
 			theme->boardBackTheme = BoardBackTheme(newColor);
-			SocketInterop::sendNtrigger("setting", as->serialize());
+			setNewSetting();
 		}
 		void onPieceStyleChange(int newColor) {
 			theme->pieciesThemeStyle = PieciesThemeStyle(newColor);
-			SocketInterop::sendNtrigger("setting", as->serialize());
+			setNewSetting();
 		}
 		void onPieceColorChange(int newColor) {
 			theme->pieciesThemeColor = PieciesThemeColor(newColor);
-			SocketInterop::sendNtrigger("setting", as->serialize());
+			setNewSetting();
 		}
 		void toggleShowPreview(Object^ sender, EventArgs^ e) {
 			theme->showMovePreview = showMovePreviewCheckBox->Checked;
-			SocketInterop::sendNtrigger("setting", as->serialize());
+			setNewSetting();
 		}
 		void toggleShowTimer(Object^ sender, EventArgs^ e) {
 			as->showTimer = showTimerCheckBox->Checked;
-			SocketInterop::sendNtrigger("setting", as->serialize());
+			setNewSetting();
 		}
 
+		void setNewSetting() {
+			SocketInterop::sendNtrigger("setting", as->serialize());
+		}
 
 		// socket events ----------------------------------------------
 		void onMove(json data) {

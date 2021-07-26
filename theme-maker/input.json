@@ -16,8 +16,13 @@
     },
     {
       "name": "cyan",
-      "whiteColor": "#c0ffee",
-      "blackColor": "#24755f"
+      "whiteColor": "#80DEEA",
+      "blackColor": "#00838F"
+    },
+    {
+      "name": "bluish",
+      "whiteColor": "#CFD8DC",
+      "blackColor": "#455A64"
     }
   ],
 

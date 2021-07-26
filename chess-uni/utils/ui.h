@@ -31,8 +31,8 @@ map<BoardBackTheme, string> BoardBackThemeString{
 	{MagicalMysteryRide, "magical mystery ride"},
 };
 map <BoardBackTheme, vector<MyColor>> BackThemes = {
-	{BlackWhite,			{MyColor(238,238,238), MyColor(97,97,97)}      },
-	{Wood,					{MyColor(114, 83, 61), MyColor(218, 192, 155)} },
+	{BlackWhite,			{MyColor(238,238,238), MyColor(30,30,30)}      },
+	{Wood,					{MyColor(85, 69, 46), MyColor(249, 235, 210)} },
 	{MagicalMysteryRide,	{MyColor(124,77, 255), MyColor(209, 196, 233)} }
 };
 
@@ -71,8 +71,10 @@ map<PieciesThemeStyle, string> PieciesThemeStyleString = {
 enum PieciesThemeColor {
 	Cyan,
 	Pink,
+	Bluish
 };
 map<PieciesThemeColor, string> PieciesThemeColorString = {
 	{Cyan, "cyan"},
 	{Pink, "pink"},
+	{Bluish, "bluish"},
 };

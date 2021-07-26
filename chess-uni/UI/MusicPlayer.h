@@ -278,7 +278,6 @@ namespace chessuni {
 		void ListBoxSongs_SelectedIndexChanged(Object^ sender, EventArgs^ e) {
 			if (listBoxSongs->SelectedIndex != -1) {
 				omc(toStdString(names[listBoxSongs->SelectedIndex]));
-				selectMusicByIndex(listBoxSongs->SelectedIndex);
 			}
 		}
 		void onStatusChanged(Object^ sender, AxWMPLib::_WMPOCXEvents_PlayStateChangeEvent^ e) {

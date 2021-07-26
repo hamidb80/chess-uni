@@ -335,7 +335,9 @@ namespace UI {
 					if (0 <= p.Y * 8 + p.X && p.Y * 8 + p.X < 64)
 					{
 						auto btn = btns[p.Y * 8 + p.X];
-						btn->BackColor = Color::SkyBlue;
+
+						btn->BackColor = boardclass->board[p.Y, p.X] != Empty ? 
+							Color::PaleVioletRed : Color::SkyBlue;
 					}
 				}
 
