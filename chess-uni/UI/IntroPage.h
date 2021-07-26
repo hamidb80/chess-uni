@@ -16,6 +16,14 @@ namespace UI {
 	};
 	UserRoles* userRole = new UserRoles(NotSetRole);
 
+	bool isServer() {
+		return *UI::userRole == ServerRole;
+	}
+	bool isClient() {
+		return *UI::userRole == ClientRole;
+	}
+
+
 	public ref class IntroPage : public System::Windows::Forms::Form
 	{
 	public:

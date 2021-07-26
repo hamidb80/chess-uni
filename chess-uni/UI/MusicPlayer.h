@@ -74,7 +74,8 @@ namespace chessuni {
 			this->axWindowsMediaPlayer1->uiMode = "none";
 		}
 		void setControlVisibility(bool isVisible) {
-
+			this->btnPlayPause->Visible = isVisible;
+			this->btnSelectSongs->Visible = isVisible;
 		}
 
 		void setOffset(int offx, int offy) {
@@ -119,7 +120,6 @@ namespace chessuni {
 	private: System::Windows::Forms::SaveFileDialog^ saveFileDialog1;
 	private: System::Windows::Forms::GroupBox^ groupBoxMusic;
 
-	private: System::Windows::Forms::GroupBox^ controlGroup;
 	private: System::Windows::Forms::Button^ btnPlayPause;
 
 #pragma region Windows Form Designer generated code
@@ -141,7 +141,6 @@ namespace chessuni {
 			   this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
 			   this->saveFileDialog1 = (gcnew System::Windows::Forms::SaveFileDialog());
 			   this->groupBoxMusic = (gcnew System::Windows::Forms::GroupBox());
-			   this->controlGroup = (gcnew System::Windows::Forms::GroupBox());
 			   (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->axWindowsMediaPlayer1))->BeginInit();
 			   this->panel1->SuspendLayout();
 			   (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
@@ -226,29 +225,22 @@ namespace chessuni {
 			   this->groupBoxMusic->Size = System::Drawing::Size(239, 230);
 			   this->groupBoxMusic->TabIndex = 2;
 			   this->groupBoxMusic->TabStop = false;
-			   // 
-			   // musicPlayer
-			   // 
-
-			   this->controlGroup->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			   this->controlGroup->Location = System::Drawing::Point(0, 200);
-			   this->controlGroup->AutoSize = true;
 			   //
 			   // btn play pause
 			   // 
 			   this->btnPlayPause->BackColor = System::Drawing::Color::PeachPuff;
 			   this->btnPlayPause->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			   this->btnPlayPause->ForeColor = System::Drawing::Color::SaddleBrown;
+			   this->btnPlayPause->Location = Point(6, 200);
 			   this->btnPlayPause->TabIndex = 3;
 			   this->btnPlayPause->Text = L"play / pause";
 			   this->btnPlayPause->UseVisualStyleBackColor = false;
-			   this->btnPlayPause->AutoSize = true;
+			   this->btnPlayPause->Size = DSize(227, 23);
 			   this->btnPlayPause->Click += gcnew System::EventHandler(this, &musicPlayer::playPauseHandlre);
 			   // 
 			   // musicPlayer
 			   // 
-			   controlGroup->Controls->Add(this->btnPlayPause);
-			   groupBoxMusic->Controls->Add(this->controlGroup);
+			   groupBoxMusic->Controls->Add(this->btnPlayPause);
 			   this->Controls->Add(this->groupBoxMusic);
 
 			   (cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->axWindowsMediaPlayer1))->EndInit();

@@ -64,8 +64,8 @@ namespace UI {
 		ThemeOptions^ theme = gcnew ThemeOptions();
 		Thread^ saver;
 
-		bool
-			isSelectingCell = false,
+		// temporary app states
+		bool isSelectingCell = false,
 			isMyTrun = false;
 
 		Point lastSelectedCell;
@@ -84,7 +84,7 @@ namespace UI {
 			// roleLabel ---------------------------------------
 			roleLabel = gcnew Label();
 			roleLabel->Text = gcnew String(
-				*UI::userRole == ServerRole ? "server" : "client"
+				isServer() ? "server" : "client"
 			);
 			roleLabel->Location = Point(10, 20);
 			roleLabel->AutoSize = true;
@@ -92,7 +92,7 @@ namespace UI {
 				L"Guttman-CourMir", 20, FontStyle::Regular, GraphicsUnit::Point, 0);
 			this->Controls->Add(roleLabel); // add label to window
 
-	
+
 			// settings -------------------------------------
 			auto settings_font = gcnew System::Drawing::Font(L"Guttman-CourMir", 10, FontStyle::Regular, GraphicsUnit::Point, 0);
 
@@ -205,7 +205,7 @@ namespace UI {
 			this->Load += gcnew EventHandler(this, &GamePage::OnLoad);
 			this->FormClosing += gcnew FormClosingEventHandler(this, &GamePage::OnClosed);
 		}
-		
+
 		/// form events ----------------------------------------------
 		void OnLoad(Object^ sender, EventArgs^ e) {
 			// register socket events
@@ -219,7 +219,7 @@ namespace UI {
 			as->board = boardclass->board;
 			as->selectedTheme = theme;
 
-			if (*UI::userRole == ServerRole) {
+			if (isServer()) {
 				isMyTrun = true;
 				saver = gcnew Thread(gcnew ThreadStart(this, &GamePage::saveDataThread));
 				saver->Start();
@@ -230,26 +230,27 @@ namespace UI {
 
 			// prepare UI
 			boardComponent->initUI();
-			
+
 			showMovePreviewCheckBox->Checked = as->selectedTheme->showMovePreview;
 			showTimerCheckBox->Checked = as->showTimer;
-			
+
 			timer->setVisibility(as->showTimer);
 			timer->setTime(30 * 60);
 			timer->start();
-			
+
 			mp->initUI();
+			mp->setControlVisibility(isServer());
 		}
 		void OnClosed(Object^ sender, FormClosingEventArgs^ e) {
 			SocketInterop::removeAll();
 			timer->stop();
 		}
 		void loadDataClick(Object^ sender, EventArgs^ e) {
-			OpenFileDialog ^ofd = gcnew OpenFileDialog();
+			OpenFileDialog^ ofd = gcnew OpenFileDialog();
 			ofd->Multiselect = false;
 			ofd->Filter = "JSON Files|*.json";
 
-			if (ofd->ShowDialog() == System::Windows::Forms::DialogResult::OK) 
+			if (ofd->ShowDialog() == System::Windows::Forms::DialogResult::OK)
 			{
 				auto content = readFile(toStdString(ofd->FileName));
 				SocketInterop::sendNtrigger("game-init", json::parse(content));
@@ -257,7 +258,7 @@ namespace UI {
 		}
 
 		// indirect events -------------------------------------------
-		
+
 		// by threads
 		void saveDataThread() {
 			while (!this->IsDisposed) {
@@ -285,8 +286,8 @@ namespace UI {
 			else {
 				// check user clicked on a valid cell or not
 				if (!(
-					(*UI::userRole == ServerRole && isWhite(boardclass->board[p.Y, p.X])) ||
-					(*UI::userRole == ClientRole && isBlack(boardclass->board[p.Y, p.X]))
+					(isServer() && isWhite(boardclass->board[p.Y, p.X])) ||
+					(isClient() && isBlack(boardclass->board[p.Y, p.X]))
 					)) return;
 
 				isSelectingCell = true;
@@ -303,7 +304,7 @@ namespace UI {
 		void onPlayStateChanged(int stateCode) {
 			as->IsMusicPlaying = (stateCode == PLAYING);
 
-			if (*UI::userRole == ServerRole)
+			if (isServer())
 				SocketInterop::send("setting", as->serialize());
 		}
 		void onNewMusicSelected(string fpath, string fname)
