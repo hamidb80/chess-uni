@@ -149,7 +149,7 @@ namespace chessuni {
 			   // axWindowsMediaPlayer1
 			   // 
 			   this->axWindowsMediaPlayer1->Enabled = true;
-			   this->axWindowsMediaPlayer1->Location = System::Drawing::Point(6, 151);
+			   this->axWindowsMediaPlayer1->Location = System::Drawing::Point(6, 122);
 			   this->axWindowsMediaPlayer1->Name = L"axWindowsMediaPlayer1";
 			   this->axWindowsMediaPlayer1->OcxState = (cli::safe_cast<System::Windows::Forms::AxHost::State^>(resources->GetObject(L"axWindowsMediaPlayer1.OcxState")));
 			   this->axWindowsMediaPlayer1->Size = System::Drawing::Size(227, 45);
@@ -192,7 +192,7 @@ namespace chessuni {
 			   this->btnSelectSongs->BackColor = System::Drawing::Color::PeachPuff;
 			   this->btnSelectSongs->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			   this->btnSelectSongs->ForeColor = System::Drawing::Color::SaddleBrown;
-			   this->btnSelectSongs->Location = System::Drawing::Point(6, 122);
+			   this->btnSelectSongs->Location = System::Drawing::Point(6, 172);
 			   this->btnSelectSongs->Name = L"btnSelectSongs";
 			   this->btnSelectSongs->Size = System::Drawing::Size(227, 23);
 			   this->btnSelectSongs->TabIndex = 3;

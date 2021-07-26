@@ -17,10 +17,10 @@ namespace UI {
 	UserRoles* userRole = new UserRoles(NotSetRole);
 
 	bool isServer() {
-		return *UI::userRole == ServerRole;
+		return (*UI::userRole == ServerRole);
 	}
 	bool isClient() {
-		return *UI::userRole == ClientRole;
+		return (*UI::userRole == ClientRole);
 	}
 
 

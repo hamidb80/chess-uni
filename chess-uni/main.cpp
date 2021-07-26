@@ -10,7 +10,7 @@ void run() {
 	Application::SetCompatibleTextRenderingDefault(false);
 	Application::EnableVisualStyles();
 
-	/*UI::IntroPage inp;
+	UI::IntroPage inp;
 	Application::Run(% inp);
 
 	if (*UI::userRole == UI::ServerRole)
@@ -25,9 +25,9 @@ void run() {
 	UI::WaitRoom waitForm;
 	Application::Run(% waitForm);
 
-	if (*UI::isCanceled) return;*/
+	if (*UI::isCanceled) return;
 
-	* UI::userRole = UI::ServerRole;
+	//* UI::userRole = UI::ServerRole;
 
 	UI::GamePage form;
 	Application::Run(% form);

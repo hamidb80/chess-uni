@@ -27,17 +27,21 @@ namespace UI {
 	using namespace System::Threading;
 	using DSize = System::Drawing::Size;
 
-	int windowWidth = 1000, windowHeight = 840,
-		offsetX = 50, offsetY = 140;
+	int windowWidth = 940, windowHeight = 840,
+		offsetX = 20, offsetY = 140;
 
-	string DBpath;
+	
 
 	public ref class GamePage : public Form
 	{
+		String^ DBpath;
+		int sessionId;
+
 	public:
 		GamePage()
 		{
-			DBpath = toStdString(currentDir()) + "databases/" + to_string(freakin_random_number()) + ".json";
+			sessionId = freakin_random_number();
+			DBpath = gcnew String((toStdString(currentDir()) + "databases/" + to_string(sessionId) + ".json").c_str());
 			InitializeComponent();
 		}
 		~GamePage()
@@ -51,6 +55,7 @@ namespace UI {
 		IContainer^ components;
 		ChessBoard^ boardComponent;
 		Label^ roleLabel;
+		Label^ sessionIdLabel;
 		Timerr^ timer;
 		chessuni::musicPlayer^ mp;
 		GroupBox^ settings;
@@ -92,6 +97,15 @@ namespace UI {
 				L"Guttman-CourMir", 20, FontStyle::Regular, GraphicsUnit::Point, 0);
 			this->Controls->Add(roleLabel); // add label to window
 
+			// session id 
+			sessionIdLabel = gcnew Label();
+			sessionIdLabel->Text = gcnew String(("session id: " + to_string(sessionId)).c_str());
+			sessionIdLabel->Location = Point(280, 10);
+			sessionIdLabel->AutoSize = true;
+			sessionIdLabel->Font = gcnew Drawing::Font(
+				L"Guttman-CourMir", 12, FontStyle::Regular, GraphicsUnit::Point, 0);
+			this->Controls->Add(sessionIdLabel); // add label to window
+
 
 			// settings -------------------------------------
 			auto settings_font = gcnew System::Drawing::Font(L"Guttman-CourMir", 10, FontStyle::Regular, GraphicsUnit::Point, 0);
@@ -99,7 +113,7 @@ namespace UI {
 			settings = gcnew GroupBox();
 			settings->Width = 100;
 			settings->AutoSize = true;
-			settings->Location = Point(760, 280);
+			settings->Location = Point(740, 280);
 
 			auto so1 = gcnew SelectOption(
 				settings->Controls,
@@ -193,7 +207,7 @@ namespace UI {
 				gcnew OnMusicChangedEvent(this, &GamePage::onMusicChanged),
 				gcnew OnPlayStateChangeEvent(this, &GamePage::onPlayStateChanged)
 			);
-			mp->setOffset(700, 40);
+			mp->setOffset(670, 40);
 
 			// add to the page ----------------------------
 			settings->Controls->Add(showMovePreviewCheckBox);
@@ -262,7 +276,7 @@ namespace UI {
 		// by threads
 		void saveDataThread() {
 			while (!this->IsDisposed) {
-				writeFile(DBpath, as->serialize().dump());
+				writeFile(toStdString(DBpath), as->serialize().dump());
 				Thread::Sleep(1 * 5 * 1000); // wait for 1 minute
 			}
 		}
