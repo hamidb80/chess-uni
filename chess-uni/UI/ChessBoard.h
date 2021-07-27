@@ -40,191 +40,1509 @@ namespace UI {
 
 			auto piece = board[piecePosition.Y, piecePosition.X];
 			bool isWhite = int(piece) > 0;
-
+			bool WhiteCheck = 0;
+			bool BlackCheck = 0;
 			switch (piece)
 			{
 			case Empty:
 				break;
 				///////////////////////////PAWN
+
 			case WhitePawn:
-				result->Add(Point(piecePosition.X, piecePosition.Y - 1));
-				result->Add(Point(piecePosition.X, piecePosition.Y - 2));
+
+				if (piecePosition.Y - 2 > -1)
+				{
+					int x = 0, y = 0;
+					x = piecePosition.X;
+					y = piecePosition.Y;
+
+					if ((int(board[y - 2, x]) < 0 || int(board[y - 2, x]) == 0) && int(board[y - 1, x]) == 0)
+					{
+						result->Add(Point(piecePosition.X, piecePosition.Y - 2));
+						result->Add(Point(piecePosition.X, piecePosition.Y - 1));
+					}
+					if (x + 1 < 8 && int(board[y - 1, x + 1]) < 0)
+						result->Add(Point(piecePosition.X + 1, piecePosition.Y - 1));
+					if (x - 1 > -1 && int(board[y - 1, x - 1]) < 0)
+						result->Add(Point(piecePosition.X - 1, piecePosition.Y - 1));
+					if (int(board[y - 1, x]) < 0 || int(board[y - 1, x]) == 0)
+					{
+						result->Add(Point(piecePosition.X, piecePosition.Y - 1));
+					}
+					else if (int(board[y - 1, x]) < 0 || int(board[y - 2, x]) > 0)
+					{
+						result->Add(Point(piecePosition.X, piecePosition.Y - 1));
+					}
+
+					//else if (int(board[ y - 1 , x]) > 0) {}
+
+
+				}
 				break;
 			case BlackPawn:
-				result->Add(Point(piecePosition.X, piecePosition.Y + 1));
-				result->Add(Point(piecePosition.X, piecePosition.Y + 2));
+				//result->Add(Point(piecePosition.X, piecePosition.Y + 1));
+				//result->Add(Point(piecePosition.X, piecePosition.Y + 2));
+				//////////////////////
+				if (piecePosition.Y + 2 > -1)
+				{
+					int x = 0, y = 0;
+					x = piecePosition.X;
+					y = piecePosition.Y;
+
+					if ((int(board[y + 2, x]) > 0 || int(board[y + 2, x]) == 0) && int(board[y + 1, x]) == 0)
+					{
+						result->Add(Point(piecePosition.X, piecePosition.Y + 2));
+						result->Add(Point(piecePosition.X, piecePosition.Y + 1));
+					}
+					if (x + 1 < 8 && int(board[y + 1, x + 1]) > 0)
+						result->Add(Point(piecePosition.X + 1, piecePosition.Y + 1));
+					if (x - 1 > -1 && int(board[y + 1, x - 1]) > 0)
+						result->Add(Point(piecePosition.X - 1, piecePosition.Y + 1));
+					if (int(board[y + 1, x]) > 0 || int(board[y + 1, x]) == 0)
+					{
+						result->Add(Point(piecePosition.X, piecePosition.Y + 1));
+					}
+					else if (int(board[y + 1, x]) > 0 || int(board[y + 2, x]) > 0)
+					{
+						result->Add(Point(piecePosition.X, piecePosition.Y - 1));
+					}
+
+					//else if (int(board[y + 1, x]) < 0) {}
+				}
+				
+
+
 				break;
 				////////////////////////////ROOK
 			case WhiteRook:
-				int d[8];
-				for (int i = 0; i < 8; i++)
+			{
+				int x = 0, y = 0;
+				x = piecePosition.X;
+				y = piecePosition.Y;
+				for (int i = piecePosition.Y + 1; i < 8; i++)
 				{
+					if (int(board[i, piecePosition.X]) > 0)
+						break;
+					if (int(board[i, piecePosition.X]) < 0)
+					{
+						result->Add(Point(piecePosition.X, i));
+						break;
+					}
 					result->Add(Point(piecePosition.X, i));
-					result->Add(Point(i, piecePosition.Y));
 				}
+
+				for (int i = piecePosition.Y - 1; i > -1; i--)
+				{
+					if (int(board[i, piecePosition.X]) > 0)
+						break;
+					if (int(board[i, piecePosition.X]) < 0)
+					{
+						result->Add(Point(piecePosition.X, i));
+						break;
+					}
+
+					result->Add(Point(piecePosition.X, i));
+				}
+				/// ////
+				for (int i = piecePosition.X + 1; i < 8; i++)
+				{
+					if (int(board[piecePosition.Y, i]) > 0)
+						break;
+					if (int(board[piecePosition.Y, i]) < 0)
+					{
+						result->Add(Point(i, piecePosition.Y));
+						break;
+					}
+					result->Add(Point(i, piecePosition.Y));
+
+				}
+				for (int i = piecePosition.X - 1; i > -1; i--)
+				{
+					if (int(board[piecePosition.Y, i]) > 0)
+						break;
+					if (int(board[piecePosition.Y, i]) < 0)
+					{
+						result->Add(Point(i, piecePosition.Y));
+						break;
+					}
+					result->Add(Point(i, piecePosition.Y));
+
+				}
+
 				break;
+				
+
+			}
 			case BlackRook:
-				for (int i = 0; i < 8; i++)
+			{
+				int x = 0, y = 0;
+				x = piecePosition.X;
+				y = piecePosition.Y;
+
+				for (int i = piecePosition.Y + 1; i < 8; i++)
 				{
+					if (int(board[i, piecePosition.X]) < 0)
+						break;
+					if (int(board[i, piecePosition.X]) > 0)
+					{
+						result->Add(Point(piecePosition.X, i));
+						break;
+					}
 					result->Add(Point(piecePosition.X, i));
+				}
+
+				for (int i = piecePosition.Y - 1; i > -1; i--)
+				{
+					if (int(board[i, piecePosition.X]) < 0)
+						break;
+					if (int(board[i, piecePosition.X]) > 0)
+					{
+						result->Add(Point(piecePosition.X, i));
+						break;
+					}
+
+					result->Add(Point(piecePosition.X, i));
+				}
+				/// ////
+				for (int i = piecePosition.X + 1; i < 8; i++)
+				{
+					if (int(board[piecePosition.Y, i]) < 0)
+						break;
+					if (int(board[piecePosition.Y, i]) > 0)
+					{
+						result->Add(Point(i, piecePosition.Y));
+						break;
+					}
 					result->Add(Point(i, piecePosition.Y));
+
+				}
+				for (int i = piecePosition.X - 1; i > -1; i--)
+				{
+					if (int(board[piecePosition.Y, i]) < 0)
+						break;
+					if (int(board[piecePosition.Y, i]) > 0)
+					{
+						result->Add(Point(i, piecePosition.Y));
+						break;
+					}
+					result->Add(Point(i, piecePosition.Y));
+
 				}
 				break;
-				////////////////////////////KNIGHT
+
+			}
+
+			////////////////////////////KNIGHT
 
 			case WhiteKnight:
+			{
+				int x = 0, y = 0;
+				x = piecePosition.X;
+				y = piecePosition.Y;
+
 				if (piecePosition.X + 2 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y - 2 > -1 && piecePosition.X - 2 > -1)
 				{
-					result->Add(Point(piecePosition.X + 1, piecePosition.Y + 2));
-					result->Add(Point(piecePosition.X + 1, piecePosition.Y - 2));
-					result->Add(Point(piecePosition.X - 1, piecePosition.Y + 2));
-					result->Add(Point(piecePosition.X - 1, piecePosition.Y - 2));
 
-					result->Add(Point(piecePosition.X + 2, piecePosition.Y + 1));
-					result->Add(Point(piecePosition.X + 2, piecePosition.Y - 1));
-					result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
-					result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
+					if (int(board[y + 2, x + 1]) < 0 || int(board[y + 2, x + 1]) == 0)
+						result->Add(Point(piecePosition.X + 1, piecePosition.Y + 2));
+					if (int(board[y - 2, x + 1]) < 0 || int(board[y - 2, x + 1]) == 0)
+						result->Add(Point(piecePosition.X + 1, piecePosition.Y - 2));
+					if (int(board[y + 2, x - 1]) < 0 || int(board[y + 2, x - 1]) == 0)
+						result->Add(Point(piecePosition.X - 1, piecePosition.Y + 2));
+					if (int(board[y - 2, x - 1]) < 0 || int(board[y - 2, x - 1]) == 0)
+						result->Add(Point(piecePosition.X - 1, piecePosition.Y - 2));
+
+					if (int(board[y + 1, x + 2]) < 0 || int(board[y + 1, x + 2]) == 0)
+						result->Add(Point(piecePosition.X + 2, piecePosition.Y + 1));
+					if (int(board[y - 1, x + 2]) < 0 || int(board[y - 1, x + 2]) == 0)
+						result->Add(Point(piecePosition.X + 2, piecePosition.Y - 1));
+					if (int(board[y + 1, x - 2]) < 0 || int(board[y + 1, x - 2]) == 0)
+						result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
+					if (int(board[y - 1, x - 2]) < 0 || int(board[y - 1, x - 2]) == 0)
+						result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
 				}
 				else
 				{
+
+
 					if (piecePosition.X + 1 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y + 2 > -1 && piecePosition.X + 1 > -1)
-						result->Add(Point(piecePosition.X + 1, piecePosition.Y + 2));
+						if (int(board[y + 2, x + 1]) < 0 || int(board[y + 2, x + 1]) == 0)
+							result->Add(Point(piecePosition.X + 1, piecePosition.Y + 2));
+
 					if (piecePosition.X + 1 < 8 && piecePosition.Y - 2 < 8 && piecePosition.Y - 2 > -1 && piecePosition.X + 1 > -1)
-						result->Add(Point(piecePosition.X + 1, piecePosition.Y - 2));
+						if (int(board[y - 2, x + 1]) < 0 || int(board[y - 2, x + 1]) == 0)
+							result->Add(Point(piecePosition.X + 1, piecePosition.Y - 2));
+
 					if (piecePosition.X - 1 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y + 2 > -1 && piecePosition.X - 1 > -1)
-						result->Add(Point(piecePosition.X - 1, piecePosition.Y + 2));
+						if (int(board[y + 2, x - 1]) < 0 || int(board[y + 2, x - 1]) == 0)
+							result->Add(Point(piecePosition.X - 1, piecePosition.Y + 2));
+
 					if (piecePosition.X - 1 < 8 && piecePosition.Y - 2 < 8 && piecePosition.Y - 2 > -1 && piecePosition.X - 1 > -1)
-						result->Add(Point(piecePosition.X - 1, piecePosition.Y - 2));
+						if (int(board[y - 2, x - 1]) < 0 || int(board[y - 2, x - 1]) == 0)
+							result->Add(Point(piecePosition.X - 1, piecePosition.Y - 2));
 
 					if (piecePosition.X + 2 < 8 && piecePosition.Y + 1 < 8 && piecePosition.Y + 1 > -1 && piecePosition.X + 2 > -1)
-						result->Add(Point(piecePosition.X + 2, piecePosition.Y + 1));
+						if (int(board[y + 1, x + 2]) < 0 || int(board[y + 1, x + 2]) == 0)
+							result->Add(Point(piecePosition.X + 2, piecePosition.Y + 1));
+
 					if (piecePosition.X + 2 < 8 && piecePosition.Y - 1 < 8 && piecePosition.Y - 1 > -1 && piecePosition.X + 2 > -1)
-						result->Add(Point(piecePosition.X + 2, piecePosition.Y - 1));
+						if (int(board[y - 1, x + 2]) < 0 || int(board[y - 1, x + 2]) == 0)
+							result->Add(Point(piecePosition.X + 2, piecePosition.Y - 1));
+
 					if (piecePosition.X - 2 < 8 && piecePosition.Y + 1 < 8 && piecePosition.Y + 1 > -1 && piecePosition.X - 2 > -1)
-						result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
+						if (int(board[y + 1, x - 2]) < 0 || int(board[y + 1, x - 2]) == 0)
+							result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
+
 					if (piecePosition.X - 2 < 8 && piecePosition.Y - 1 < 8 && piecePosition.Y - 1 > -1 && piecePosition.X - 2 > -1)
-						result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
+						if (int(board[y - 1, x - 2]) < 0 || int(board[y - 1, x - 2]) == 0)
+							result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
 
 				}
+			}
 
-				break;
+			break;
+
 			case BlackKnight:
+
+			{
+				int x = 0, y = 0;
+				x = piecePosition.X;
+				y = piecePosition.Y;
+
 				if (piecePosition.X + 2 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y - 2 > -1 && piecePosition.X - 2 > -1)
 				{
-					result->Add(Point(piecePosition.X + 1, piecePosition.Y + 2));
-					result->Add(Point(piecePosition.X + 1, piecePosition.Y - 2));
-					result->Add(Point(piecePosition.X - 1, piecePosition.Y + 2));
-					result->Add(Point(piecePosition.X - 1, piecePosition.Y - 2));
+					if (int(board[y + 2, x + 1]) > 0 || int(board[y + 2, x + 1]) == 0)
+						result->Add(Point(piecePosition.X + 1, piecePosition.Y + 2));
 
-					result->Add(Point(piecePosition.X + 2, piecePosition.Y + 1));
-					result->Add(Point(piecePosition.X + 2, piecePosition.Y - 1));
-					result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
-					result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
+					if (int(board[y - 2, x + 1]) > 0 || int(board[y - 2, x + 1]) == 0)
+						result->Add(Point(piecePosition.X + 1, piecePosition.Y - 2));
+
+					if (int(board[y + 2, x - 1]) > 0 || int(board[y + 2, x - 1]) == 0)
+						result->Add(Point(piecePosition.X - 1, piecePosition.Y + 2));
+
+					if (int(board[y - 2, x - 1]) > 0 || int(board[y - 2, x - 1]) == 0)
+						result->Add(Point(piecePosition.X - 1, piecePosition.Y - 2));
+
+					if (int(board[y + 1, x + 2]) > 0 || int(board[y + 1, x + 2]) == 0)
+						result->Add(Point(piecePosition.X + 2, piecePosition.Y + 1));
+
+					if (int(board[y - 1, x + 2]) > 0 || int(board[y - 1, x + 2]) == 0)
+						result->Add(Point(piecePosition.X + 2, piecePosition.Y - 1));
+
+					if (int(board[y + 1, x - 2]) > 0 || int(board[y + 1, x - 2]) == 0)
+						result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
+
+					if (int(board[y - 1, x - 2]) > 0 || int(board[y - 1, x - 2]) == 0)
+						result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
 				}
 				else
 				{
 					if (piecePosition.X + 1 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y + 2 > -1 && piecePosition.X + 1 > -1)
-						result->Add(Point(piecePosition.X + 1, piecePosition.Y + 2));
+						if (int(board[y + 2, x + 1]) > 0 || int(board[y + 2, x + 1]) == 0)
+							result->Add(Point(piecePosition.X + 1, piecePosition.Y + 2));
+
 					if (piecePosition.X + 1 < 8 && piecePosition.Y - 2 < 8 && piecePosition.Y - 2 > -1 && piecePosition.X + 1 > -1)
-						result->Add(Point(piecePosition.X + 1, piecePosition.Y - 2));
+						if (int(board[y - 2, x + 1]) > 0 || int(board[y - 2, x + 1]) == 0)
+							result->Add(Point(piecePosition.X + 1, piecePosition.Y - 2));
+
 					if (piecePosition.X - 1 < 8 && piecePosition.Y + 2 < 8 && piecePosition.Y + 2 > -1 && piecePosition.X - 1 > -1)
-						result->Add(Point(piecePosition.X - 1, piecePosition.Y + 2));
+						if (int(board[y + 2, x - 1]) > 0 || int(board[y + 2, x - 1]) == 0)
+							result->Add(Point(piecePosition.X - 1, piecePosition.Y + 2));
+
 					if (piecePosition.X - 1 < 8 && piecePosition.Y - 2 < 8 && piecePosition.Y - 2 > -1 && piecePosition.X - 1 > -1)
-						result->Add(Point(piecePosition.X - 1, piecePosition.Y - 2));
+						if (int(board[y - 2, x - 1]) > 0 || int(board[y - 2, x - 1]) == 0)
+							result->Add(Point(piecePosition.X - 1, piecePosition.Y - 2));
 
 					if (piecePosition.X + 2 < 8 && piecePosition.Y + 1 < 8 && piecePosition.Y + 1 > -1 && piecePosition.X + 2 > -1)
-						result->Add(Point(piecePosition.X + 2, piecePosition.Y + 1));
-					if (piecePosition.X + 2 < 8 && piecePosition.Y - 1 < 8 && piecePosition.Y - 1 > -1 && piecePosition.X + 2 > -1)
-						result->Add(Point(piecePosition.X + 2, piecePosition.Y - 1));
-					if (piecePosition.X - 2 < 8 && piecePosition.Y + 1 < 8 && piecePosition.Y + 1 > -1 && piecePosition.X - 2 > -1)
-						result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
-					if (piecePosition.X - 2 < 8 && piecePosition.Y - 1 < 8 && piecePosition.Y - 1 > -1 && piecePosition.X - 2 > -1)
-						result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
+						if (int(board[y + 1, x + 2]) > 0 || int(board[y + 1, x + 2]) == 0)
+							result->Add(Point(piecePosition.X + 2, piecePosition.Y + 1));
 
+					if (piecePosition.X + 2 < 8 && piecePosition.Y - 1 < 8 && piecePosition.Y - 1 > -1 && piecePosition.X + 2 > -1)
+						if (int(board[y - 1, x + 2]) > 0 || int(board[y - 1, x + 2]) == 0)
+							result->Add(Point(piecePosition.X + 2, piecePosition.Y - 1));
+
+					if (piecePosition.X - 2 < 8 && piecePosition.Y + 1 < 8 && piecePosition.Y + 1 > -1 && piecePosition.X - 2 > -1)
+						if (int(board[y + 1, x - 2]) > 0 || int(board[y + 1, x - 2]) == 0)
+							result->Add(Point(piecePosition.X - 2, piecePosition.Y + 1));
+
+					if (piecePosition.X - 2 < 8 && piecePosition.Y - 1 < 8 && piecePosition.Y - 1 > -1 && piecePosition.X - 2 > -1)
+						if (int(board[y - 1, x - 2]) > 0 || int(board[y - 1, x - 2]) == 0)
+							result->Add(Point(piecePosition.X - 2, piecePosition.Y - 1));
 				}
 
+			}
 
-				break;
+			break;
 
 			case WhiteBishop:
-				for (int i = 0; i < 8; i++)
+			{
+				bool Break = 0;
+				for (int i = piecePosition.X + 1; i < 8; i++) // SE
 				{
-					for (int j = 0; j < 8; j++)
+					for (int j = piecePosition.Y + 1 ; j < 8; j++)
 					{
+
 						if (i - piecePosition.X == j - piecePosition.Y)
-							result->Add(Point(i, j));
+						{
+							if (int(board[j, i]) > 0)                                           //////
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+
 						else if (i - piecePosition.X == piecePosition.Y - j)
-							result->Add(Point(i, j));
+						{
+							if (int(board[j, i]) > 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
 					}
+
+					if (Break)
+						break;
 				}
+				Break = 0;
+
+				for (int i = piecePosition.X - 1; i > -1; i--) //NW 
+				{
+
+					for (int j = piecePosition.Y - 1; j > -1; j--)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) > 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+
+						}
+						else if (i - piecePosition.X == piecePosition.Y - j)
+						{
+							if (int(board[j, i]) > 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+					}
+
+					if (Break)
+						break;
+				}
+
+				Break = 0;
+
+				for (int j = piecePosition.Y + 1; j < 8; j++) ///SW
+				{
+
+					for (int i = piecePosition.X - 1 ; i > -1; i--)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) > 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+
+						}
+						else if (i - piecePosition.X == piecePosition.Y - j)/////////
+						{
+							if (int(board[j, i]) > 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+
+						}
+					}
+
+					if (Break)
+						break;
+				}
+
+				Break = 0;
+
+				for (int j = piecePosition.Y - 1; j > -1; j--) ///NE
+				{
+
+					for (int i = piecePosition.X + 1; i < 8; i++)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) > 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+						else if (i - piecePosition.X == piecePosition.Y - j)
+						{
+							if (int(board[j, i]) > 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+					}
+
+					if (Break)
+						break;
+				}
+				
+				
 				break;
+			}
+		
+				
 			case BlackBishop:
-				for (int i = 0; i < 8; i++)
-				{
-					for (int j = 0; j < 8; j++)
-					{
-						if (i - piecePosition.X == j - piecePosition.Y)
-							result->Add(Point(i, j));
-						else if (i - piecePosition.X == piecePosition.Y - j)
-							result->Add(Point(i, j));
-					}
-				}
-				break;
+			{
+				bool Break = 0;
 
+				for (int i = piecePosition.X + 1; i < 8; i++) // SE
+				{
+					for (int j = piecePosition.Y + 1; j < 8; j++)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) < 0)                                           //////
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+
+						else if (i - piecePosition.X == piecePosition.Y - j)
+						{
+							if (int(board[j, i]) < 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+					}
+
+					if (Break)
+						break;
+				}
+				Break = 0;
+
+				for (int i = piecePosition.X - 1; i > -1; i--) //NW 
+				{
+
+					for (int j = piecePosition.Y - 1; j > -1; j--)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) < 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+
+						}
+						else if (i - piecePosition.X == piecePosition.Y - j)
+						{
+							if (int(board[j, i]) < 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+					}
+
+					if (Break)
+						break;
+				}
+
+				Break = 0;
+
+				for (int j = piecePosition.Y + 1; j < 8; j++) ///SW
+				{
+
+					for (int i = piecePosition.X - 1; i > -1; i--)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) < 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+
+						}
+						else if (i - piecePosition.X == piecePosition.Y - j)/////////
+						{
+							if (int(board[j, i]) < 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+
+						}
+					}
+
+					if (Break)
+						break;
+				}
+
+				Break = 0;
+
+				for (int j = piecePosition.Y - 1; j > -1; j--) ///NE
+				{
+
+					for (int i = piecePosition.X + 1; i < 8; i++)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) < 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+						else if (i - piecePosition.X == piecePosition.Y - j)
+						{
+							if (int(board[j, i]) < 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+					}
+
+					if (Break)
+						break;
+				}
+
+
+				break;
+			}
+			
 			case WhiteQueen:
-				for (int i = 0; i < 8; i++)
+			{
+
+				bool Break = 0;
+				int x = 0, y = 0;
+				x = piecePosition.X;
+				y = piecePosition.Y;
+				for (int i = piecePosition.Y + 1; i < 8; i++)
 				{
-					for (int j = 0; j < 8; j++)
+					if (int(board[i, piecePosition.X]) > 0)
+						break;
+					if (int(board[i, piecePosition.X]) < 0)
 					{
-						if (i - piecePosition.X == j - piecePosition.Y)
-							result->Add(Point(i, j));
-						else if (i - piecePosition.X == piecePosition.Y - j)
-							result->Add(Point(i, j));
+						result->Add(Point(piecePosition.X, i));
+						break;
 					}
 					result->Add(Point(piecePosition.X, i));
-					result->Add(Point(i, piecePosition.Y));
 				}
-				break;
 
-			case BlackQueen:
-				for (int i = 0; i < 8; i++)
+				for (int i = piecePosition.Y - 1; i > -1; i--)
 				{
-					for (int j = 0; j < 8; j++)
+					if (int(board[i, piecePosition.X]) > 0)
+						break;
+					if (int(board[i, piecePosition.X]) < 0)
 					{
-						if (i - piecePosition.X == j - piecePosition.Y)
-							result->Add(Point(i, j));
-						else if (i - piecePosition.X == piecePosition.Y - j)
-							result->Add(Point(i, j));
+						result->Add(Point(piecePosition.X, i));
+						break;
 					}
-					result->Add(Point(piecePosition.X, i));
-					result->Add(Point(i, piecePosition.Y));
-				}
-				break;
 
-				////////////////////////////KING
-			case WhiteKing:
-				result->Add(Point(piecePosition.X, piecePosition.Y + 1));
-				result->Add(Point(piecePosition.X, piecePosition.Y - 1));
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y));
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y));
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y + 1));
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y - 1));
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y - 1));
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y + 1));
-				break;
-			case BlackKing:
-				result->Add(Point(piecePosition.X, piecePosition.Y + 1));
-				result->Add(Point(piecePosition.X, piecePosition.Y - 1));
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y));
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y));
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y + 1));
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y - 1));
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y - 1));
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y + 1));
+					result->Add(Point(piecePosition.X, i));
+				}
+				/// ////
+				for (int i = piecePosition.X + 1; i < 8; i++)
+				{
+					if (int(board[piecePosition.Y, i]) > 0)
+						break;
+					if (int(board[piecePosition.Y, i]) < 0)
+					{
+						result->Add(Point(i, piecePosition.Y));
+						break;
+					}
+					result->Add(Point(i, piecePosition.Y));
+
+				}
+				for (int i = piecePosition.X - 1; i > -1; i--)
+				{
+					if (int(board[piecePosition.Y, i]) > 0)
+						break;
+					if (int(board[piecePosition.Y, i]) < 0)
+					{
+						result->Add(Point(i, piecePosition.Y));
+						break;
+					}
+					result->Add(Point(i, piecePosition.Y));
+
+				}
+				for (int i = piecePosition.X + 1; i < 8; i++) // SE
+				{
+					for (int j = piecePosition.Y + 1; j < 8; j++)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) > 0)                                           //////
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+
+						else if (i - piecePosition.X == piecePosition.Y - j)
+						{
+							if (int(board[j, i]) > 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+					}
+
+					if (Break)
+						break;
+				}
+				Break = 0;
+
+				for (int i = piecePosition.X - 1; i > -1; i--) //NW 
+				{
+
+					for (int j = piecePosition.Y - 1; j > -1; j--)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) > 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+
+						}
+						else if (i - piecePosition.X == piecePosition.Y - j)
+						{
+							if (int(board[j, i]) > 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+					}
+
+					if (Break)
+						break;
+				}
+
+				Break = 0;
+
+				for (int j = piecePosition.Y + 1; j < 8; j++) ///SW
+				{
+
+					for (int i = piecePosition.X - 1; i > -1; i--)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) > 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+
+						}
+						else if (i - piecePosition.X == piecePosition.Y - j)/////////
+						{
+							if (int(board[j, i]) > 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+
+						}
+					}
+
+					if (Break)
+						break;
+				}
+
+				Break = 0;
+
+				for (int j = piecePosition.Y - 1; j > -1; j--) ///NE
+				{
+
+					for (int i = piecePosition.X + 1; i < 8; i++)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) > 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+						else if (i - piecePosition.X == piecePosition.Y - j)
+						{
+							if (int(board[j, i]) > 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) < 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+					}
+
+					if (Break)
+						break;
+				}
+
+
 				break;
 			}
 
+			/*
+				for (int i = 0; i < 8; i++)
+				{
+					for (int j = 0; j < 8; j++)
+					{
+						if (i - piecePosition.X == j - piecePosition.Y)
+							result->Add(Point(i, j));
+						else if (i - piecePosition.X == piecePosition.Y - j)
+							result->Add(Point(i, j));
+					}
+					result->Add(Point(piecePosition.X, i));
+					result->Add(Point(i, piecePosition.Y));
+				}
+				break;
+					 */
+			case BlackQueen:
+			{
+				bool Break = 0;
+				int x = 0, y = 0;
+				x = piecePosition.X;
+				y = piecePosition.Y;
+
+				for (int i = piecePosition.Y + 1; i < 8; i++)
+				{
+					if (int(board[i, piecePosition.X]) < 0)
+						break;
+					if (int(board[i, piecePosition.X]) > 0)
+					{
+						result->Add(Point(piecePosition.X, i));
+						break;
+					}
+					result->Add(Point(piecePosition.X, i));
+				}
+
+				for (int i = piecePosition.Y - 1; i > -1; i--)
+				{
+					if (int(board[i, piecePosition.X]) < 0)
+						break;
+					if (int(board[i, piecePosition.X]) > 0)
+					{
+						result->Add(Point(piecePosition.X, i));
+						break;
+					}
+
+					result->Add(Point(piecePosition.X, i));
+				}
+				/// ////
+				for (int i = piecePosition.X + 1; i < 8; i++)
+				{
+					if (int(board[piecePosition.Y, i]) < 0)
+						break;
+					if (int(board[piecePosition.Y, i]) > 0)
+					{
+						result->Add(Point(i, piecePosition.Y));
+						break;
+					}
+					result->Add(Point(i, piecePosition.Y));
+
+				}
+				for (int i = piecePosition.X - 1; i > -1; i--)
+				{
+					if (int(board[piecePosition.Y, i]) < 0)
+						break;
+					if (int(board[piecePosition.Y, i]) > 0)
+					{
+						result->Add(Point(i, piecePosition.Y));
+						break;
+					}
+					result->Add(Point(i, piecePosition.Y));
+
+				}
+				for (int i = piecePosition.X + 1; i < 8; i++) // SE
+				{
+					for (int j = piecePosition.Y + 1; j < 8; j++)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) < 0)                                           //////
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+
+						else if (i - piecePosition.X == piecePosition.Y - j)
+						{
+							if (int(board[j, i]) < 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+					}
+
+					if (Break)
+						break;
+				}
+				Break = 0;
+
+				for (int i = piecePosition.X - 1; i > -1; i--) //NW 
+				{
+
+					for (int j = piecePosition.Y - 1; j > -1; j--)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) < 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+
+						}
+						else if (i - piecePosition.X == piecePosition.Y - j)
+						{
+							if (int(board[j, i]) < 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+					}
+
+					if (Break)
+						break;
+				}
+
+				Break = 0;
+
+				for (int j = piecePosition.Y + 1; j < 8; j++) ///SW
+				{
+
+					for (int i = piecePosition.X - 1; i > -1; i--)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) < 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+
+						}
+						else if (i - piecePosition.X == piecePosition.Y - j)/////////
+						{
+							if (int(board[j, i]) < 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+
+						}
+					}
+
+					if (Break)
+						break;
+				}
+
+				Break = 0;
+
+				for (int j = piecePosition.Y - 1; j > -1; j--) ///NE
+				{
+
+					for (int i = piecePosition.X + 1; i < 8; i++)
+					{
+
+						if (i - piecePosition.X == j - piecePosition.Y)
+						{
+							if (int(board[j, i]) < 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+						else if (i - piecePosition.X == piecePosition.Y - j)
+						{
+							if (int(board[j, i]) < 0)
+							{
+								if (i == piecePosition.X && j == piecePosition.Y)
+									continue;
+								Break = 1;
+								break;
+							}
+
+							if (int(board[j, i]) > 0)
+							{
+								result->Add(Point(i, j));
+								Break = 1;
+								break;
+							}
+							else
+							{
+								result->Add(Point(i, j));
+								break;
+							}
+						}
+					}
+
+					if (Break)
+						break;
+				}
+
+
+				break;
+			}
+           
+				////////////////////////////KING
+			case WhiteKing:
+			{
+				int x = 0, y = 0;
+				x = piecePosition.X;
+				y = piecePosition.Y;
+
+				// y + 1 < 8
+				// x + 1 < 8
+				// y - 1 > -1
+				// x - 1 > -1
+
+				if (y + 1 < 8 && (int(board[y + 1, x]) < 0 || int(board[y + 1, x]) == 0))
+				result->Add(Point(piecePosition.X, piecePosition.Y + 1));
+				if (y - 1 > -1 && ( int(board[y - 1, x]) < 0 || int(board[y - 1, x]) == 0))
+				result->Add(Point(piecePosition.X, piecePosition.Y - 1));
+				if (x + 1 < 8 && (int(board[y , x + 1]) < 0 || int(board[y , x + 1]) == 0))
+				result->Add(Point(piecePosition.X + 1, piecePosition.Y));
+				if (x - 1 > -1 && ( int(board[y , x - 1]) < 0 || int(board[y, x - 1]) == 0))
+				result->Add(Point(piecePosition.X - 1, piecePosition.Y));
+
+				if (y + 1 < 8 && y + 1 < 8 && (int(board[y + 1, x + 1]) < 0 || int(board[y + 1, x + 1]) == 0))
+				result->Add(Point(piecePosition.X + 1, piecePosition.Y + 1));
+				if (x + 1 < 8 && y - 1 > -1 && (int(board[y - 1, x + 1]) < 0 || int(board[y - 1, x + 1]) == 0))
+				result->Add(Point(piecePosition.X + 1, piecePosition.Y - 1));
+				if (x - 1 > -1 && y - 1 > -1 && (int(board[y - 1, x - 1]) < 0 || int(board[y - 1, x - 1]) == 0))
+				result->Add(Point(piecePosition.X - 1, piecePosition.Y - 1));
+				if (y + 1 < 8 && x - 1 > -1 && (int(board[y + 1, x - 1]) < 0 || int(board[y + 1, x - 1]) == 0))
+				result->Add(Point(piecePosition.X - 1, piecePosition.Y + 1));
+				break;
+			}
+				
+			case BlackKing:
+			{
+			// y + 1 < 8
+			// x + 1 < 8
+			// y - 1 > -1
+			// x - 1 > -1
+				int x = 0, y = 0;
+				x = piecePosition.X;
+				y = piecePosition.Y;
+				if (y + 1 < 8 && (int(board[y + 1, x] ) > 0 || int(board[y + 1, x ]) == 0))
+				result->Add(Point(piecePosition.X, piecePosition.Y + 1));
+				if (y - 1 > -1 && (int(board[y - 1, x ]) > 0 || int(board[y - 1, x ]) == 0))
+				result->Add(Point(piecePosition.X, piecePosition.Y - 1));
+				if (x + 1 < 8 && (int(board[y , x + 1]) > 0 || int(board[y , x + 1]) == 0))
+				result->Add(Point(piecePosition.X + 1, piecePosition.Y));
+				if (x - 1 > -1 && (int(board[y, x - 1]) > 0 || int(board[y, x - 1]) == 0))
+				result->Add(Point(piecePosition.X - 1, piecePosition.Y));
+
+				if (x + 1 < 8 && y + 1 < 8 &&( int(board[y + 1, x + 1]) > 0 || int(board[y + 1, x + 1]) == 0))
+				result->Add(Point(piecePosition.X + 1, piecePosition.Y + 1));
+				if (x + 1 < 8 && y - 1 > -1 && (int(board[y - 1, x + 1]) > 0 || int(board[y - 1, x + 1]) == 0))
+				result->Add(Point(piecePosition.X + 1, piecePosition.Y - 1));
+				if (y - 1 > -1 && x-1>-1 &&(int(board[y - 1, x - 1]) > 0 || int(board[y - 1, x - 1]) == 0))
+				result->Add(Point(piecePosition.X - 1, piecePosition.Y - 1));
+				if (y+1<8 && x-1 > -1 && (int(board[y + 1, x - 1]) > 0 || int(board[y + 1, x - 1]) == 0))
+				result->Add(Point(piecePosition.X - 1, piecePosition.Y + 1));
+				break;
+			
+			}
+				
+			}
+
 			return result;
+		}
+
+		bool EndTheGame(Point piecePosition) // 1 = White is winner , 0 = Black is winner
+		{
+			bool ExistWhiteKing = 0;
+			bool ExistBlackKing = 0;
+			auto result = gcnew List<Point>();
+			auto piece = board[piecePosition.Y, piecePosition.X];
+			bool isWhite = int(piece) > 0;
+			for (int i = 0; i < 8; i++)
+			{
+				for (int j; j < 8; j++)
+				{
+					if (int(board[j, i]) == WhiteKing)
+						ExistWhiteKing = 1;
+					if (int(board[j, i]) == BlackKing)
+						ExistWhiteKing = 1;
+				}
+			}
+			if (!ExistWhiteKing)
+				return 0;
+			if (!ExistBlackKing)
+				return 1;
+			
+		
 		}
 		ChessPieces move(Point lastPiecePosition, Point newPiecePosition) {
 			auto
