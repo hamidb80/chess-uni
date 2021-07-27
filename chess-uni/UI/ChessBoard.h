@@ -1527,18 +1527,18 @@ namespace UI {
 			return result;
 		}
 
-		gameState EndTheGame() // 1 = White is winner , -1 = Black is winner | otherwise 0
+		gameState EndTheGame()
 		{
 			bool ExistWhiteKing = 0;
 			bool ExistBlackKing = 0;
-			for (int i = 0; i < 8; i++)
+			for (int y = 0; y < 8; y++)
 			{
-				for (int j; j < 8; j++)
+				for (int x = 0; x < 8; x++)
 				{
-					if (int(board[j, i]) == WhiteKing)
+					if (board[y, x] == WhiteKing)
 						ExistWhiteKing = 1;
-					if (int(board[j, i]) == BlackKing)
-						ExistWhiteKing = 1;
+					if (board[y, x] == BlackKing)
+						ExistBlackKing = 1;
 				}
 			}
 
