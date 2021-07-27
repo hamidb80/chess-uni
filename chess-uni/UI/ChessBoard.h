@@ -109,7 +109,7 @@ namespace UI {
 
 					//else if (int(board[y + 1, x]) < 0) {}
 				}
-				
+
 
 
 				break;
@@ -170,7 +170,7 @@ namespace UI {
 				}
 
 				break;
-				
+
 
 			}
 			case BlackRook:
@@ -379,7 +379,7 @@ namespace UI {
 				bool Break = 0;
 				for (int i = piecePosition.X + 1; i < 8; i++) // SE
 				{
-					for (int j = piecePosition.Y + 1 ; j < 8; j++)
+					for (int j = piecePosition.Y + 1; j < 8; j++)
 					{
 
 						if (i - piecePosition.X == j - piecePosition.Y)
@@ -496,7 +496,7 @@ namespace UI {
 				for (int j = piecePosition.Y + 1; j < 8; j++) ///SW
 				{
 
-					for (int i = piecePosition.X - 1 ; i > -1; i--)
+					for (int i = piecePosition.X - 1; i > -1; i--)
 					{
 
 						if (i - piecePosition.X == j - piecePosition.Y)
@@ -608,12 +608,12 @@ namespace UI {
 					if (Break)
 						break;
 				}
-				
-				
+
+
 				break;
 			}
-		
-				
+
+
 			case BlackBishop:
 			{
 				bool Break = 0;
@@ -853,7 +853,7 @@ namespace UI {
 
 				break;
 			}
-			
+
 			case WhiteQueen:
 			{
 
@@ -1452,8 +1452,8 @@ namespace UI {
 
 				break;
 			}
-           
-				////////////////////////////KING
+
+			////////////////////////////KING
 			case WhiteKing:
 			{
 				int x = 0, y = 0;
@@ -1466,55 +1466,55 @@ namespace UI {
 				// x - 1 > -1
 
 				if (y + 1 < 8 && (int(board[y + 1, x]) < 0 || int(board[y + 1, x]) == 0))
-				result->Add(Point(piecePosition.X, piecePosition.Y + 1));
-				if (y - 1 > -1 && ( int(board[y - 1, x]) < 0 || int(board[y - 1, x]) == 0))
-				result->Add(Point(piecePosition.X, piecePosition.Y - 1));
-				if (x + 1 < 8 && (int(board[y , x + 1]) < 0 || int(board[y , x + 1]) == 0))
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y));
-				if (x - 1 > -1 && ( int(board[y , x - 1]) < 0 || int(board[y, x - 1]) == 0))
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y));
+					result->Add(Point(piecePosition.X, piecePosition.Y + 1));
+				if (y - 1 > -1 && (int(board[y - 1, x]) < 0 || int(board[y - 1, x]) == 0))
+					result->Add(Point(piecePosition.X, piecePosition.Y - 1));
+				if (x + 1 < 8 && (int(board[y, x + 1]) < 0 || int(board[y, x + 1]) == 0))
+					result->Add(Point(piecePosition.X + 1, piecePosition.Y));
+				if (x - 1 > -1 && (int(board[y, x - 1]) < 0 || int(board[y, x - 1]) == 0))
+					result->Add(Point(piecePosition.X - 1, piecePosition.Y));
 
 				if (y + 1 < 8 && y + 1 < 8 && (int(board[y + 1, x + 1]) < 0 || int(board[y + 1, x + 1]) == 0))
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y + 1));
+					result->Add(Point(piecePosition.X + 1, piecePosition.Y + 1));
 				if (x + 1 < 8 && y - 1 > -1 && (int(board[y - 1, x + 1]) < 0 || int(board[y - 1, x + 1]) == 0))
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y - 1));
+					result->Add(Point(piecePosition.X + 1, piecePosition.Y - 1));
 				if (x - 1 > -1 && y - 1 > -1 && (int(board[y - 1, x - 1]) < 0 || int(board[y - 1, x - 1]) == 0))
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y - 1));
+					result->Add(Point(piecePosition.X - 1, piecePosition.Y - 1));
 				if (y + 1 < 8 && x - 1 > -1 && (int(board[y + 1, x - 1]) < 0 || int(board[y + 1, x - 1]) == 0))
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y + 1));
+					result->Add(Point(piecePosition.X - 1, piecePosition.Y + 1));
 				break;
 			}
-				
+
 			case BlackKing:
 			{
-			// y + 1 < 8
-			// x + 1 < 8
-			// y - 1 > -1
-			// x - 1 > -1
+				// y + 1 < 8
+				// x + 1 < 8
+				// y - 1 > -1
+				// x - 1 > -1
 				int x = 0, y = 0;
 				x = piecePosition.X;
 				y = piecePosition.Y;
-				if (y + 1 < 8 && (int(board[y + 1, x] ) > 0 || int(board[y + 1, x ]) == 0))
-				result->Add(Point(piecePosition.X, piecePosition.Y + 1));
-				if (y - 1 > -1 && (int(board[y - 1, x ]) > 0 || int(board[y - 1, x ]) == 0))
-				result->Add(Point(piecePosition.X, piecePosition.Y - 1));
-				if (x + 1 < 8 && (int(board[y , x + 1]) > 0 || int(board[y , x + 1]) == 0))
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y));
+				if (y + 1 < 8 && (int(board[y + 1, x]) > 0 || int(board[y + 1, x]) == 0))
+					result->Add(Point(piecePosition.X, piecePosition.Y + 1));
+				if (y - 1 > -1 && (int(board[y - 1, x]) > 0 || int(board[y - 1, x]) == 0))
+					result->Add(Point(piecePosition.X, piecePosition.Y - 1));
+				if (x + 1 < 8 && (int(board[y, x + 1]) > 0 || int(board[y, x + 1]) == 0))
+					result->Add(Point(piecePosition.X + 1, piecePosition.Y));
 				if (x - 1 > -1 && (int(board[y, x - 1]) > 0 || int(board[y, x - 1]) == 0))
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y));
+					result->Add(Point(piecePosition.X - 1, piecePosition.Y));
 
-				if (x + 1 < 8 && y + 1 < 8 &&( int(board[y + 1, x + 1]) > 0 || int(board[y + 1, x + 1]) == 0))
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y + 1));
+				if (x + 1 < 8 && y + 1 < 8 && (int(board[y + 1, x + 1]) > 0 || int(board[y + 1, x + 1]) == 0))
+					result->Add(Point(piecePosition.X + 1, piecePosition.Y + 1));
 				if (x + 1 < 8 && y - 1 > -1 && (int(board[y - 1, x + 1]) > 0 || int(board[y - 1, x + 1]) == 0))
-				result->Add(Point(piecePosition.X + 1, piecePosition.Y - 1));
-				if (y - 1 > -1 && x-1>-1 &&(int(board[y - 1, x - 1]) > 0 || int(board[y - 1, x - 1]) == 0))
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y - 1));
-				if (y+1<8 && x-1 > -1 && (int(board[y + 1, x - 1]) > 0 || int(board[y + 1, x - 1]) == 0))
-				result->Add(Point(piecePosition.X - 1, piecePosition.Y + 1));
+					result->Add(Point(piecePosition.X + 1, piecePosition.Y - 1));
+				if (y - 1 > -1 && x - 1 > -1 && (int(board[y - 1, x - 1]) > 0 || int(board[y - 1, x - 1]) == 0))
+					result->Add(Point(piecePosition.X - 1, piecePosition.Y - 1));
+				if (y + 1 < 8 && x - 1 > -1 && (int(board[y + 1, x - 1]) > 0 || int(board[y + 1, x - 1]) == 0))
+					result->Add(Point(piecePosition.X - 1, piecePosition.Y + 1));
 				break;
-			
+
 			}
-				
+
 			}
 
 			return result;
@@ -1541,8 +1541,8 @@ namespace UI {
 				return 0;
 			if (!ExistBlackKing)
 				return 1;
-			
-		
+
+
 		}
 		ChessPieces move(Point lastPiecePosition, Point newPiecePosition) {
 			auto
@@ -1654,7 +1654,7 @@ namespace UI {
 					{
 						auto btn = btns[p.Y * 8 + p.X];
 
-						btn->BackColor = boardclass->board[p.Y, p.X] != Empty ? 
+						btn->BackColor = boardclass->board[p.Y, p.X] != Empty ?
 							Color::PaleVioletRed : Color::SkyBlue;
 					}
 				}
