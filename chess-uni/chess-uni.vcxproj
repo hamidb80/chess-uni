@@ -133,6 +133,9 @@
     <ClInclude Include="modules\socketio.hpp" />
     <ClInclude Include="UI\GamePage.h" />
     <ClInclude Include="UI\ChessBoard.h" />
+    <ClInclude Include="UI\WinDialog.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="UI\selectOption.h" />
     <ClInclude Include="UI\IntroPage.h">
       <FileType>CppForm</FileType>

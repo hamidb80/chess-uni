@@ -5,6 +5,7 @@
 #include <json.hpp>
 #include "Timer.h"
 #include "ChessBoard.h"
+#include "./WinDialog.h"
 #include "IntroPage.h"
 #include "MusicPlayer.h"
 #include "../modules/socketio.hpp"
@@ -70,7 +71,8 @@ namespace UI {
 
 		// temporary app states
 		bool isSelectingCell = false,
-			isMyTrun = false;
+			isMyTrun = false,
+			isEnd = false;
 
 		Point lastSelectedCell;
 
@@ -235,7 +237,7 @@ namespace UI {
 				isMyTrun = true;
 				saver = gcnew Thread(gcnew ThreadStart(this, &GamePage::saveDataThread));
 				saver->Start();
-		
+
 				auto t = gcnew Thread(gcnew ThreadStart(this, &GamePage::serverWorker));
 				t->Start();
 			}
@@ -312,7 +314,7 @@ namespace UI {
 
 		// board events
 		void OnClickedOnCell(Point p) {
-			if (!isMyTrun) return;
+			if (!isMyTrun || isEnd) return;
 
 			if (isSelectingCell) {
 				if (contains(boardclass->movePoints, p)) {
@@ -396,7 +398,17 @@ namespace UI {
 			boardclass->move(p1, p2);
 			boardComponent->render();
 
-			isMyTrun = !isMyTrun;
+			auto gameEndState = boardclass->EndTheGame();
+			if (gameEndState == NoOneIsWinner)
+				isMyTrun = !isMyTrun;
+			else {
+				auto winner = (gameEndState == WhiteIsWinner) ? "white" : "black";
+				auto winDialog = gcnew WinDialog(gcnew String(winner));
+				timer->stop();
+				isEnd = true;
+				winDialog->ShowDialog();
+			}
+
 		}
 		void onSettingChange(json data) {
 			Console::WriteLine(gcnew String(data.dump().c_str()));

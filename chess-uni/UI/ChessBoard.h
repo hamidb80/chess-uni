@@ -26,6 +26,13 @@ namespace UI {
 		bool showMovePreview = true;
 	};
 
+
+	enum gameState {
+		WhiteIsWinner,
+		BlackIsWinner,
+		NoOneIsWinner
+	};
+
 	public ref struct BoardClass {
 		cli::array<ChessPieces, 2>^ board = newBoard();
 		List<Point>^ dangerPoints = gcnew List<Point>();
@@ -1520,13 +1527,10 @@ namespace UI {
 			return result;
 		}
 
-		bool EndTheGame(Point piecePosition) // 1 = White is winner , 0 = Black is winner
+		gameState EndTheGame() // 1 = White is winner , -1 = Black is winner | otherwise 0
 		{
 			bool ExistWhiteKing = 0;
 			bool ExistBlackKing = 0;
-			auto result = gcnew List<Point>();
-			auto piece = board[piecePosition.Y, piecePosition.X];
-			bool isWhite = int(piece) > 0;
 			for (int i = 0; i < 8; i++)
 			{
 				for (int j; j < 8; j++)
@@ -1537,12 +1541,14 @@ namespace UI {
 						ExistWhiteKing = 1;
 				}
 			}
+
 			if (!ExistWhiteKing)
-				return 0;
+				return BlackIsWinner;
+			
 			if (!ExistBlackKing)
-				return 1;
+				return WhiteIsWinner;
 
-
+			return NoOneIsWinner;
 		}
 		ChessPieces move(Point lastPiecePosition, Point newPiecePosition) {
 			auto
