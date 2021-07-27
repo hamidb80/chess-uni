@@ -70,7 +70,8 @@ protected:
 			uncompletedRecvs[bp->packetId]->append(*bp);
 			bp = uncompletedRecvs[bp->packetId];
 
-			if (bp->isDone) { // TODO: remove from uncompletedRecvs
+			if (bp->isDone) { 
+				uncompletedRecvs.clear();
 			}
 		}
 		else if (!bp->isDone) {
@@ -79,6 +80,7 @@ protected:
 
 		if (bp->isDone) {
 			eventBus.push(bp->data); // trigger eventHandler
+			delete bp;
 		}
 	}
 	void sendBackground() {
@@ -319,7 +321,6 @@ private:
 				auto data = json::parse(msg);
 				appSocket->eventBus.pop();
 
-				// TODO catch key "event" does not exists
 				trigger(data["event"].get<string>(), data);
 			}
 
